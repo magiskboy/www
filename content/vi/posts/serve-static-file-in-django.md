@@ -1,0 +1,109 @@
+---
+title: "Serve static file in Django"
+date: 2020-12-21T14:19:24+07:00
+published: true
+tags:
+- python
+- django
+- web
+- programming
+- vi
+categories:
+- Programming
+author: "Nguyễn Khắc Thành"
+---
+
+Trong môi trường development, Django có một số tính năng đặc biệt mà trong production không nên sử dụng như debug. Khi deploy các app sử dụng server side rendering, các bạn sẽ rất hay gặp phải vấn đề server không serve được các static file.
+
+Trong bài viết này, mình sẽ hướng dẫn các bạn deploy một app Django lên production và config Nginx để server có thể serve được các static file của Django
+
+<!--more-->
+
+Giả sử, mình có project Django như sau:
+
+
+```sh
+── app
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── static
+│   ├── templates
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── db.sqlite3
+├── demo
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── manage.py
+```
+
+Để tắt chế độ debug trong Django, các bạn sẽ sửa biến DEBUG trong file settings.py như sau
+
+```python
+DEBUG = False if .getenv('DEBUG', '0') == 0 else True
+```
+
+OK, như vậy tưởng như xong =)). Nhưng không, khi mở trình duyệt và vào trang web của mình, các bạn sẽ thấy html vẫn được render trong khi url của các static file lại báo lỗi 404???
+
+Mặc định, Django trong chế độ non debug sẽ không chịu trách nhiệm việc serve các static file nên khi tắt chế độ debug, trình duyệt sẽ không tải được các file ảnh, css, js, …
+
+Để khắc phục vấn đề này, mình sẽ để thằng Django render template trong khi đó, Nginx sẽ đóng vai trò là reversed proxy và serve static file
+
+Đầu tiên, mình sẽ quy định url của static file khi Django render template và đường dẫn static file trên host machine. Các config này nên quy định trong demo/settings.py
+
+```python
+STATIC_URL = '/static/'
+STATIC_ROOT = '/var/demo/static'
+```
+
+Tiếp theo, mình sẽ config urlpatterns để mỗi khi template engine của Django render html sẽ render đúng url của static file mà mình quy định. Trong demo/urls.py
+
+```python
+from django.contrib.staticfiles.urls import static
+from django.conf import settings
+
+urlpatterns += static(
+    prefix=getattr(settings, 'STATIC_URL'),
+    document_root=getattr(settings, 'STATIC_ROOT')
+)
+```
+
+OK, vậy là mình đã config xong đối với Django, giờ sẽ config Nginx để serve đúng chỗ của static file, ở đây là /var/demo/static . Mình tạo file /etc/nginx/conf.d/demo.conf, với nội dung như sau:
+
+```nginx
+server {
+    listen 80;
+    server_name demo;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location /static {
+        alias /var/demo/static;
+    }
+}
+```
+
+Sau khi config xong, mình chạy lệnh sau trong thư mục project của Django:
+
+```sh
+$ ./manage.py collectstatic
+```
+
+Các static file ở các app mà project inject vào sẽ được gom vào STATIC_ROOT. Bây giờ, Nginx chỉ việc serve các file đó thôi ✌️
+
+Các bạn có thể lấy repo này về test thử, https://github.com/magiskboy/django-app-deployment.
+
+Ngoài các static file, các bạn cũng có thể áp dụng cách này đối với các file được người dùng từ client upload lên server.

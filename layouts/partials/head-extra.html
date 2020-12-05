@@ -1,0 +1,24 @@
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script>
+
+<script>
+  {{ if eq (getenv "HUGO_ENV" ) "production" }}
+    var firebaseConfig = {
+      apiKey: "{{ .Site.Params.Firebase.ApiKey }}",
+      authDomain: "{{ .Site.Params.Firebase.AuthDomain }}",
+      databaseURL: "{{ .Site.Params.Firebase.DatabaseURL }}",
+      projectId: "{{ .Site.Params.Firebase.ProjectId }}",
+      storageBucket: "{{ .Site.Params.Firebase.StorageBucket }}",
+      messagingSenderId: "{{ .Site.Params.Firebase.SenderId }}",
+      appId: "{{ .Site.Params.Firebase.AppId }}",
+      measurementId: "{{ .Site.Params.Firebase.MeasurementId }}"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  {{ end }}
+</script>
+
+{{ if or .Params.math .Site.Params.math }}
+  {{ partial "math.html" . }}
+{{ end }}

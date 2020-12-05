@@ -5,6 +5,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 firebase-debug.log*
+package.json
+package-lock.json
+.publishrc
+*.sublime-workspace
 
 # Firebase cache
 .firebase/

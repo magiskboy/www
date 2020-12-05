@@ -1,0 +1,44 @@
+powered:
+  other: "cung cấp bởi"
+
+theme:
+  other: "chủ đề"
+
+readMore:
+  other: "đọc thêm"
+
+toNewPosts:
+  other: "đến bài viết mới"
+
+toOldPosts:
+  other: "đến bài viết cũ"
+
+tag:
+  other: "thẻ"
+
+Tags:
+  other: "Thẻ"
+
+Posts:
+  other: "Bài viết"
+
+category:
+  other: "danh mục"
+
+Categories:
+  other: "Danh mục"
+
+toAllTags:
+  other: "tới tất cả các thẻ"
+
+toAllCategories:
+  other: "tới tất cả các danh mục"
+
+skipToContent:
+  other: "bỏ qua nội dung chính"
+
+darkTheme:
+  other: "chủ đề tối"
+
+lightTheme:
+  other: "chủ đề tối"

@@ -21,6 +21,8 @@ jobs:
 
       - name: Build
         run: hugo --minify
+        env:
+          HUGO_ENV: production
 
       - name: Deploy to Firebase
         uses: lowply/deploy-firebase@v0.0.3

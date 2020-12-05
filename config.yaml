@@ -1,14 +1,38 @@
 theme: "anubis"
+baseUrl: "https://nkthanh.dev"
+DefaultContentLanguage: "vi"
 paginate: 10
-googleAnalytics: UA-123-45
+googleAnalytics: ""
 enableRobotsTXT: true
-defaultContentLanguage: en
 
 languages:
+  vi:
+    title: "Nguyễn Khắc Thành"
+    params:
+      author: "Nguyễn Khắc Thành"
+      description: ""
+      dateFormat: "01-01-2006"
+    menu:
+      main:
+      - identifier: post
+        name: Bài viết
+        url: /posts
+        weight: 2
+      - identifier: about
+        name: Giới thiệu
+        url: /about
+        weight: 1
+      - identifier: tags
+        name: Thẻ
+        url: /tags
+        weight: 0
+    contentDir: content/vi
+    languageCode: "vi-vn"
+    languageName: Tiếng Việt
+    weight: 1
+
   en:
-    languageCode: "en-us"
-    baseUrl: "https://nkthanh.dev"
-    title: "Thanh Nguyen"
+    title: "Nguyen Khac Thanh"
     params:
       author: "Nguyen Khac Thanh"
       description: ""
@@ -18,52 +42,46 @@ languages:
       - identifier: post
         name: Post
         title: Post
-        url: /posts/
-        weight: 0
+        url: /posts
+        weight: 2
       - identifier: about
         name: About
-        url: /about/
+        url: /about
         weight: 1
       - identifier: tags
         name: Tags
-        url: /tags/
-        weight: 2
-
-  vi:
-    languageCode: "vi-vn"
-    baseUrl: "https://nkthanh.dev/vi"
-    title: "Nguyễn Khắc Thành"
-    params:
-      author: "Nguyễn Khắc Thành"
-      description: ""
-      dateFormat: "02-01-2006"
-    menu:
-      main:
-      - identifier: post
-        name: Bài viết
-        url: /posts/
+        url: /tags
         weight: 0
-      - identifier: about
-        name: Về tôi
-        url: /about/
-        weight: 1
-      - identifier: tags
-        name: Thẻ
-        url: /tags/
-        weight: 2
+    contentDir: content/en
+    languageCode: "en-us"
+    languageName: English
+    weight: 2
 
 params:
+  math: true
   paginationSinglePost: true
-  style: light-without-switcher
+  style: light-with-switcher
   readMore: false
+  UtterancRepo: magiskboy/
+  Firebase:
+    ProjectId: myblog-e552f
+    ApiKey: AIzaSyAny8MQuh4uEziV2FsJAEBMHvRcCjHeDj0
+    DatabaseURL: https://myblog-e552f-default-rtdb.firebaseio.com
+    StorageBucket: myblog-e552f.appspot.com
+    SenderId: 488762331302
+    AppId: 1:488762331302:web:8edebcb8c2116cff0b2467
+    AuthDomain: myblog-e552f.firebaseapp.com
+    MeasurementId: G-WVWZEJLY14
 
 markup:
   goldmark:
     renderer:
-      unsafe: false # disable raw HTML in Markdown
+      unsafe: true # disable raw HTML in Markdown
 
 taxonomies:
   category: categories
   tag: tags
 
 PygmentsStyle: "github"
+
+enableEmoji: true
