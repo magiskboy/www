@@ -1,0 +1,69 @@
+theme: "anubis"
+paginate: 10
+googleAnalytics: UA-123-45
+enableRobotsTXT: true
+defaultContentLanguage: en
+
+languages:
+  en:
+    languageCode: "en-us"
+    baseUrl: "https://nkthanh.dev"
+    title: "Thanh Nguyen"
+    params:
+      author: "Nguyen Khac Thanh"
+      description: ""
+      dateFormat: "2006-01-02"
+    menu:
+      main:
+      - identifier: post
+        name: Post
+        title: Post
+        url: /posts/
+        weight: 0
+      - identifier: about
+        name: About
+        url: /about/
+        weight: 1
+      - identifier: tags
+        name: Tags
+        url: /tags/
+        weight: 2
+
+  vi:
+    languageCode: "vi-vn"
+    baseUrl: "https://nkthanh.dev/vi"
+    title: "Nguyễn Khắc Thành"
+    params:
+      author: "Nguyễn Khắc Thành"
+      description: ""
+      dateFormat: "02-01-2006"
+    menu:
+      main:
+      - identifier: post
+        name: Bài viết
+        url: /posts/
+        weight: 0
+      - identifier: about
+        name: Về tôi
+        url: /about/
+        weight: 1
+      - identifier: tags
+        name: Thẻ
+        url: /tags/
+        weight: 2
+
+params:
+  paginationSinglePost: true
+  style: light-without-switcher
+  readMore: false
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: false # disable raw HTML in Markdown
+
+taxonomies:
+  category: categories
+  tag: tags
+
+PygmentsStyle: "github"
