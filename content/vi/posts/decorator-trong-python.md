@@ -36,7 +36,7 @@ def add(*args):
 	return s
 ```
 
-Bây giờ, mình có thêm mấy hàm và cũng được yêu cầu log thời gian thực thi. Sau 2 tháng, các sếp yêu ầu mình ngoài log thời gian thực thi, cần log thêm tên hàm và input chẳng hạn, mình sẽ phải sử code ở toàn bộ các hàm đó, thật tệ :sad:
+Bây giờ, mình có thêm mấy hàm và cũng được yêu cầu log thời gian thực thi. Sau 2 tháng, các sếp yêu cầu mình ngoài log thời gian thực thi, cần log thêm tên hàm và input chẳng hạn, mình sẽ phải sử code ở toàn bộ các hàm đó, thật tệ :sad:
 
 Đây là lúc chúng ta cần đến decorator
 
@@ -74,6 +74,8 @@ Amazing!
 ### 2. Nested decorator
 
 Chúng ta sẽ thắc mắc, một hàm có thể có nhiều decorator hay không, câu trả lời là có
+
+Chúng được gọi là `decorator stack` (các bạn tự tìm hiểu thêm nhé :smile:)
 
 Hay cũng xét ví dụ sau
 
@@ -148,9 +150,9 @@ def log_without_input(func):
 ```
 
 Giờ đâu cần log input thì dùng `log_with_input`, nếu không thì xài `log_without_input`.
-Nếu bạn có n biến là tuỳ chọn thì bạn tiêu rồi, bạn cần viết n * n cái decorator
+Nếu bạn có n biến là tuỳ chọn thì bạn tiêu rồi, bạn cần viết 2 ^ n cái decorator
 
-OK, mình có giải pháp cho bạn đây: decorator của decorator hay người ta gọi là `decorator stack` (các bạn tự tìm hiểu thêm nhé :smile:).
+OK, mình có giải pháp cho bạn đây: decorator của decorator.
 
 ```python
 def log(show_input=False):
