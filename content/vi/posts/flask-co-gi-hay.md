@@ -26,7 +26,7 @@ Cú pháp của Python rất sáng sủa và dễ học, chính vì thế có r�
 Trong bài viết này, mình muốn tập trung vào những thứ hay ho của một web framework - Flask, một framework được cài đặt thuần bằng Python và có được sự hưởng ứng của nhiều người.
 
 
-## 1. Đơn giản và khả năng mở rộng
+### 1. Đơn giản và khả năng mở rộng
 
 Thật sự, Flask là một framework web cực kì nhỏ gọn (như tác giả nói rằng Flask là một micro web framework) so với những đàn anh của nó như Django hay Tornado. Vậy Flask có những gì
 
@@ -54,7 +54,7 @@ Bạn cần phát triển các RestfulAPI nhanh chóng và thuận tiện, Flask
 
 Bạn có thể build bất kì một hệ thống web backend nào dựa trên Flask, tất nhiên sự đơn giản của framework cũng đồng nghĩa với việc bạn phải động não nhiều hơn.
 
-## 2. Cấu trúc đơn giả và hiệu quả
+### 2. Cấu trúc đơn giả và hiệu quả
 
 Bạn muốn có một backend, đây là những thứ bạn cần với Flask
 
@@ -90,12 +90,12 @@ Bằng cách này, các lập trình viên có thể thoả sức viết thêm c
 
 Đơn giản là các library đó sẽ viết thêm các decorator để người dùng có thể sử dụng cho bất kì router nào họ muốn, thật quá đơn giản.
 
-## 3. Flask tương thích với đa số các Python web server
+### 3. Flask tương thích với đa số các Python web server
 
 Flask được implement dựa trên [WSGI](https://wsgi.readthedocs.io/en/latest/what.html) nên nó có thể chạy dễ dàng trên các web server như gunicorn, uvicorn hay hypercorn. Thậm chí, từ xa xưa, Apache cũng có một module cho wsgi là `mod_wsgi`.
 
 
-## 4.Context
+### 4. Context
 
 Một điều thú vị nữa mà Flask đem lại có lẽ là khái niệm về `context`.
 
@@ -124,13 +124,13 @@ Bạn cũng có thể thấy khái niệm `context` này được sử dụng tr
 
 Ngoài [request context](https://flask.palletsprojects.com/en/1.1.x/reqcontext/), flask còn có [application context](https://flask.palletsprojects.com/en/1.1.x/appcontext/), các bạn có thể tham khảo tài liệu của Flask để biết thêm cách dùng của nó.
 
-## 5. Testing
+### 5. Testing
 
 Testing luôn là một vấn đề khó khăn đối với đa số các bạn, trong đó có cả mình 😆. Điều đó càng trở nên kinh dị nếu như framework mà bạn chọn không hỗ trợ tốt unit testing. Thật may mắn, Flask làm việc này cực kì tốt (so với đa số các web framework trong Python 😀).
 
 Khi bạn viết một app trong Flask, về cơ bản là bạn tạo ra một `Flask` object với hàng tá các router trong đó.
 
-Vậy việc test app chính là việc test các hàm router trong cái app này. Vậy làm sao để test các hàm đó khi nó đang nằm trong app, thậm chí, có thế hàm đó coả thể được decorate bởi một đống các hàm khác?
+Vậy việc test app chính là việc test các hàm router trong cái app này. Vậy làm sao để test các hàm đó khi nó đang nằm trong app, thậm chí, có thế hàm đó đang được decorate bởi một đống các hàm khác?
 
 Flask giúp chúng ta điều này bằng cách cung cấp cho bạn một `TestClient` object, cái đó đóng vai trò như là một client thực sự.
 
@@ -152,4 +152,4 @@ response = client.get('/say/Thanh')
 assert response.data == b'Hello, Thanh'
 ```
 
-OK, đó là những điều cảm thấy mình thấy Flask thật tuyệt vời để mình có thể phát triển một webservice trong Python. Bạn thì sao, cho mình ý kiến của các bạn trong phần comment bên dưới nhé, bye bye.
+OK, đó là những điều mình cảm thấy Flask thật tuyệt vời để mình có thể phát triển một webservice trong Python. Bạn thì sao, cho mình ý kiến của các bạn trong phần comment bên dưới nhé, bye bye.

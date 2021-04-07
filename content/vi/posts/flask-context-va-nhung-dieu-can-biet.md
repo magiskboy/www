@@ -18,7 +18,7 @@ Trong Flask có một khái niệm rất quan trọng và nó đã làm nên th�
 
 Để hiểu rõ hơn về context trong Flask, chúng ta cũng tìm hiểu xem một web khi viết bằng Python sẽ hoạt động ra sao.
 
-## 1. [WSGI](https://wsgi.readthedocs.io/en/latest/what.html)
+### 1. [WSGI](https://wsgi.readthedocs.io/en/latest/what.html)
 
 Theo [PEP 333](https://www.python.org/dev/peps/pep-0333/), một ứng dụng web khi cài đặt về cơ bản sẽ một hàm với 2 tham số
 - `environment`: một `dict` chứa toàn bộ dữ liệu client gửi đến server, nói các khác, đây chính là gói tin HTTP request đã được parse
@@ -57,7 +57,7 @@ Vậy ta có thể thấy rằng, environment chính là một context. Handler 
 
 Cụ thể, trong flask, `environment` được parse tiếp thành `flask.request` object.
 
-## 2. Vấn đề của Django và các web framework khác
+### 2. Vấn đề của Django và các web framework khác
 
 Khi bạn làm việc với Django hay các python web framework khác, bạn có thể thấy rằng nếu chúng ta muốn sử dụng dữ liệu từ request, bắt buộc chúng ta phải truyền top-down biến request xuống từng hàm mà mình muốn sử dụng
 
@@ -78,7 +78,7 @@ def index(request):
 
 Vì đây là backend nên trường hợp này khá hiếm xảy ra và số lượng các hàm lồng nhau cũng không nhiều. Nhưng đó là trường hợp thường xuyên xảy ra trong frontend, đặc biệt là React. Và React cũng giải quyết vấn đề này giống cách mà Flask đã làm.
 
-## 3. Flask proxy
+### 3. Flask proxy
 
 Như bạn thấy ở trên, các request sẽ được isolate trong các thread riêng biệt với context của nó là environment và nó hoàn toàn có thể trở thành một giá trị global trong thread đó.
 
@@ -140,7 +140,7 @@ Vậy các bạn thử đoán xem trong ví dụ ở phần 1, chúng ta nên se
 
 Ngoài request, flask còn có application context chứa application hiện tại khi chúng ta gọi `flask.g` hay `flask.current_app`.
 
-## 4. Ứng dụng của Flask proxy
+### 4. Ứng dụng của Flask proxy
 
 Flask cũng cho phép chúng ta có thể hoàn toàn tự tạo một context cho riêng mình:
 
