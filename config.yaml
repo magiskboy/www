@@ -11,7 +11,7 @@ languages:
     params:
       author: "Nguyễn Khắc Thành"
       description: ""
-      dateFormat: "01-01-2006"
+      dateFormat: "02-01-2006"
     menu:
       main:
       - identifier: post

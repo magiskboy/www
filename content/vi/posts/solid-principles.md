@@ -12,7 +12,9 @@ author: "Nguyễn Khắc Thành"
 
 Sau khi học xong các design pattern phổ biến như Singleton, Observer hay phức tạp như MVC hay MVVP, chúng ta đều nhận ra rằng chúng đều áp dụng các nguyên lí thiết kế chung giúp hệ thống dễ dàng tái sử dụng hay bảo trì.
 
-Vậy các nguyên lí đó là gì?
+Vậy các nguyên lí đó là gì? Các nguyên lí đó mang lại lợi ích gì? Và các áp dụng chúng ra sao? Mình sẽ giải đáp các thắc mắc trên trong bài viết này nhé.
+
+<!--more-->
 
 Ta có 5 nguyên lí thiết kế bắt buộc phải tuân theo khi chúng ta thiết kế ứng dụng theo hướng đối tượng, mình sẽ chia sẻ các nguyên lí trong bài viết này.
 Chúng ta có 5 nguyên lí, gọi tắt là __SOLID__
@@ -23,7 +25,6 @@ Chúng ta có 5 nguyên lí, gọi tắt là __SOLID__
 * Interface segregation principle
 * Dependencies Inversion principle
 
-<!--more-->
 
 ### Ta nói về nguyên lí đầu tiên, S — Single responsibility
 

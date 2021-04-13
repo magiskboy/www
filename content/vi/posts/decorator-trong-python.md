@@ -1,6 +1,6 @@
 ---
 title: "Decorator trong Python"
-date: 2021-04-02T07:25:00+07:00
+date: 2021-04-01T07:25:00+07:00
 published: true
 tags:
 - python
