@@ -62,7 +62,7 @@ params:
   paginationSinglePost: true
   style: light-with-switcher
   readMore: false
-  UtterancRepo: magiskboy/
+  UtterancRepo: magiskboy
   Firebase:
     ProjectId: myblog-e552f
     ApiKey: AIzaSyAny8MQuh4uEziV2FsJAEBMHvRcCjHeDj0
