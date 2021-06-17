@@ -21,9 +21,9 @@
         {{ partial "paginationPost.html" . }}
     {{ end }}
 
-    {{ if .Site.Params.UtterancRepo }}
+    {{ if .Site.Params.UtterancesRepo }}
       <script src="https://utteranc.es/client.js"
-              repo="{{ .Site.Params.UtterancRepo }}"
+              repo="{{ .Site.Params.UtterancesRepo }}"
               issue-term="title"
               theme="github-light"
               crossorigin="anonymous"
