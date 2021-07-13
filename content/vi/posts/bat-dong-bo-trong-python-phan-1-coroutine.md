@@ -78,7 +78,7 @@ Qua ví ví dụ trên, ta thây rằng event loop chỉ thực sự hữu dụn
 
 Chúng ta đã biết rằng chúng ta có một context của một hàm bất kì. Context này bao gồm các biến và chúng được giải phóng sau khi hàm kết thúc (giải phóng ra khỏi stack).
 
-Trong I/O-bound task, chúng ta sẽ có một vào lệnh lấy dữ liệu (IO operation) mà tại đó chúng ta cần tối ưu (như ví dụ vêd David, anh ta có thể tạm ngưng các task bị pending bởi test và chuyển qua làm task khác rồi quay lại làm các task của anh ta).
+Trong I/O-bound task, chúng ta sẽ có một vài lệnh lấy dữ liệu (IO operation) mà tại đó chúng ta cần tối ưu (như ví dụ về David, anh ta có thể tạm ngưng các task bị pending bởi test và chuyển qua làm task khác rồi quay lại làm các task của anh ta).
 
 Như vậy các ngắt là một vấn đề, làm sao chúng ta có thể tạo ra các ngắt trong hàm mà vẫn giữ được context của hàm để có thể thực thi tiếp?
 
@@ -88,7 +88,7 @@ Tại các ngắt đó, hàm đang thực thi(callee) cần trao lại quyền �
 
 ### Coroutine là gì?
 
-Donald Knuth says:
+Donald Knuth nói rằng:
 > Subroutines là một trường hợp cơ bản của coroutine
 
 Đúng vậy, tổng quát hoá, các hàm bình thường chúng ta hay sử dụng (hàm bị giải phóng context sau khi thoát khỏi hàm) là trường hợp đặc biệt của coroutine - nơi đó context có thể được giữ lại khi nó được tạm dùng.
