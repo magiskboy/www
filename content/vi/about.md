@@ -5,13 +5,15 @@ aliases:
   - "about-us"
   - "contact"
 author: "Nguyễn Khắc Thành"
+published: false
 ---
 
-Mình là __Thành__, họ tên đầy đủ là __Nguyễn Khắc Thành__. Mình năm nay mới 22 thôi nhé :kissing_heart:.
+Mình là **Thành**, họ tên đầy đủ là **Nguyễn Khắc Thành**. Mình năm nay mới 22 thôi nhé :kissing_heart:.
 
 Mình là sinh ra và lớn lên ở Hà Tây (ngoại ô Hà Nội) nhưng hiện tại mình làm việc ở Hà Nội.
 
 Các bạn có thể xem profile của mình ở đây nhé
+
 - [twitter.com/mag1skboy](https://twitter.com/mag1skboy)
 - [linkedin.com/thanh-nguyen-khac](https://www.linkedin.com/in/thanh-nguyen-khac)
 - [github.com/magiskboy](https://github.com/magiskboy)
@@ -48,14 +50,13 @@ Sau đó mình tiếp tục học sâu hơn về web development từ các ngu�
 
 Sau khoảng 2 năm ở Teko, mình cũng tích luỹ chút vốn kiến thức về software development, database, kubernetes, ....
 
-Với mình khoảng thời gian đó là thành công đối với mình và mình hi vọng tương lai của mình cũng thành công như trong quá khứ vậy :smile: 
+Với mình khoảng thời gian đó là thành công đối với mình và mình hi vọng tương lai của mình cũng thành công như trong quá khứ vậy :smile:
 
 ### Sở thích
 
 Mình yêu Open Source, do đó mình rất thường xuyên lên github để đọc code từ các developer khác. Mình chủ yếu tìm hiểu các project về Python, NodeJS hay Rust (cái này mình học vì nó lạ và cũng là theo một thần tượng của mình :smile:).
 Mình từng contribute vào một vài dự án Open Source (nhưng đóng góp chưa nhiều) như [starship](https://github.com/starship/starship), [pypika](https://github.com/kayak/pypika),...
 {{< github-calendar magiskboy >}}
-
 
 Ngoài lập trình, mình còn có yêu thích về sách. Chủ đề về triết học, khoa học vũ trục hay các tác phẩm phiêu lưu luôn hấp dẫn mình nên ai đó có chung niềm vui đó có thể liên lạc với mình nha, biết đâu có thể offline tâm sự :smile:
 

@@ -2,6 +2,7 @@
 title: "Bất đồng bộ trong Python - Phần 2: Event loop"
 date: 2021-03-29T20:11:00+07:00
 published: true
+favorite: true
 tags:
 - python
 - programming

@@ -5,6 +5,7 @@ aliases:
   - "about-us"
   - "contact"
 author: "Nguyen Khac Thanh"
+published: false
 ---
 
 I'm Thanh, Nguyen Khac Thanh, I'm Vietnamese and I live in Hanoi.
