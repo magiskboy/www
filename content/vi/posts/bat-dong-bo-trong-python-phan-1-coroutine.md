@@ -63,7 +63,7 @@ Trong khoa học máy tính, chúng ta có thể phân task thành 2 loại:
     
     Không, nó không phải là một giải pháp tối ưu. Thay vào đó, David nên thực hiện các task khác cho đến khi Ms.Tee nói rằng 'Hey David, các task của bạn chưa đạt, sửa lại nó đi' 😥.
 
-    Chính xác đây là cách làm việc của event loop cho các task ràng buộc bởi I/O    
+    Chính xác đây là cách làm việc của event loop cho các task ràng buộc bởi I/O
     
 * sử dụng event loop cho các task ràng buộc bởi CPU
 

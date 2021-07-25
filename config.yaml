@@ -20,7 +20,7 @@ languages:
         weight: 1
       - identifier: resume
         name: Tóm tắt cá nhân
-        url: https://drive.google.com/file/d/1hsAx8-CLqpRe_UjxxMsisYcr7An0HytU/view?usp=sharing
+        url: /resume
         weight: 2
       - identifier: tags
         name: Thẻ
