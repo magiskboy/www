@@ -1,8 +1,7 @@
 {{ $url := (.Get "url") }}
 {{ $title := (.Get "title") }}
 
-
 <figure>
-	<img src="{{ $url }}" alt="{{ $title }}">
-	<figcaption>{{ $title }}</figcaption>	
+  <img onclick="viewImage(this)" src="/images/{{ $url }}" alt="{{ $title }}" />
+  <figcaption>{{ $title }}</figcaption>
 </figure>

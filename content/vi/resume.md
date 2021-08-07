@@ -7,44 +7,10 @@ aliases:
 author: "Nguyễn Khắc Thành"
 published: true
 ---
-<style>
-#resume {
-	font-size: 16px;
-}
 
-#resume > .title {
-	text-align: center;
-	font-size: 32px;
-}
-
-#resume > section {
-	padding: 0 10px;
-	margin-bottom: 50px;
-	page-break-after: always;
-}
-
-#resume > section > h4 {
-	font-size: 18px;
-	margin-bottom: 15px;
-	border-bottom: 1px solid gray;
-}
-
-#contact {
-	display: flex;
-	justify-content: space-between;
-}
-
-#work-experiences .exp h4 {
-	margin-bottom: 5px;
-}
-
-#skills .skill h4 {
-	margin-bottom: 0;
-}
-</style>
 <article id="resume">
 	<h3 class="title">Nguyen Khac Thanh</h3>
-	<section id="contact">
+	<div class="section" id="contact">
 		<div>
 			<p>Nationality: Vietnamese</p>
 			<p>Address: <a target="_blank" href="https://goo.gl/maps/RMTJxcaQxWt31WiL8">Hoai Duc District, Hanoi</a></p>
@@ -55,14 +21,14 @@ published: true
 			<p>Email: <a target="_blank" href="mailto:nguyenkhacthanh244@gmail.com">nguyenkhacthanh244@gmail.com</a></p>
 			<p>Blog: <a target="_blank" href="https://nkthanh.dev">nkthanh.dev</a></p>
 		</address>
-	</section>
-	<section id="about">
+	</div>
+	<div class="section" id="about">
 		<h4>About me</h4>
 		<p>I studied Computer Science at the University of Engineering and Technology but I left the university since I didn’t finish my program, so I never have a BA degree. I have been a software developer for 3 years.</p>
 		<p>I can communicate and read English documents. In my free time, I usually read Medium, review code on Github, learn new technology or improve my programming skills or write my blog.</p>
 		<p>I can use Linux and toolsets for development, apply basic data structures and algorithms to resolve problems (heap, link list, hash map, sort, and so on…). I use Python as the main programming language and I can improve the python program by using C/C++ or Cython. I need a good environment for self-development.</p>
-	</section>	
-	<section id="work-experiences">
+	</div>	
+	<div class="section" id="work-experiences">
 		<h4>Work experiences</h4>
 		<div class="exp">
 			<h4>06-2019 – 02-2021: <a href="https://teko.vn/">Teko Vietnam</a></h4>
@@ -85,15 +51,15 @@ published: true
 			<strong>Description</strong>
 			<p>In the first position, I was a backend developer for a machine learning system in the lab of the university. I and my team developed a backend system for serving machine learning models. I learned the basic software process, python, web service concept, and so on.</p>
 		</div>
-	</section>
-	<section id="projects">
+	</div>
+	<div class="section" id="projects">
 		<h4>Projects</h4>
 		<ul>
 			<li><strong>pjrpc</strong>: Async JSON-RPC framework for Python, easy to use for everyone, <a href="https://github.com/magiskboy/pjrpc">checkout</a></li>
 			<li><strong>Flask-Blog</strong>: Simple blog with OAuth2, written by Flask, <a href="https://github.com/magiskboy/flask-blog">checkout</a></li>
 		</ul>
-	</section>
-	<section id="skills">
+	</div>
+	<div class="section" id="skills">
 		<h4>Skills</h4>
 		<div class="skill">
 			<h4>Programming language</h4>
@@ -135,8 +101,8 @@ published: true
 				<li>OpenAPI</li>
 			</ul>
 		</div>
-	</section>
-	<section id="educations">
+	</div>
+	<div class="section" id="educations">
 		<h4>Educations</h4>
 		<div class="education">
 			<h4>June 2019 - present</h4>
@@ -147,5 +113,5 @@ published: true
 			<h4>Aug 2016 - June 2019</h4>
 			<p>Studied Computer Communications and Networks at the University of Engineering and Technology.</p>
 		</div>
-	</section>
+	</div>
 </article>
