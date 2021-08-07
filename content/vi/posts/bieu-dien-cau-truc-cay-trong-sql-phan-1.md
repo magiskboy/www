@@ -21,7 +21,7 @@ Sau đây là định nghĩa về cây theo [Wikipedia](https://vi.wikipedia.org
 > Trong khoa học máy tính, cây là một cấu trúc dữ liệu được sử dụng rộng rãi gồm một tập hợp các nút (tiếng Anh: node) được liên kết với nhau theo quan hệ cha-con.
 
 {{< image
-    url="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Binary_tree.svg/400px-Binary_tree.svg.png"
+    url="/400px-Binary_tree.png"
     title="Ví dụ về một cây nhị phân"
 >}}
 
@@ -119,7 +119,7 @@ Như bạn biết rằng, cơ sở dữ liệu quan hệ (SQL) biểu diễn d�
 Sau đây là ERD cho cấu trúc nút của cây muốn biểu diễn trong SQL
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/bien-dien-cau-truc-cay-trong-database%2FUntitled%20Diagram.png?alt=media&token=a68feb68-b4a1-45f8-a546-ee440b0747a7"
+    url="/note-tree-in-db.png"
     title="Node trong cơ sở dữ liệu"
 >}}
 

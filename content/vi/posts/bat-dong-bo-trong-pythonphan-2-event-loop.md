@@ -26,7 +26,7 @@ Một event loop (hay một vòng lặp sự kiện) là một vòng lặp (vô 
 Hình bên dưới cho ta thấy cái nhìn cơ bản của một vòng lặp sự kiện làm việc như thế nào. Nó rất đơn giản để hiểu phải không nào :smile:
 
 {{< image 
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-ii-event-loop%2FeventLoop-full.svg?alt=media&token=981daf93-59ad-4b31-b037-1bf457100784"
+    url="/eventLoop-full.svg"
     title="Event loop"
 >}}
 
@@ -43,7 +43,7 @@ Vòng lặp sự kiện sẽ dừng chỉ khi hàng đợi này rỗng hoặc n�
 #### Làm thế nào mà vòng lặp sự kiện có thể thực thi và duy trì các task?
 
 {{< image 
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-ii-event-loop%2FUntitled%20Diagram-2.png?alt=media&token=4a7ca640-a934-4042-8188-45f26fcc5aa7"
+    url="/Untitled Diagram-2.png"
     title="Vòng lặp sự kiện với một task (coroutine)"
 >}}
 

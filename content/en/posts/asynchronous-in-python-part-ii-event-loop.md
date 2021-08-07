@@ -19,7 +19,7 @@ An event loop is a loop (finite or in-finite), which iterates through available 
 The below picture shows simple event loop. It's very simple for understanding :smile:
 
 {{< image 
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-ii-event-loop%2FeventLoop-full.svg?alt=media&token=981daf93-59ad-4b31-b037-1bf457100784"
+    url="/eventLoop-full.svg"
     title="Event loop"
 >}}
 
@@ -32,7 +32,7 @@ The event loop stopped when the queue was empty.
 #### How event loop execute and maintain tasks?
 
 {{< image 
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-ii-event-loop%2FUntitled%20Diagram-2.png?alt=media&token=4a7ca640-a934-4042-8188-45f26fcc5aa7"
+    url="/Untitled Diagram-2.png"
     title="Event loop with a task (coroutine)"
 >}}
 

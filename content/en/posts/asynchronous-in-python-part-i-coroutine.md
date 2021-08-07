@@ -27,8 +27,8 @@ Follow [Wikipedia](https://en.wikipedia.org/wiki/Asynchrony_(computer_programmin
 The below, we have some solutions for asynchronous tasks
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fasync-overview.jpg?alt=media&token=caa3405f-ce11-4b35-8266-9fb960ef02c0"
-    title="Asynchronous task ecosystem"
+    url="/async-overview.jpg"
+    title="Asynchronous ecosystem"
 >}}
 
 Notice, the python thread is the green thread, it is managed by interpreter instead of OS. Thus, Python threads aren't parallelism and I hate it.
@@ -83,7 +83,7 @@ Donald Knuth says:
 How does coroutine work?
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fsubroutine_coroutine.png?alt=media&token=17cbbd8a-1f7c-4f86-b610-e08a90fc1134"
+    url="/subroutine_coroutine.png"
     title="Subroutine vs Coroutine"
 >}}
 
@@ -97,13 +97,13 @@ __Why coroutine useful for event system?__
 
 #### Unit of works
 
-|| Process | Native thread | Green thread | Goroutine | Coroutine |
-| :-:| :-: | :-: | :-: | :-:| :-: |
-|__Memory__| ≤ 8Mb | ≤ Nx2Mb | ≥ 64Kb | ≥ 8Kb | ≥ 0Mb |
-|__OS managed__| Yes | Yes | No | No | No |
-|__Pre-emptive scheduling__| Yes | Yes | Yes | No | No |
-|__Private address space__| Yes | No | No | No | No |
-|__Parallel__| Yes | Yes | No | Yes | No |
+|                            | Process | Native thread | Green thread | Goroutine | Coroutine |
+| :------------------------: | :-----: | :-----------: | :----------: | :-------: | :-------: |
+|         __Memory__         |  ≤ 8Mb  |    ≤ Nx2Mb    |    ≥ 64Kb    |   ≥ 8Kb   |   ≥ 0Mb   |
+|       __OS managed__       |   Yes   |      Yes      |      No      |    No     |    No     |
+| __Pre-emptive scheduling__ |   Yes   |      Yes      |     Yes      |    No     |    No     |
+| __Private address space__  |   Yes   |      No       |      No      |    No     |    No     |
+|        __Parallel__        |   Yes   |      Yes      |      No      |    Yes    |    No     |
 
 
 #### How to implement coroutine from scratch?
@@ -264,7 +264,7 @@ We can see that coroutine needs a static memory namespace to save context when i
 Let's think about coroutines are segments of the program, not have private memory, not have parallel and very safe
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fco-thread.png?alt=media&token=87ad55d7-aac2-4536-ac12-ae24179f21f4"
+    url="/co-thread.png"
     title="Coroutine vs Threads"
 >}}
 
@@ -486,8 +486,8 @@ Scheduler and task in real: https://github.com/dabeaz/curio/blob/master/curio/ke
 We can use coroutines to build up a data processing system. Basically, the system was separate from logic blocks. They placed in coroutines with owned context. You can see in the below picture.
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fsimple-data-processing.png?alt=media&token=bf074587-8904-40f7-b841-ffc77dfb0b3f"
-    title="Applied coroutine for data processing"
+    url="/simple-data-processing.png"
+    title="Data processing model"
 >}}
 
 Event sources are Redis pub/sub, Kafka, RabbitMQ, user interactive, and so on.
@@ -499,8 +499,8 @@ Example: build statistic IP from access log in the webserver
 First, you need the [log data file](https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Faccess.log?alt=media&token=54c8e7de-db81-49ed-a0b8-f3dfa05c5d24)
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2FIP-statistic.png?alt=media&token=0a8c73a2-3328-4a66-84c7-340cdecbe810"
-    title="IP statistic application"
+    url="/IP-Statistic-v2.png"
+    title="Use coroutine in the thread"
 >}}
 
 
@@ -589,11 +589,11 @@ Simplify, I use threads instead of machine
 
 OK, let's redesign the above diagram
 
-{{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2FIP-Statistic-v2.png?alt=media&token=be73362c-5b12-42a2-915a-fabdb1caf234"
-    title="Combination between coroutine and threading in IP statistic application"
->}}
 
+{{< image
+    url="/IP-Statistic-v2.png"
+    title="Combine between coroutine and thread"
+>}}
 In the above diagram, I move logic into threads and I use queues as communication channels with threads.
 
 Furthermore, queues are used as a buffer if the rate of input is greater than the rate of output.
@@ -728,8 +728,9 @@ __Notice__
 
 ### 3. Scheduler for OS
 
+
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fos-scheduler.png?alt=media&token=00e4afdc-bc85-48a1-9bc9-b82003158ea7"
+    url="/os-scheduler.png"
     title="Operation system scheduler"
 >}}
 

@@ -33,7 +33,7 @@ Theo [Wikipedia](https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)
 Hình ảnh bên dưới cho chúng ta thấy một vài giải pháp cho các vấn đề về bất đồng bộ
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fasync-overview.jpg?alt=media&token=caa3405f-ce11-4b35-8266-9fb960ef02c0"
+    url="/async-overview.jpg"
     title="Hệ sinh thái của lập trình bất đồng bộ"
 >}}
 
@@ -96,7 +96,7 @@ Donald Knuth nói rằng:
 
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fsubroutine_coroutine.png?alt=media&token=17cbbd8a-1f7c-4f86-b610-e08a90fc1134"
+    url="/subroutine_coroutine.png"
     title="Subroutine vs Coroutine"
 >}}
 
@@ -110,13 +110,13 @@ __Tại sao coroutine lại hữu dụng cho event system?__
 
 #### Đơn vị làm việc
 
-|| Process | Native thread | Green thread | Goroutine | Coroutine |
-| :-:| :-: | :-: | :-: | :-:| :-: |
-|__Bộ nhớ__| ≤ 8Mb | ≤ Nx2Mb | ≥ 64Kb | ≥ 8Kb | ≥ 0Mb |
-|__Quản lí bởi OS__| Yes | Yes | No | No | No |
-|__Pre-emptive scheduling__| Yes | Yes | Yes | No | No |
-|__Không gian địa chỉ riêng__| Yes | No | No | No | No |
-|__Khả năng song song__| Yes | Yes | No | Yes | No |
+|                              | Process | Native thread | Green thread | Goroutine | Coroutine |
+| :--------------------------: | :-----: | :-----------: | :----------: | :-------: | :-------: |
+|          __Bộ nhớ__          |  ≤ 8Mb  |    ≤ Nx2Mb    |    ≥ 64Kb    |   ≥ 8Kb   |   ≥ 0Mb   |
+|      __Quản lí bởi OS__      |   Yes   |      Yes      |      No      |    No     |    No     |
+|  __Pre-emptive scheduling__  |   Yes   |      Yes      |     Yes      |    No     |    No     |
+| __Không gian địa chỉ riêng__ |   Yes   |      No       |      No      |    No     |    No     |
+|    __Khả năng song song__    |   Yes   |      Yes      |      No      |    Yes    |    No     |
 
 
 Câu hỏi là: Vậy coroutine làm việc như thế nào?
@@ -278,7 +278,7 @@ Chúng ta có thể thấy rằng, coroutine cần một không gian bộ nhớ 
 Hãy nghĩ về các coroutine như là các đoạn của một chương trình, không có bộ nhớ riêng, không thực thi song song và cực kì an toàn.
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fco-thread.png?alt=media&token=87ad55d7-aac2-4536-ac12-ae24179f21f4"
+    url="/co-thread.png"
     title="Coroutine vs Threads"
 >}}
 
@@ -501,7 +501,7 @@ Trình lập lịch và task trong các thư viện thực tế: https://github.
 Chúng ta có thể sử dụng coroutine để build một hệ thống xử lí dữ liệu. Về cơ bản, hệ thống tách biệt các khối logic nhỏ. Chúng được đặt vào các coroutine với context riêng. Bạn có thể thấy chúng trong hình bên dưới. 
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fsimple-data-processing.png?alt=media&token=bf074587-8904-40f7-b841-ffc77dfb0b3f"
+    url="/simple-data-processing.png"
     title="Mô hình xử lí dữ liệu"
 >}}
 
@@ -514,7 +514,7 @@ Ví dụ: build một bộ phân tích địa chỉ IP truy cập của một we
 Đầu tiên, bạn cần một [file dữ liệu log](https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Faccess.log?alt=media&token=54c8e7de-db81-49ed-a0b8-f3dfa05c5d24)
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2FIP-statistic.png?alt=media&token=0a8c73a2-3328-4a66-84c7-340cdecbe810"
+    url="/IP-statistic.png"
     title="Thống kê IP"
 >}}
 
@@ -605,7 +605,7 @@ Chúng ta có thể bọc các thread trong một couroutine, tại sao không?
 OK, hãy thiết kế tại cái sơ đồ nào
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2FIP-Statistic-v2.png?alt=media&token=be73362c-5b12-42a2-915a-fabdb1caf234"
+    url="/IP-Statistic-v2.png"
     title="Kết hợp coroutine và thread"
 >}}
 
@@ -744,7 +744,7 @@ __Lưu ý__
 ### 3. Bộ lập lịch cho OS
 
 {{< image
-    url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Fos-scheduler.png?alt=media&token=00e4afdc-bc85-48a1-9bc9-b82003158ea7"
+    url="/os-scheduler.png"
     title="Operation system scheduler"
 >}}
 
