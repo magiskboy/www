@@ -1,46 +1,54 @@
-const root = document.querySelector(".container");
-const bgModal = document.createElement("div");
-bgModal.classList.add("modal__bg");
-bgModal.hidden = true;
-root.appendChild(bgModal);
+window.addEventListener("load", function () {
+  const root = document.querySelector(".container");
+  const bgModal = document.createElement("div");
+  bgModal.classList.add("modal__bg");
+  bgModal.hidden = true;
+  root.appendChild(bgModal);
 
-function viewImage(el) {
-  document.body.style.overflow = "hidden";
-  const topOffset = document.documentElement.scrollTop;
-  bgModal.style.top = `${topOffset}px`;
-  bgModal.hidden = false;
+  document.getElementById("print-button").hidden = false;
 
-  const modal = document.createElement("div");
-  modal.classList.add("modal");
-  modal.style.top = `${topOffset + window.screen.height / 2.25}px`;
+  window.viewImage = function (el) {
+    document.body.style.overflow = "hidden";
+    const topOffset = document.documentElement.scrollTop;
+    bgModal.style.top = `${topOffset}px`;
+    bgModal.hidden = false;
 
-  const img = document.createElement("img");
-  img.src = el.src;
-  img.style.width = "100%";
-  img.style.maxHeight = `${window.screen.height / 1.5}px`;
-  modal.appendChild(img);
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+    modal.style.top = `${topOffset + window.screen.height / 2.25}px`;
 
-  bgModal.addEventListener("click", function () {
-    bgModal.hidden = true;
-    document.body.style.overflow = "visible";
-    modal.remove();
-  });
+    const img = document.createElement("img");
+    img.src = el.src;
+    img.style.width = "100%";
+    img.style.maxHeight = `${window.screen.height / 1.5}px`;
+    modal.appendChild(img);
 
-  root.appendChild(modal);
-}
+    bgModal.addEventListener("click", function () {
+      bgModal.hidden = true;
+      document.body.style.overflow = "visible";
+      modal.remove();
+    });
 
-function printPage() {
-  const root = document.body;
-  const oldPage = root.innerHTML;
-  const target = root.querySelector("#main article");
+    root.appendChild(modal);
+  };
 
-  // replace body with target
-  root.innerHTML = "";
-  root.appendChild(target);
-  console.log(target);
+  window.printPage = function () {
+    const root = document.body;
+    const oldPage = root.innerHTML;
+    const target = root.querySelector("#main article");
+    if (!target) {
+      alert("Nội dung này không thể download hoặc in");
+      return;
+    }
 
-  print();
+    // replace body with target
+    root.innerHTML = "";
+    root.appendChild(target);
+    console.log(target);
 
-  // undo
-  root.innerHTML = oldPage;
-}
+    print();
+
+    // undo
+    root.innerHTML = oldPage;
+  };
+});
