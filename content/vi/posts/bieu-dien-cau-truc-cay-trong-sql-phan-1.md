@@ -1,5 +1,5 @@
 ---
-title: "Biểu diễn cấu trúc cây trong cơ sở dữ liệu quan hệ - Phần 1"
+title: "Biểu diễn cấu trúc cây trong cơ sở dữ liệu quan hệ | Phần 1"
 date: 2021-05-14T07:14:00+07:00
 published: true
 tags:

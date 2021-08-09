@@ -1,5 +1,5 @@
 ---
-title: "Bất đồng bộ trong Python - Phần 2: Event loop"
+title: "Bất đồng bộ trong Python - Event loop | Phần 2"
 date: 2021-03-29T20:11:00+07:00
 published: true
 favorite: true

@@ -1,61 +1,31 @@
 theme: "anubis"
 baseUrl: "https://nkthanh.dev"
+
+languageCode: "vi-VN"
 DefaultContentLanguage: "vi"
+
 paginate: 10
 googleAnalytics: ""
+PygmentsStyle: "github"
+
+enableEmoji: true
+enableGitInfo: true
 enableRobotsTXT: true
+canonifyURLs: true
 
-languages:
-  vi:
-    title: "Nguyễn Khắc Thành"
-    params:
-      author: "Nguyễn Khắc Thành"
-      description: ""
-      dateFormat: "02-01-2006"
-    menu:
-      main:
-      - identifier: post
-        name: Bài viết
-        url: /posts
-        weight: 1
-      - identifier: resume
-        name: Tóm tắt cá nhân
-        url: /resume
-        weight: 2
-      - identifier: tags
-        name: Thẻ
-        url: /tags
-        weight: 3
-    contentDir: content/vi
-    languageCode: "vi-vn"
-    languageName: Tiếng Việt
-    weight: 1
+markup:
+  goldmark:
+    renderer:
+      unsafe: true # disable raw HTML in Markdown
 
-  # en:
-  #   title: "Nguyen Khac Thanh"
-  #   params:
-  #     author: "Nguyen Khac Thanh"
-  #     description: ""
-  #     dateFormat: "2006-01-02"
-  #   menu:
-  #     main:
-  #     - identifier: post
-  #       name: Post
-  #       title: Post
-  #       url: /posts
-  #       weight: 1
-  #     - identifier: resume
-  #       name: Resume
-  #       url: https://drive.google.com/file/d/1hsAx8-CLqpRe_UjxxMsisYcr7An0HytU/view?usp=sharing
-  #       weight: 2
-  #     - identifier: tags
-  #       name: Tags
-  #       url: /tags
-  #       weight: 3
-  #   contentDir: content/en
-  #   languageCode: "en-us"
-  #   languageName: English
-  #   weight: 2
+sitemap:
+  changefreq: monthly
+  filename: sitemap.xml
+  priority: 0.5
+
+taxonomies:
+  category: categories
+  tag: tags
 
 params:
   math: true
@@ -75,22 +45,61 @@ params:
     AuthDomain: myblog-e552f.firebaseapp.com
     MeasurementId: G-WVWZEJLY14
   social:
-  - id: github
-    name: magiskboy
-  - id: linkedin
-    name: thanh-nguyen-khac
-  - id: twitter
-    name: mag1skboy
+    - id: github
+      name: magiskboy
+    - id: linkedin
+      name: thanh-nguyen-khac
+    - id: twitter
+      name: mag1skboy
 
-markup:
-  goldmark:
-    renderer:
-      unsafe: true # disable raw HTML in Markdown
+languages:
+  vi:
+    title: "Nguyễn Khắc Thành"
+    params:
+      author: "Nguyễn Khắc Thành"
+      description: ""
+      dateFormat: "02-01-2006"
+    menu:
+      main:
+        - identifier: post
+          name: Bài viết
+          url: /posts
+          weight: 1
+        - identifier: resume
+          name: Tóm tắt bản thân
+          url: /resume
+          weight: 2
+        - identifier: tags
+          name: Thẻ
+          url: /tags
+          weight: 3
+    contentDir: content/vi
+    languageCode: "vi-vn"
+    languageName: Tiếng Việt
+    weight: 1
 
-taxonomies:
-  category: categories
-  tag: tags
-
-PygmentsStyle: "github"
-
-enableEmoji: true
+  en:
+    title: "Nguyen Khac Thanh"
+    params:
+      author: "Nguyen Khac Thanh"
+      description: ""
+      dateFormat: "2006-01-02"
+    menu:
+      main:
+        - identifier: post
+          name: Post
+          title: Post
+          url: /posts
+          weight: 1
+        - identifier: resume
+          name: Resume
+          url: /resume
+          weight: 2
+        - identifier: tags
+          name: Tags
+          url: /tags
+          weight: 3
+    contentDir: content/en
+    languageCode: "en-us"
+    languageName: English
+    weight: 2

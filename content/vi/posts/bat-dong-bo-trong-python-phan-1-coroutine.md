@@ -1,5 +1,5 @@
 ---
-title: "Bất đồng bộ trong Python - Phần 1: Coroutine"
+title: "Bất đồng bộ trong Python - Coroutine | Phần 1"
 date: 2021-03-19T08:37:00+07:00
 published: true
 favorite: true
