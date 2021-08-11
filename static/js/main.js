@@ -44,7 +44,6 @@ window.addEventListener("load", function () {
     // replace body with target
     root.innerHTML = "";
     root.appendChild(target);
-    console.log(target);
 
     print();
 
