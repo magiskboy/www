@@ -62,3 +62,36 @@ img {
 #resume #skills .skill h4 {
 	margin-bottom: 0;
 }
+
+.quote {
+  margin: 18px 0;
+  font-weight: 300;
+}
+
+.quote .authorOrTitle {
+  display: inline-flex;
+  font-style: italic;
+  padding-left: 16px;
+  align-items: center;
+}
+
+.quote .quoteContent::before,
+.quote .quoteContent::after {
+  margin: 0 5px;
+}
+
+.quote .quoteContent::before {
+  content: "“";
+}
+
+.quote .quoteContent:after {
+  content: "”";
+}
+
+.quote .authorOrTitle::before,
+.quote .authorOrTitle::after {
+  content: '—';
+  font-weight: 200;
+  font-size: 32px;
+  padding: 0 8px;
+}
