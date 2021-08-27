@@ -23,6 +23,7 @@ Tuy nhiên, trong bài viết này, tôi sẽ giới thiệu một kĩ thuật k
 ## Python Closure là gì? 
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1400/1*k09a_nOeSB7ENbnAv30alA.jpeg"
 	title="Photo by Free-Photos on Pixabay"
 >}}
@@ -42,6 +43,7 @@ Hàm `outer` được định nghĩa với hàm `inner` bên trong bản thân n
 Trong trường hợp này, hàm lồng nhau được gọi là một closure trong Python. Nếu chúng ra kiểm tra `giá trị trả về` của hàm bên ngoài, chúng ta sẽ thấy rằng giá trị trả về là một hàm.
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1038/1*WCUHtpu2rEBYySkj2jVi0Q.png"
 >}}
 
@@ -54,6 +56,7 @@ closure làm gì? Bởi vì nó trả về một hàm, chúng ta có thể chạ
 OK, chúng ta có thể thấy rằng hàm bên trong có thể truy cập các biến đã định nghĩa trong hàm bên ngoài. Thông thường, chúng ta không sử dụng closure theo cách như trên, bởi vì nó là tệ. Chúng ta thông thường muốn định nghĩa hàm khác để giữ hàm trả về bởi closure. 
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/554/1*k1yx5D8pCqsue7Vb6s8Osg.png"
 >}}
 
@@ -62,6 +65,7 @@ Vì thể, chúng ta cũng có thể nói rằng trong Python closure, chúng ta
 ## Truy cập các biến bên ngoài từ hàm bên trong
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1400/1*wF3YWhf5uXPUvnifMvz8Xg.jpeg"
 	title="Photo by igorovsyannykov on Pixabay"
 >}}
@@ -81,6 +85,7 @@ def outer():
 Trong closure bên trên, chúng ta muốn cộng thêm một vào biến bên ngoài `x` trong hàm bên trong. Tuy nhiên, nó sẽ là một công việc không dễ dàng.
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1348/1*YtdEYwPhTs3VDHSE63lnvA.png"
 >}}
 
@@ -108,12 +113,14 @@ for i in range(5):
 ```
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/786/1*9YWAhoejY9aaI7p_k1SCnQ.png"
 >}}
 
 ## Viết một hàm Fibonacci sử dụng Closure
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1400/1*BGxgXhZ6kOhbXipZ_OhMdg.jpeg"
 	title="Photo by Free-Photos on Pixabay"
 >}}
@@ -168,12 +175,14 @@ for i in range(2, 21):
 ```
 
 {{< image
+    external="true"
 	image="https://miro.medium.com/max/922/1*MFdusHsGqPuFJkNLlJpR-w.png"
 >}}
 
 ## So sánh hiệu năng
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1400/1*Aq11kSPToLaS-c4LpsnsEg.jpeg"
 	title="Photo by KahlOrr on Pixabay"
 >}}
@@ -195,6 +204,7 @@ def fib_recursion(n):
 Chúng ta có thể kiếm chứng hàm này bằng việc đưa ra chuỗi của 20 số Fibonacci.
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/500/1*2Rd5WEbX8MUFIJDH3Y9VEw.png"
 >}}
 
@@ -209,12 +219,14 @@ def fib_closure(n):
 ```
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/422/1*cgwyZ_RvQAC4LW1eob4a9g.png"
 >}}
 
 Bây giờ, hãy so sánh tốc độ.
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/764/1*wwk1xceOEHGRWApGHa_bnA.png"
 >}}
 
@@ -225,6 +237,7 @@ Ngoài ra, độ sau của đệ qui là có giới hạn. Đối với closure,
 Đây là một ví dụ việc tính 1000 số Fibonacci
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1278/1*CP_jHym64CGhY5zob8Mf-Q.png"
 >}}
 
@@ -233,6 +246,7 @@ Ngoài ra, độ sau của đệ qui là có giới hạn. Đối với closure,
 ## Những trường hợp khác của closure
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1400/1*5LREISfdTUPqkZSBjpONCg.jpeg"
 	title="Photo by HarinathR on Pixabay"
 >}}
@@ -276,6 +290,7 @@ Code trên sẽ cho chúng ta 4 hàm, cái đó sẽ phân loại học sinh th�
 Hãy kiểm chứng các hàm đó ngay bây giờ.
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/808/1*jOLfaechDiFOIyWHpy09bA.png"
 >}}
 
@@ -284,6 +299,7 @@ Rất ngăn nắp! Chỉ cần lưu ý rằng chúng ta vẫn cần định ngh�
 ## Tổng kết
 
 {{< image
+    external="true"
 	url="https://miro.medium.com/max/1400/1*mMnFxvUfqI5OnxPD_XsJjg.jpeg"
 	title="Photo by Free-Photos on Pixabay"
 >}}

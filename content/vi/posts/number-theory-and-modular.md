@@ -1,6 +1,6 @@
 ---
 title: "Number Theory and Modular"
-date: 2020-12-21T13:41:33+07:00
+date: 2019-09-17T13:41:33+07:00
 published: true
 tags:
 - math

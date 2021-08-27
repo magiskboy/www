@@ -1,7 +1,7 @@
 ---
 title: Counting
 author: Nguyen Khac Thanh
-date: 2020-12-06T10:10:17+07:00
+date: 2019-07-12T10:10:17+07:00
 published: true
 tags:
 - math
@@ -73,6 +73,7 @@ Giống như số, toán học cho bạn một số các phép toán cơ bản �
 __Phép hợp__: bao gồm tất cả các phần tử thuộc A hoặc thuộc B
 
 {{< image
+	external="true"
 	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Funion-venn.png?alt=media&token=7c302f12-ab27-485e-8de3-59374ac3fb48"
 	title="Phép hợp trong biểu đồ Venn"
 >}}
@@ -80,6 +81,7 @@ __Phép hợp__: bao gồm tất cả các phần tử thuộc A hoặc thuộc 
 __Phép giao__: tập hợp mà các phần tử thuộc cả A và B hay nôm na là các phần tử chung của A và B
 
 {{< image
+	external="true"
 	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Fintersection-venn.png?alt=media&token=a05dee0c-f2e3-4bb4-a0b7-42f09c625992"
 	title="Phép giao trong biều đồ Venn"
 >}}
@@ -87,6 +89,7 @@ __Phép giao__: tập hợp mà các phần tử thuộc cả A và B hay nôm n
 __Phép trừ__ (A — B): tập hợp gồm các phần tử thuộc A nhưng không thuộc B
 
 {{< image
+	external="true"
 	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Fdifferent-venn.png?alt=media&token=44816c2d-f823-4108-9ad4-2db2be4c33d8"
 	title="Phép trừ trong biều đồ Venn"
 >}}
@@ -97,6 +100,7 @@ Hãy ánh xạ ví dụ 3 sang ngôn ngữ toán học nhé:
 - Tập hợp các số chia hết cho 3 là B, vâỵ ta có B chứa các phần tử 3, 6, 9
 
 {{< image
+	external="true"
 	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Funion2-venn.png?alt=media&token=57b26b3f-f3f0-427d-89b3-69c32b734357"
 	token="57b26b3f-f3f0-427d-89b3-69c32b734357"
 >}}

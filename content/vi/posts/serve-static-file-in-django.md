@@ -1,6 +1,6 @@
 ---
 title: "Serve static file in Django"
-date: 2020-12-21T14:19:24+07:00
+date: 2019-02-28T14:19:24+07:00
 published: true
 tags:
 - python

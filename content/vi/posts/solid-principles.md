@@ -1,6 +1,6 @@
 ---
 title: "SOLID Principles"
-date: 2020-12-21T14:31:33+07:00
+date: 2019-08-05T14:31:33+07:00
 published: true
 tags:
 - programming
@@ -35,6 +35,7 @@ Giả sử bạn cần viết một class ConnectDatabase, bạn chỉ nên cài
 Nguyên lí này giúp lập trình viên kiểm soát tốt thiết kế và luồng hoạt động của ứng dụng, dễ dàng bảo trì, sửa lỗi cho ứng dụng.
 
 {{< image
+	external="true"
 	url="https://miro.medium.com/max/700/0*DWendOmHviffM4Au"
 	title="Photo by Andreas Wagner on Unsplash"
 >}}
@@ -49,6 +50,7 @@ Giả sử chúng ta có một class là ProductLogs, class này có chức năn
 Bằng cách áp dụng nguyên lí này, các lập trình viên dễ dang tái sử dụng code cũng như đem laị sự ổn định cho code, kiểm soát code tốt hơn.
 
 {{< image
+	external="true"
 	url="https://miro.medium.com/max/700/0*Ict0nXXku3iJPjAU"
 	title="Photo by Philipp Berndt on Unsplash"
 >}}
@@ -66,6 +68,7 @@ Nguyên lí này đã sử dụng triệt để nguyên lí kế thừa của l�
 Ta lấy một ví dụ, bạn tạo ra một class là SimpleSort có phương thức sort và sau đó boss của bạn hiệu năng của việc sắp xếp cao hơn và bạn quyết định cài đặt thuật toán quick sort. Bạn kế thừa SimpleSort và override lại phương thức sort, good job! Vậy là bạn có thuật toán mới mà không làm thay đổi behavior của class cha đó là sắp xếp.
 
 {{< image
+	external="true"
 	url="https://miro.medium.com/max/700/0*J9q6aGky0ap_si3A"
 	title="Photo by Huy Phan on Unsplash"
 >}}
@@ -82,6 +85,7 @@ Người bán hàng — HumanEmployee sẽ implement cả 2 interface này còn 
 Việc áp dụng nguyên lí này không đúng cách sẽ là hệ thống trở nên phức tạp và rối rắm nên khi áp dụng nguyên lí này, các bạn nên cân nhắc xem có nên chia hay không nhé :smile:
 
 {{< image
+	external="true"
 	url="https://miro.medium.com/max/700/0*A0t9PwrBbs4fdJUG"
 	title="Photo by John Doyle on Unsplash"
 >}}
@@ -96,6 +100,7 @@ Hãy cùng lấy ví dụ: giả sử bạn có 1 class cài đặt thuật toá
 
 
 {{< image
+	external="true"
 	url="https://miro.medium.com/max/700/0*2yWMW5cN1bJandNg"
 	title="Photo by Henry & Co. on Unsplash"
 >}}
