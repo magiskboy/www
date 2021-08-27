@@ -31,7 +31,7 @@ published: true
 	<div class="section" id="work-experiences">
 		<h4>Work experiences</h4>
 		<div class="exp">
-			<h4>06-2019 – 02-2021: <a href="https://teko.vn/">Teko Vietnam</a></h4>
+			<h4>06-2019 – present: <a href="https://teko.vn/">Teko Vietnam</a></h4>
 			<strong>Main responsibilities</strong>
 			<ul>
 				<li>High-level design, write the document and implement product management module for the E-Commerce system</li>
