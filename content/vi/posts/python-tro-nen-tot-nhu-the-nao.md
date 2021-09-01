@@ -5,7 +5,7 @@ published: true
 tags:
 - python
 categories:
-- Programming
+- Python
 author: "Nguyễn Khắc Thành"
 ---
 

@@ -7,7 +7,7 @@ tags:
 - recusive
 - closure
 categories:
-- Programming
+- Python
 author: "Nguyễn Khắc Thành"
 ---
 

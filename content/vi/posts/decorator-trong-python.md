@@ -6,7 +6,7 @@ tags:
 - python
 - design pattern
 categories:
-- Programming
+- Python
 author: "Nguyễn Khắc Thành"
 ---
 

@@ -10,7 +10,7 @@ tags:
 - asynchronous
 - coroutine
 categories:
-- Programming
+- Python
 author: "Nguyễn Khắc Thành"
 ---
 

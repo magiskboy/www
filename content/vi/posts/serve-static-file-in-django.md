@@ -9,7 +9,7 @@ tags:
 - programming
 - vi
 categories:
-- Programming
+- Web
 author: "Nguyễn Khắc Thành"
 ---
 

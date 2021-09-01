@@ -8,7 +8,7 @@ tags:
 - flask
 - local thread
 categories:
-- Programming
+- Python
 author: "Nguyễn Khắc Thành"
 ---
 
