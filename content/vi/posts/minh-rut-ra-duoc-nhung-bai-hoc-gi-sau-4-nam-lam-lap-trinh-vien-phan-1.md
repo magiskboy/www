@@ -42,7 +42,7 @@ Công nghệ mới luôn có một sức hút kì lạ đối với những lậ
 
 Những ngày đầu mình cũng từng phạm phải sai lầm này và hãy thật cảm ơn quãng thời gian mình được các giảng viên kèm cặp.
 
-Khi học về AI, thay vì sử dụng các framework như tensorflow, keras,... các thầy bắt mình viết hàm Python cho các công thức toán học, sau dần mới chỉ được sử dụng scikit-learn cho những tính toán thông kê và cuối cùng mới được sử dụng tensorflow. Với mình khi đó, các hàm xử lí AI là các công nghệ và với các thư viện, nó đã sẵn sàng.
+Khi học về AI, thay vì sử dụng các framework như tensorflow, keras,... các thầy bắt mình viết hàm Python cho các công thức toán học, sau dần mới chỉ được sử dụng scikit-learn cho những tính toán thống kê và cuối cùng mới được sử dụng tensorflow. Với mình khi đó, các hàm xử lí AI là các công nghệ và với các thư viện, nó đã sẵn sàng.
 
 Khi mình làm backend, thay vì được sử dụng các async task queue có sẵn, các thầy khuyên mình nên bắt đầu viết task queue từ thread, tcp và redis :smile:.
 
@@ -52,7 +52,7 @@ Tất nhiên có nhiều con đường để có thể hiểu rõ các công ngh
 
 #### Làm đúng thay vì làm được
 
-Mình thấy nhiều khá người mắc phải lỗi này, đó là họ cố gắng hoàn thành công việc của mình để đáp ứng yêu cầu của task (tính tạm thời) mà không quan tâm tới tính đúng đắn của toàn dự án (tính dài hạn).
+Mình thấy nhiều khá người mắc phải lỗi này, đó là họ cố gắng hoàn thành công việc của mình để đáp ứng yêu cầu của task (tính tạm thời) mà không quan tâm tới tính đúng đắn của toàn bộ dự án (tính dài hạn).
 
 Lấy ví dụ về trường hợp logging: có rất nhiều người với mục đích đơn giản là debug lỗi nên họ sẽ sử dụng các hàm để in dữ liệu thay vì dùng chức năng logging của các ngôn ngữ.
 
@@ -63,14 +63,14 @@ Tất nhiên, với mục đích của họ thì hàm in thỏa mãn vì dù s�
 
 Theo mình, những người cầu toàn thường có xu hướng mắc lỗi này nhiều hơn và mình cũng là người như vậy. Tối ưu là điều cần thiết nhưng trong công việc, bạn sẽ phải đánh đổi thời gian, sức lực của mình và của người khác để làm công việc đó. Và nếu việc đó không đem lại lợi ích rõ rệt, đó thật sự là một điều tồi tệ.
 
-Tối ưu là việc tốt nhưng trước khi tối ưu bạn nên cố gắng tìm một lí do cho nó. Hãy trả lời các câu hỏi này trước khi bạn muốn tối ưu thứ gì đó nhé:
+Tối ưu là việc tốt, nhưng trước khi tối ưu bạn nên cố gắng tìm một lí do cho nó. Hãy trả lời các câu hỏi này trước khi bạn muốn tối ưu thứ gì đó nhé:
 
 - Hệ thống đang gặp vấn đề gì? Bạn nên có đánh giá hiệu năng hoặc những báo cáo về tình trạng hiện tại của hệ thống trước khi quyết định.
 - Việc tối ưu có đem lại giá trị không?
 - Có những gì cần quan tâm khi mình tối ưu nó?
-- Nó nên có mức độ ưu tiên thế nào trong danh sách công viêc của mình?
+- Nó nên có mức độ ưu tiên thế nào trong danh sách công việc của mình?
 
-Việc tối ưu có thể đem lại nhiều bug không đáng có, nhất là khi nguồn lực của team bạn không nhiều. Nếu giá trị nó đem lại không lớn hơn chi phí bạn bỏ ra thì đó là một vụ trao đổi lỗ dành cho bạn.
+Việc tối ưu có thể làm xuất hiện nhiều bug không đáng có, nhất là khi nguồn lực của team bạn không nhiều. Nếu giá trị nó đem lại không lớn hơn chi phí bạn bỏ ra thì đó là một vụ trao đổi thua lỗ dành cho bạn.
 
 
 #### Chỉ ra ưu điểm và nhược điểm khi đề xuất giải pháp
@@ -84,7 +84,7 @@ Nếu giải pháp là những luận điểm thì việc chỉ ra ưu điểm v
 			
 #### Quy trình là cần thiết
 
-Mình thấy có khá nhiều người không thích làm việc với một quy trình phức tạp, tất nhiên không phải công ty nào cũng áp dụng được quy trình phù hợp và không phải quy trình đó sẽ happy với tất cả nhân viên, nhưng chúng ta cần nhìn nhận nó dưới con mắt khách quan hơn.
+Mình thấy có khá nhiều người không thích làm việc với một quy trình cụ thể, tất nhiên không phải công ty nào cũng áp dụng được quy trình phù hợp và không phải quy trình đó sẽ happy với tất cả nhân viên, nhưng chúng ta cần nhìn nhận nó dưới con mắt khách quan hơn.
 
 Mình là một người từng rất ghét làm việc theo quy trình như kiểu Agile hay Scrum gì đó, thú thật là tới thời điểm hiện tại mình cũng chưa hiểu được rõ nó là gì và như thế nào :smile:. Nhưng có một điều mình chắc chắn là quy trình giúp mọi người làm việc cùng nhau tốt hơn.
 
@@ -92,15 +92,15 @@ Làm sao bạn có thể đảm bảo công việc của người khác hay team
 
 Ở một công ty hay nhóm nhỏ, quy trình có thể không thực sự cần thiết vì họ có thể tin tưởng nhau, họ làm việc cạnh nhau và follow nhau hằng ngày. Nhưng khi công ty đó lớn dần lên, sự "gần gũi" đó không còn dẫn đến việc chúng ta không thể tin tưởng công việc mà người kia làm (thậm chí là cả bản thân :smile:), lúc này chúng ta cần đến một quy chuẩn nhất định.
 
-Nếu cả tôi và anh cùng làm việc theo quy trình nhất định, tôi tin kết quả của anh để tôi có thể sử  dụng vì tôi cũng làm theo quy trình đó, mọi người cũng làm theo quy trình đó và họ cũng sẽ tin tôi. Lấy ví dụ đơn giản, trong quy trình có bước test trước khi một công việc được gọi là hoàn thành và tester là người chịu trách nhiệm việc đó. Anh A hoàn thành công việc và anh B muốn sử dụng thành quả của anh A cho công việc của mình. Anh B hoàn toàn có thể tin tưởng kết quả mà anh A làm ra mặc dù 2 người có thể chưa bao giờ gặp nhau vì B tin rằng kết quả đó là đúng vì nó đã được kiểm thử trước khi đến tay mình.
+Nếu cả tôi và anh cùng làm việc theo một quy trình nhất định, tôi tin kết quả của anh để tôi có thể sử  dụng vì tôi cũng làm theo quy trình đó, mọi người cũng làm theo quy trình đó và họ cũng sẽ tin tôi. Lấy ví dụ đơn giản, trong quy trình có bước test trước khi một công việc được gọi là hoàn thành và tester là người chịu trách nhiệm việc đó. Anh A hoàn thành công việc và anh B muốn sử dụng thành quả của anh A cho công việc của mình. Anh B hoàn toàn có thể tin tưởng kết quả mà anh A làm ra mặc dù 2 người có thể chưa bao giờ gặp nhau vì B tin rằng kết quả đó là đúng vì nó đã được kiểm thử trước khi đến tay mình.
 
-Nói chung, quy trình là cần thiết và với những bạn bắt đầu sự nghiệp làm lập trình viên, hãy làm quen với nó để có một ngày làm việc bớt căng thẳng do ngoài code, các bạn còn phải quan tâm đến những thứ rườm ra khác :smile:
+Nói chung, quy trình là cần thiết và với những bạn bắt đầu sự nghiệp làm lập trình viên, hãy làm quen với nó để có một ngày làm việc bớt căng thẳng vì ngoài code, các bạn còn phải quan tâm đến những thứ rườm ra khác :smile:
 
 #### Luôn cân bằng giữa vấn đề về nghiệp vụ và kĩ thuật
 
 Thực sự, đây là vấn đề cần sự quan tâm của cả dev và các PO (product owner) vì mỗi bên có những đóng góp riêng cho sản phẩm cũng như khách hàng sử dụng sản phẩm đó.
 
-Ở môt khía cạnh nào đó, các PO luôn muốn thỏa mãn khách hàng của mình về mặt tính năng của sản phẩm thì các dev lại muốn tập trung vào mặt kĩ thuật của nó. Nhưng đời không như mơ khi khách hàng dìm PO trong các feature request còn PO thì dim dev trong bể các task về tính năng mới.
+Ở môt khía cạnh nào đó, các PO luôn muốn thỏa mãn khách hàng của mình về mặt tính năng của sản phẩm thì các dev lại muốn tập trung vào mặt kĩ thuật của nó. Nhưng đời không như mơ khi khách hàng dìm PO trong các feature request còn PO thì dìm dev trong bể các task về tính năng mới.
 
 Nếu bạn là dev, bạn nên hiểu rằng bản chất khách hàng là người trả công cho chúng ta và việc thỏa mãn họ về chất lượng và tính năng của sản phẩm là nghĩa vụ của chúng ta dù chúng ta muốn hay không.
 
