@@ -95,3 +95,44 @@ img {
   font-size: 32px;
   padding: 0 8px;
 }
+
+.export-pdf-button {
+  margin: 10px 0 0 0;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.export-pdf-button-hidden {
+  display: none;
+}
+
+@media only print {
+  body > .container > header,
+  body > .container > footer,
+  body > .container > main > div:nth-child(n+1) {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 575px) {
+  #resume #contact {
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 575px) {
+  #resume #contact {
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 575px) {
+
+}
+@media only screen and (max-width: 575px) {
+
+}
+@media only screen and (max-width: 575px) {
+
+}
+@media only screen and (max-width: 575px) {
+
+}
