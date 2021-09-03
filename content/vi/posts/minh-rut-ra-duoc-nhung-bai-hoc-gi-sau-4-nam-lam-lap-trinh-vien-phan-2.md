@@ -2,7 +2,7 @@
 title: Mình rút ra được những bài học gì sau 4 năm làm lập trình viên | Phần 2
 date: 2021-09-03T09:14:00+07:00
 author: "Nguyễn Khắc Thành"
-published: false 
+published: true 
 tags:
 - software development
 - programming
