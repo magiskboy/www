@@ -32,7 +32,6 @@ params:
   email: "nguyenkhacthanh244@gmail.com"
   avatar: "https://lh3.googleusercontent.com/a-/AOh14GiOiLUW-E3sVAQsj46HsH1l9AevQsiztJrD6UP9vg=s288-p-rw-no"
   paginationSinglePost: true
-  style: light-with-switcher
   readMore: false
   UtterancesRepo: magiskboy/www
   Firebase:
@@ -69,14 +68,10 @@ languages:
           name: Bản thân
           url: /resume
           weight: 2
-        - identifier: quote
-          name: Quote
-          url: /quotes
-          weight: 3
         - identifier: tags
           name: Thẻ
           url: /tags
-          weight: 4
+          weight: 3
     contentDir: content/vi
     languageCode: "vi-vn"
     languageName: Tiếng Việt
