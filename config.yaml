@@ -77,28 +77,28 @@ languages:
     languageName: Tiếng Việt
     weight: 1
 
-  en:
-    title: "Nguyen Khac Thanh"
-    params:
-      author: "Nguyen Khac Thanh"
-      description: ""
-      dateFormat: "2006-01-02"
-    menu:
-      main:
-        - identifier: post
-          name: Post
-          title: Post
-          url: /posts
-          weight: 1
-        - identifier: resume
-          name: Resume
-          url: /resume
-          weight: 2
-        - identifier: tags
-          name: Tags
-          url: /tags
-          weight: 3
-    contentDir: content/en
-    languageCode: "en-us"
-    languageName: English
-    weight: 2
+  # en:
+  #   title: "Nguyen Khac Thanh"
+  #   params:
+  #     author: "Nguyen Khac Thanh"
+  #     description: ""
+  #     dateFormat: "2006-01-02"
+  #   menu:
+  #     main:
+  #       - identifier: post
+  #         name: Post
+  #         title: Post
+  #         url: /posts
+  #         weight: 1
+  #       - identifier: resume
+  #         name: Resume
+  #         url: /resume
+  #         weight: 2
+  #       - identifier: tags
+  #         name: Tags
+  #         url: /tags
+  #         weight: 3
+  #   contentDir: content/en
+  #   languageCode: "en-us"
+  #   languageName: English
+  #   weight: 2
