@@ -30,7 +30,7 @@ taxonomies:
 params:
   math: true
   email: "nguyenkhacthanh244@gmail.com"
-  avatar: "https://lh3.googleusercontent.com/a-/AOh14GiOiLUW-E3sVAQsj46HsH1l9AevQsiztJrD6UP9vg=s288-p-rw-no"
+  avatar: "https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/logo.png?alt=media&token=e8489a2f-8c2a-48ca-bcbc-66aa3f355826"
   paginationSinglePost: true
   readMore: false
   UtterancesRepo: magiskboy/www
