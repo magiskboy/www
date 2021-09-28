@@ -34,6 +34,7 @@ published: true
 		<div class="exp">
 			<h4>05-2021 – nay: <a href="https://teko.vn/">Teko Việt Nam</a></h4>
 			<ul>
+			    <li>Frontend</li>
 				<li>Tối ưu và phát triển website cho các sàn thương mại điện tử như  <a href="https://vnshop.vn">VNShop</a>, <a href="https://phongvu.vn">Phong Vũ</a>, <a href="https://vinmart.com">VinMart</a>, <a href="https://meatdeli.com.vn">Meat Deli</a>,...</li>
 				<li>Thiết kế và phát triển hệ thống quản lí cấu hình storefront cho các tenant</li>
 			</ul>
@@ -41,6 +42,7 @@ published: true
 		<div class="exp">
 			<h4>06-2019 – 02-2021: <a href="https://teko.vn/">Teko Việt Nam</a></h4>
 			<ul>
+			    <li>Backend</li>
 				<li>Thiết kế, viết tài liệu kĩ thuật và triển khai mô hình quản lí sản phẩm cho hệ thống thương mại điện tử nhiều sàn</li>
 				<li>Phát triển, hỗ trợ vận hành hệ thống trên K8s</li>
 			</ul>
