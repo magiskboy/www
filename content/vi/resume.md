@@ -9,7 +9,7 @@ published: true
 ---
 
 <article id="resume">
-	<h3 class="title">Nguyen Khac Thanh</h3>
+	<h3 class="title">Nguyễn Khắc Thành</h3>
 	<div class="section" id="contact">
 		<div>
 			<p>Địa chỉ: <a target="_blank" href="https://goo.gl/maps/RMTJxcaQxWt31WiL8">Hoài Đức, Hà Nội</a></p>
