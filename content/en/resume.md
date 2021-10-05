@@ -12,7 +12,6 @@ published: true
 	<h3 class="title">Nguyen Khac Thanh</h3>
 	<div class="section" id="contact">
 		<div>
-			<p>Nationality: Vietnamese</p>
 			<p>Address: <a target="_blank" href="https://goo.gl/maps/RMTJxcaQxWt31WiL8">Hoai Duc District, Hanoi</a></p>
 			<p>Date of Birth: <time datetime="1998-04-24">April 1998</time></p>
 		</div>
@@ -32,24 +31,27 @@ published: true
 		<h4>Work experiences</h4>
 		<div class="exp">
 			<h4>06-2019 – present: <a href="https://teko.vn/">Teko Vietnam</a></h4>
-			<strong>Main responsibilities</strong>
 			<ul>
+			    <li>Frontend</li>
+                <li>Optimize and develop websites for E-Commerce platforms: <a href="https://vnshop.vn">VNShop</a>, <a href="https://phongvu.vn">Phong Vũ</a>, <a href="https://vinmart.com">VinMart</a>, <a href="https://meatdeli.com.vn">Meat Deli</a>,...</li></li>
+                <li>Design and implement storefront management system for tenants</li>
+			</ul>
+		</div>
+		<div class="exp">
+			<h4>06-2019 – 02-2021: <a href="https://teko.vn/">Teko Vietnam</a></h4>
+			<ul>
+			    <li>Backend</li>
 				<li>High-level design, write the document and implement product management module for the E-Commerce system</li>
 				<li>Maintain and support infrastructure by using Kubernetes and related tools</li>
 			</ul>
-			<strong>Description</strong>
-			<p>After 2 years, I applied to Teko Vietnam and I joined the catalog team. This is a product management system for the E-Commerce system. I have contributed to design product models and developed a microservice. My team has used Flask as the main framework. At this time, I improved skill programming and the high-level design system (data model, agile process, so on…). I also learned Docker and Kubernetes for development and deployment. By using utilities (docker, kubectl, gcloud, scaffold, telepresence …), I also understand the basic concepts and architecture of Kubernetes.</p>
 		</div>
 		<div class="exp">
 			<h4>07-2017 – 06-2019: <a href="https://www.revotech.com.vn/">Revotech</a></h4>
-			<strong>Main responsibilities</strong>
 			<ul>
 				<li>Design and develop the backend service for serving a machine learning system.</li>
 				<li>Implement a clustering algorithm for oil prediction.</li>
 				<li>Implement some machine learning algorithms that are based on papers of researchers.</li>
 			</ul>
-			<strong>Description</strong>
-			<p>In the first position, I was a backend developer for a machine learning system in the lab of the university. I and my team developed a backend system for serving machine learning models. I learned the basic software process, python, web service concept, and so on.</p>
 		</div>
 	</div>
 	<div class="section" id="projects">
@@ -65,7 +67,7 @@ published: true
 			<h4>Programming language</h4>
 			<ul>
 				<li>Python</li>
-				<li>Javascript</li>
+				<li>Javascript/Typescript</li>
 			</ul>
 		</div>
 		<div class="skill">
@@ -94,7 +96,7 @@ published: true
 			</ul>
 		</div>
 		<div class="skill">
-			<h4>Tools</h4>
+			<h4>Tools</h4>	
 			<ul>
 				<li>Linux</li>
 				<li>Docker, Kubernetes</li>
