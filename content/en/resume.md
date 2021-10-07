@@ -28,7 +28,7 @@ published: true
 		<p>I can use Linux and toolsets for development, apply basic data structures and algorithms to resolve problems (heap, link list, hash map, sort, and so on…). I use Python as the main programming language and I can improve the python program by using C/C++ or Cython. I need a good environment for self-development.</p>
 	</div>	
 	<div class="section" id="work-experiences">
-		<h4>Work experiences</h4>
+		<h4>Experiences</h4>
 		<div class="exp">
 			<h4>06-2019 – present: <a href="https://teko.vn/">Teko Vietnam</a></h4>
 			<ul>
@@ -57,8 +57,9 @@ published: true
 	<div class="section" id="projects">
 		<h4>Projects</h4>
 		<ul>
-			<li><strong>pjrpc</strong>: Async JSON-RPC framework for Python, easy to use for everyone, <a href="https://github.com/magiskboy/pjrpc">checkout</a></li>
-			<li><strong>Flask-Blog</strong>: Simple blog with OAuth2, written by Flask, <a href="https://github.com/magiskboy/flask-blog">checkout</a></li>
+			<li><strong><a href="https://github.com/magiskboy/pjrpc">pjrpc</a></strong>: Async JSON-RPC framework for Python, easy to use for everyone, <a href="https://github.com/magiskboy/pjrpc">checkout</a></li>
+			<li><strong><a href="https://github.com/magiskboy/flask-blog">Flask-Forum</a></strong>: Simple blog with OAuth2, written by Flask, <a href="https://github.com/magiskboy/flask-blog">checkout</a></li>
+			<li><strong><a href="https://github.com/magiskboy/www">www</a></strong>: Personal blog, where my share technical problems</li>
 		</ul>
 	</div>
 	<div class="section" id="skills">
@@ -76,7 +77,7 @@ published: true
 				<li>The WSGI standards as Flask, Django, or ASGI standards as FastAPI,...</li>
 				<li>The asynchronous library as asyncio, curio or gevent</li>
 				<li>asyncpg, pymysql or SQLAlchemy</li>
-				<li>ReactJS, NextJS, ExpressJS</li>
+				<li>ReactJS, NextJS, NodeJS</li>
 				<li>Webpack</li>
 			</ul>
 		</div>

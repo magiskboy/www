@@ -1,7 +1,7 @@
 ---
 title: "Flask best practice"
 date: 2020-12-23T07:33:20+07:00
-draft: true
+published: false
 ---
 
 
