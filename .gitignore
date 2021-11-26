@@ -15,6 +15,7 @@ package-lock.json
 
 ./themes/*
 public
+.DS_Store
 
 *~
 
