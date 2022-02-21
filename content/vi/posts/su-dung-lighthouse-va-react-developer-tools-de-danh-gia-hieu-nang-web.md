@@ -1,5 +1,5 @@
 ---
-title: Hướng dẫn sử dụng Lighthouse và React Developer Tools
+title: Sử dụng Lighthouse và React Developer Tools để đánh giá hiệu năng web
 date: 2022-02-12T23:32:00+07:00
 author: "Nguyễn Khắc Thành"
 published: true
