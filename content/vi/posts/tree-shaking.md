@@ -1,20 +1,25 @@
 ---
 title: "Tree Shaking"
 date: 2022-03-27T21:24:18+07:00
-draft: true
 author: Nguyễn Khắc Thành
+published: true
+tags:
+- Web
+- Optimization
+categories:
+- Programming
 ---
 
 Tree shaking là một khái niệm phổ biến trong phát triển ứng dụng web, đặc biệt là trong thời đại phát triển mạnh mẽ của các ứng dụng web ngày nay.
-Vậy tree shaking là gì và tại sao vai trò của nó lại quan trọng trong quá trình phát triển ứng dụng web?. Chúng ta cùng tìm hiểu trong nài viết này nhé :smile:.
+Vậy tree shaking là gì và tại sao vai trò của nó lại quan trọng trong quá trình phát triển ứng dụng web?. Chúng ta cùng tìm hiểu trong bài viết này nhé :smile:.
 
 <!--More-->
 
-Tại Teko, team của mình phát triển một ứng dụng web bán hàng cho nhiều khách hàng như Phong Vũ, VnShop, VinMart, ... Với việc nhiều khách hàng như vậy nên lượng feature để đáp ứng nhu cầu là rất cao, đòi hỏi codebase lớn. Và tất nhiên, bên cạnh phát triển và hoàn thiện tính năng, chúng mình còn phải tối ưu nó sao cho chúng chạy ổn định và "fast".
+Tại Teko, team của mình phát triển một ứng dụng web bán hàng cho nhiều khách hàng như Phong Vũ, VnShop, VinMart, ... Với việc nhiều khách hàng như vậy nên lượng feature để đáp ứng nhu cầu là rất cao, đòi hỏi codebase lớn. Và tất nhiên, bên cạnh phát triển và hoàn thiện tính năng, chúng mình còn phải tối ưu sao cho chúng chạy ổn định và "nhanh".
 
 Một trong những khía cạnh để mình có thể tiếp cận trong việc tối ưu chính là bundle size của sản phẩm. Một trong những công cụ giúp tụi mình phát hiện vấn đề là nhờ một số kĩ thuật đánh giá mà mình có đề cập trong bài viết [trước đây](su-dung-lighthouse-va-react-developer-tools-de-danh-gia-hieu-nang-web.md).
 
-Trước khi tối ưu vấn đề của bundle size thì người dùng phải load ít nhất 750kb dữ liệu khi vào trang web. Sau khi tối ưu, con số này giảm còn 340kb.
+Trước khi tối ưu bundle size, người dùng phải load ít nhất 750kb dữ liệu khi vào trang web. Sau khi tối ưu, con số này giảm còn 340kb.
 
 Trong bài viết này, mình sẽ đi chi tiết hơn về một kĩ thuật giúp giảm bundle size của các ứng dụng web hiện đại được gọi là **tree shaking**. Đồng thời, bài viết này sẽ lấy ví dụ thông qua Webpack, các bundler khác có thể sẽ có cách thức hoạt động hơi khác.
 
@@ -28,11 +33,11 @@ Dead code là những đoạn code bị thừa trong artifact. Chúng nên đư�
 
 ### Tree shaking hoạt động ra sao?
 
-Khi viết một ứng dụng, chúng ta thường xuyên sử dụng các dependency (hay các library). Do chúng là các thư viện phục vụ cho nhiều người nên chúng sẽ cung cấp tối đa các feature mà nó có. Điều này dẫn tới việc có những feature ứng dụng của chúng ta không cần tới nhưng chúng vẫn được bundle vào artifact bởi các bundler như Webpack.
+Khi viết một ứng dụng, chúng ta thường xuyên sử dụng các dependency (hay các library). Do chúng là các thư viện phục vụ cho nhiều người nên chúng sẽ cung cấp tối đa các feature mà nó có. Điều này dẫn tới việc có những feature chúng ta không cần tới nhưng chúng vẫn được bundle vào artifact bởi các bundler như Webpack.
 
 Bằng việc tạo ra một dependency graph, các bundler sẽ biết những đoạn code nào là dư thừa và sẽ được gỡ bỏ trong quá trình minification.
 
-Để các bundler biết được đoạn code nào thừa, các thư viện phải được cấu trúc sao cho chúng hỗ trợ được tree shaking khi bundle chạy qua chúng. Đây là mấu chốt của vấn đề mà trong phần sau của bài viết mình sẽ nói đến.
+Để các bundler biết được đoạn code nào thừa, các thư viện phải được cấu trúc sao cho chúng hỗ trợ được tree shaking khi bundler chạy qua chúng. Đây là mấu chốt của vấn đề mà trong phần sau của bài viết mình sẽ đi chi tiết hơn.
 
 ### Làm sao để kiểm tra một thư viện thực sự có thể tree shake?
 
@@ -53,7 +58,7 @@ OK, giờ chúng ta sẽ tới phần: **Làm sao để viết một thư viện
 
 ### Luôn sử dụng ES module giúp bundler có thể phát hiện dead code
 
-Có rất nhiều format trong Javascript code nhưng phổ biến và hay gặp nhất là CommonJS (CJS) và Ecma Script Modules (ESM). Đây là hai hệ thống module phổ biến của JS trong đó, CJS được sử dụng phổ biến bởi NodeJS. ESM được hỗ trợ trong các bản sau ES6 và sau này cũng được hỗ trợ bởi NodeJS nhưng không phổ biến như CJS.
+Có rất nhiều format trong Javascript code nhưng phổ biến và hay gặp nhất là CommonJS (CJS) và ECMA Script Modules (ESM). Đây là hai hệ thống module phổ biến của JS trong đó, CJS được sử dụng phổ biến bởi NodeJS. ESM được hỗ trợ trong các bản sau ES6 và sau này cũng được hỗ trợ bởi NodeJS nhưng không phổ biến như CJS.
 
 Vấn đề ở đây là: có thể import/export module ở bất kì đâu trong CJS còn ESM thì luôn phải import/export ở module scope.
 
@@ -88,14 +93,14 @@ export function foo {
 import { foo } from "./lib.js";
 ```
 
-Ngược lại, ESM có cơ chế rõ ràng trong việc import/export. Bạn chỉ có thể thực hiện import/export ở module scope nên bundler có thể thấy rõ ràng module của bạn đang sử dụng những module khác nào.
+Ngược lại, ESM có cơ chế rõ ràng trong việc import/export. Bạn chỉ có thể thực hiện import/export ở module scope nên bundler có thể thấy rõ ràng module của bạn đang sử dụng những module nào, tại thời điểm bundle.
 
 Hiện nay, đa số các thư viện JS sẽ hỗ trợ đồng thời cả 2 format ESM và CJS. Trong file **package.json**, entrypoint dành cho ESM là **module**, CJS sẽ là **main**.
 
 ```json
 {
   "main": "dist/index.cjs",
-  "module": "dist/index.js"
+  "module": "dist/index.ejs"
 }
 
 ```
@@ -109,7 +114,7 @@ Với graph ở trên, hàm **getUserAccout** là một unused export nên bundl
 
 Tóm lại, ở phần này, bạn cần nắm được:
 - ESM là điều kiện cần có để tree-shaking có thể hoạt động
-- Hãy đảm bảo, thư viện mà bạn cung cấp hỗ trợ ESM
+- Hãy đảm bảo thư viện mà bạn cung cấp hỗ trợ ESM
 - Chắc chắn thư viện mà bạn sử dụng hỗ trợ ESM khi có thể hoặc bạn sẽ không thể tree-shake :smile:
 
 ### Sử dụng side-effect optimization nếu có thể
@@ -136,7 +141,7 @@ Trong vài trường hợp, chúng ta không muốn áp dụng side-effect optim
 
 Như vậy, ta có thể thấy sideEffect hoạt động hiệu quả hơn khi nó sẽ bỏ qua toàn bộ module/file và subtree.
 
-Để hiểu hơn về 2 tối ư này, bạn cần nhớ rằng:
+Để hiểu hơn về 2 tối ưu này, bạn cần nhớ rằng:
 - sideEffects bỏ qua toàn bộ những module được import nếu không có bất kì nội dung nào của nó được sử dụng.
 - usedExports gỡ bỏ hoàn toàn những export không được sử dụng ở bất kì module nào.
 
@@ -146,3 +151,129 @@ Tóm lại, ở phần này, các bạn cần nắm những ý sau:
 - tree shaking có 2 phần: **used exports** và **side effects**
 - Side efffect hiệu quả hơn việc chỉ sử dụng **used exports**
 - Đảm bảo thư viện của bạn phải free side-effect trước khi dùng tối ưu này
+
+### Chia code thành các module nhỏ nhất có thể để tạo điều kiện cho tối ưu side-effect
+
+Việc các bundler như Webpack, Rollup hay ESBuild sẽ gom tất cả các file vào làm 1 file duy nhất. Ở khía cạnh tree-shaking, tối ưu side-effect sẽ không thể xảy ra và chẳng có module nào được loại bỏ.
+
+Hãy cùng xét ví dụ sau:
+
+```javascript
+import { isNil } from "lodash";
+
+const checkExistance = (variable) => !isNil(variable);
+
+const userAccount = {
+  name: "user account",
+};
+
+const getUserAccount = () => {
+  return userAccount;
+};
+
+const getUserPhoneNumber = () => "***********";
+
+const getUserName = () => "John Doe";
+
+export { checkExistance, getUserName, getUserPhoneNumber, getUserAccount };
+```
+
+Khi Webpack bundle, mặc dù **checkExistance** không được sử dụng nhưng **lodash** vẫn được bundle do Webpack không thể tree-shaking CJS (format của lodash).
+
+Nhưng may mắn là trong Rollup, bạn có thể cấu hình **preserveModules: true** nếu muốn giữ nguyên cấu trúc của thư viện và khi đó, lodash sẽ không được import do tối ưu side-effect sẽ cắt bỏ toàn bộ subtree của **checkExistance**
+
+{{< image
+    url="/split-modules-cjs-module-graph.svg"
+    title="Nguồn: https://blog.theodo.com"
+>}}
+
+### Code split và việc chia nhỏ code
+
+Giả sử chúng ta có 1 thư viện với 3 file như sau:
+
+```javascript
+// user-library/src/userAccount.js
+export const userAccount = {
+  name: "user account",
+};
+```
+
+```javascript
+// user-library/src/userPhoneNumber.js
+export const userPhoneNumber = {
+  number: "***********",
+};
+```
+
+```javascript
+// user-library/src/index.js
+import { userAccount } from "./userAccount";
+import { userPhoneNumber } from "./userPhoneNumber";
+
+const getUserName = () => "John Doe";
+
+export { userAccount, getUserName, userPhoneNumber };
+```
+
+Và code của application chúng ta sử dụng chúng như sau:
+
+```javascript
+// user-app/src/userService1.js
+import { userAccount } from "user-library";
+
+export const logUserAccount = () => {
+  console.log(userAccount);
+};
+```
+
+```javascript
+// user-app/src/userService2.js
+import { userPhoneNumber } from "user-library";
+
+export const logUserPhoneNumber = () => {
+  console.log(userPhoneNumber);
+};
+```
+
+```javascript
+// user-app/src/index.js
+const main = async () => {
+  const { logUserPhoneNumber } = await import("./userService2");
+  const { logUserAccount } = await import("./userService1");
+
+  logUserAccount();
+  logUserPhoneNumber();
+};
+
+main();
+```
+
+{{< image
+    url="/code-splitting-without-preserving-module-structure-graph.svg"
+    title="Nguồn: https://blog.theodo.com"
+>}}
+
+Trong trường hợp nếu chỉ sử dụng **usedExports** thì nó không thể phát hiện module nào nên được gỡ bỏ vì phương pháp này chỉ hoạt động ở module scope. Do đó, mặc dù **serviceAccount2.js** không sử dụng **userAccount** nhưng nó vẫn không được gán là unused do nó được dùng trong **serviceAccount1.js**
+
+Vậy chúng ta cần lưu ý ở đây: **Webpack không thể tree shake được các exported module trong các chunk độc lập nếu chỉ dùng phương pháp usedExports**.
+
+Nhưng nếu chúng ta sử dụng phương pháp **side-effect**, nó có thể cắt bỏ toàn bộ nhánh **userAccount.js** khi ở **serviceAccount2.js** và cắt **userPhoneNumber.js** khi ở **serviceAccount1.js**.
+
+Một cách dễ hiểu để phân biệt hai phương pháp này là: Nếu ta coi toàn bộ dependencies là một cái cây thì phương pháp **usedExports** sẽ nhìn từ lá lên trên gốc để quyết định việc có nên cắt bỏ chiếc lá đó hay không. Còn **side-effect** sẽ nhìn từ trên xuống để quyết định cắt bỏ toàn bộ subtree đó hay không.
+
+{{< image
+    url="/code-splitting-with-preserving-module-structure-graph.svg"
+    title="Nguồn: https://blog.theodo.com"
+>}}
+
+Tóm lại phần này chúng ta cần nhớ rằng: nếu trên cây, những chiếc lá càng nhỏ, khớp nối càng lỏng lẻo thì việc rung cây để cho lá rụng sẽ dễ hơn những chiếc lá lớn và có khớp nối chắc.
+
+Điều này ám chỉ những chiếc lá là module và code được chia vào các module nhỏ (lá bé) và free side-effect (khớp nối lỏng lẻo) thì càng dễ dàng cho việc tree-shaking.
+
+Vậy tóm lại qua bài viết này, các bạn cần nhớ được những ý sau:
+- luôn sử dụng những thư viện hỗ trợ chuẩn ESM khi có thể, nếu bạn thấy một đoạn code nào đó không thể tree-shaking, hãy kiểm tra lại format của nó trước tiên
+- Giữ cho code free side-effect
+- Chia code logic vào các module đủ nhỏ để dễ dàng cho việc tree-shaking
+- Sử dụng split code khi có thể, luôn luôn giữ cấu trúc code riêng lẻ khi viết thư viện
+
+Tất cả những điều trên sẽ giúp bạn có một thư viện dễ dàng tree-shaking và ứng dụng của bạn sẽ tối ưu về bundle size nhất có thể.
