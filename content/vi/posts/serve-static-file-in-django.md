@@ -9,7 +9,8 @@ tags:
 - programming
 - vi
 categories:
-- Web
+- Web development
+- Python
 author: "Nguyễn Khắc Thành"
 ---
 

@@ -7,7 +7,8 @@ tags:
 - Web
 - Optimization
 categories:
-- Programming
+- Web development
+- Javascript
 ---
 
 Tree shaking là một khái niệm phổ biến trong phát triển ứng dụng web, đặc biệt là trong thời đại phát triển mạnh mẽ của các ứng dụng web ngày nay.

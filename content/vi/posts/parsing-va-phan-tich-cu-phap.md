@@ -7,7 +7,7 @@ tags:
 - compiler
 - parser
 categories:
-- Programming
+- Programming in deep
 ---
 
 Bạn có bao giờ thắc mắc rằng tại sao các trình biên dịch như C, Java, Rust lại có thể hiểu được những file source code hay tại sao một loại cú pháp nửa JS nửa HTML lại có thể chạy được trên các trình duyệt không?

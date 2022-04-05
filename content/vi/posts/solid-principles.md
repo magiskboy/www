@@ -6,7 +6,7 @@ tags:
 - programming
 - design pattern
 categories:
-- Programming
+- Design pattern
 author: "Nguyễn Khắc Thành"
 ---
 

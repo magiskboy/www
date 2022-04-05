@@ -6,6 +6,7 @@ tags:
 - python
 categories:
 - Python
+- Javascript
 author: "Nguyễn Khắc Thành"
 ---
 

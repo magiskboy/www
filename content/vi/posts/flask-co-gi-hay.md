@@ -8,6 +8,7 @@ tags:
 - flask
 categories:
 - Python
+- Web development
 author: "Nguyễn Khắc Thành"
 ---
 

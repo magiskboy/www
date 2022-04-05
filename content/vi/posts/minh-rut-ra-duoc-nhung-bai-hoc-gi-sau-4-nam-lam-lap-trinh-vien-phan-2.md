@@ -8,7 +8,7 @@ tags:
 - programming
 - experience
 categories:
-- Programming
+- Self experience
 ---
 
 Đây là bài viết cuối cùng trong loạt bài mình chia sẻ những kinh nghiệm của bản thân trong quá trình mình trở thành một lập trình viên như bây giờ.

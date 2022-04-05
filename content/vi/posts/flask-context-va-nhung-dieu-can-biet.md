@@ -9,6 +9,7 @@ tags:
 - local thread
 categories:
 - Python
+- Web development
 author: "Nguyễn Khắc Thành"
 ---
 

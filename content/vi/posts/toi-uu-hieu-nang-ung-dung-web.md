@@ -4,11 +4,11 @@ date: 2022-02-12T23:32:00+07:00
 author: "Nguyễn Khắc Thành"
 published: false
 tags:
-- Web
-- ReactJS
-- Optimization
+- web
+- reactjs
+- optimization
 categories:
-- Programming
+- Web development
 ---
 
 Chúng ta sử dụng ứng dụng web hằng ngày và thấy rằng có những trang web thì giật lag trong khi những trang khác lại mượt mà hay có những trang thì load chậm, tốn bộ nhớ trong khi lại có những trạng lại load siêu nhanh?.

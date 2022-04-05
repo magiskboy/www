@@ -4,11 +4,11 @@ date: 2022-02-12T23:32:00+07:00
 author: "Nguyễn Khắc Thành"
 published: true
 tags:
-- Web
-- Google Lighthouse
-- React Developer Tools
+- web
+- google lighthouse
+- react developer tools
 categories:
-- Programming
+- Web development
 ---
 
 Làm sao chúng ta có thể trả lời câu hỏi: **Website này có hiệu năng cao hay thấp, nhanh hay chậm?** hay **Website này có tồn tại những vấn đề gì cần được khắc phục?**.
