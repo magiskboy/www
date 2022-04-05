@@ -68,9 +68,9 @@ languages:
           name: Bản thân
           url: /resume
           weight: 2
-        - identifier: tags
-          name: Thẻ
-          url: /tags
+        - identifier: category
+          name: Danh mục
+          url: /categories
           weight: 3
     contentDir: content/vi
     languageCode: "vi-vn"
@@ -94,9 +94,9 @@ languages:
           name: Resume
           url: /resume
           weight: 2
-        - identifier: tags
-          name: Tags
-          url: /tags
+        - identifier: category
+          name: Category
+          url: /categories
           weight: 3
     contentDir: content/en
     languageCode: "en-us"
