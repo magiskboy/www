@@ -9,6 +9,7 @@ package.json
 package-lock.json
 .publishrc
 *.sublime-workspace
+.hugo_build.lock
 
 # Firebase cache
 .firebase/
