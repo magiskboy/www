@@ -24,7 +24,7 @@
 {{ end }}
 
 {{ if eq (getenv "HUGO_ENV" ) "production" }}
-  <script defer type="text/javascript" src="/js/firebase.js"></script>
+  <script defer type="module" src="/js/firebase.js"></script>
 {{ end }}
 
 <script type="text/javascript" src="/js/main.js" defer async></script>
