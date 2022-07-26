@@ -5,10 +5,11 @@ author: "Nguyễn Khắc Thành"
 published: true
 tags:
 - web
-- google lighthouse
-- react developer tools
+- goole_lighthouse
+- react_developer_tools
 categories:
-- Web development
+- web_development
+description: "Sử dụng Lighthouse và React Developer Tools để đánh giá hiệu năng web"
 ---
 
 Làm sao chúng ta có thể trả lời câu hỏi: **Website này có hiệu năng cao hay thấp, nhanh hay chậm?** hay **Website này có tồn tại những vấn đề gì cần được khắc phục?**.

@@ -4,10 +4,11 @@ date: 2021-04-01T07:25:00+07:00
 published: true
 tags:
 - python
-- design pattern
+- design_pattern
 categories:
 - Python
 author: "Nguyễn Khắc Thành"
+description: "Decorator là một trong những design pattern phổ biến trong lập trình. Nó thật sự hữu dụng và linh hoạt trong quá trình phát triển phần mềm. Trong bài viết này, mình sẽ chia sẻ cách hoạt động và sử dụng nó trong python."
 ---
 
 Decorator là một trong những design pattern phổ biến trong lập trình. Nó thật sự hữu dụng và linh hoạt trong quá trình phát triển phần mềm. Trong bài viết này, mình sẽ chia sẻ cách hoạt động và sử dụng nó trong python, let's go.

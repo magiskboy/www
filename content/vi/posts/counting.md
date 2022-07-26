@@ -8,6 +8,7 @@ tags:
 categories:
 - Math
 author: "Nguyễn Khắc Thành"
+description: "Đếm là phương pháp toán học giúp chúng ta giải quyết khá nhiều các vấn đề trong cuộc sống hằng ngày. Đây là một phương pháp đơn giản nhưng hiệu quả mà chúng ta ít để ý tới hoặc đôi khi không nhận ra. Mở đầu về phép đếm, mình sẽ giới thiệu với các bạn về quy tắc cộng — Rule of Sum."
 ---
 
 Đếm là phương pháp toán học giúp chúng ta giải quyết khá nhiều các vấn đề trong cuộc sống hằng ngày. Đây là một phương pháp đơn giản nhưng hiệu quả mà chúng ta ít để ý tới hoặc đôi khi không nhận ra. Mở đầu về phép đếm, mình sẽ giới thiệu với các bạn về quy tắc cộng — __Rule of Sum__.

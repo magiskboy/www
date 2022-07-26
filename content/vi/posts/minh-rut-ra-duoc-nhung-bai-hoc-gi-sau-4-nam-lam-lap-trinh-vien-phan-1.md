@@ -4,11 +4,12 @@ date: 2021-09-02T01:00:00+07:00
 author: "Nguyễn Khắc Thành"
 published: true 
 tags:
-- software development
+- Self_experience
 - programming
 - experience
 categories:
-- Self experience
+- Self_experience
+description: "Bốn năm không phải là khoảng thời gian dài, nhưng nó đủ để mình cảm nhận và rút ra được những bài học mà mình muốn chia sẻ cho mọi người trong bài viết này. Đây hoàn toàn là những ý kiến cá nhân của mình và mình hi vọng nó sẽ giúp ích cho những bạn đang chuẩn bị, đã và sẽ đi trên con đường lập trình của mình."
 ---
 
 Bốn năm không phải là khoảng thời gian dài, nhưng nó đủ để mình cảm nhận và rút ra được những bài học mà mình muốn chia sẻ cho mọi người trong bài viết này. Đây hoàn toàn là những ý kiến cá nhân của mình và mình hi vọng nó sẽ giúp ích cho những bạn đang chuẩn bị, đã và sẽ đi trên con đường lập trình của mình :smile:

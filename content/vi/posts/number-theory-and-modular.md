@@ -8,6 +8,7 @@ tags:
 categories:
 - Math
 author: "Nguyễn Khắc Thành"
+description: "Lý thuyết số là một phần quan trọng giúp cho máy tính xử lí công việc nhanh hơn, tiết kiệm tài nguyên hơn. Lý thuyết số cũng là 1 phần của toán học thuần tuý. Đối tượng lý thuyết số nghiên cứu là các số nguyên đi kèm theo nó là các phép toán cũng như tính chất của chúng."
 ---
 
 Lý thuyết số là một phần quan trọng giúp cho máy tính xử lí công việc nhanh hơn, tiết kiệm tài nguyên hơn.

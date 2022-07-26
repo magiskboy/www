@@ -4,10 +4,12 @@ date: 2019-08-05T14:31:33+07:00
 published: true
 tags:
 - programming
-- design pattern
+- design_pattern
 categories:
 - Design pattern
 author: "Nguyễn Khắc Thành"
+description: "Sau khi học xong các design pattern phổ biến như Singleton, Observer hay phức tạp như MVC hay MVVP, chúng ta đều nhận ra rằng chúng đều áp dụng các nguyên lí thiết kế chung giúp hệ thống dễ dàng tái sử dụng hay bảo trì.
+Vậy các nguyên lí đó là gì? Các nguyên lí đó mang lại lợi ích gì? Và các áp dụng chúng ra sao? Mình sẽ giải đáp các thắc mắc trên trong bài viết này nhé."
 ---
 
 Sau khi học xong các design pattern phổ biến như Singleton, Observer hay phức tạp như MVC hay MVVP, chúng ta đều nhận ra rằng chúng đều áp dụng các nguyên lí thiết kế chung giúp hệ thống dễ dàng tái sử dụng hay bảo trì.

@@ -9,9 +9,11 @@ tags:
 - programming
 - vi
 categories:
-- Web development
+- web_development
 - Python
 author: "Nguyễn Khắc Thành"
+description: "Trong môi trường development, Django có một số tính năng đặc biệt mà trong production không nên sử dụng như debug. Khi deploy các app sử dụng server side rendering, các bạn sẽ rất hay gặp phải vấn đề server không serve được các static file.
+Trong bài viết này, mình sẽ hướng dẫn các bạn deploy một app Django lên production và config Nginx để server có thể serve được các static file của Django"
 ---
 
 Trong môi trường development, Django có một số tính năng đặc biệt mà trong production không nên sử dụng như debug. Khi deploy các app sử dụng server side rendering, các bạn sẽ rất hay gặp phải vấn đề server không serve được các static file.

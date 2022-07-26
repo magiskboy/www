@@ -12,6 +12,7 @@ tags:
 categories:
 - Python
 author: "Nguyễn Khắc Thành"
+description: "Một trong những khái niệm quan trọng trong lập trình là __event loop__ hay __vòng lặp sự kiện__. Thật không quá khi nói rằng, __vòng lặp sự kiện__ là trái tim của lập trình bất đồng bộ trong các ngôn ngữ như Python hay Javascript, ..."
 ---
 
 Một trong những khái niệm quan trọng trong lập trình là __event loop__ hay __vòng lặp sự kiện__. Thật không quá khi nói rằng, __vòng lặp sự kiện__ là trái tim của lập trình bất đồng bộ trong các ngôn ngữ như Python hay Javascript, ...
