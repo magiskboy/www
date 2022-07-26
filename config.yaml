@@ -28,7 +28,7 @@ taxonomies:
   tag: tags
 
 params:
-  showTaxonomies: false
+  showTaxonomies: true
   math: true
   email: "nguyenkhacthanh244@gmail.com"
   avatar: "https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/logo.png?alt=media&token=e8489a2f-8c2a-48ca-bcbc-66aa3f355826"

@@ -123,16 +123,8 @@ img {
   #resume #contact {
     flex-direction: column;
   }
-}
-@media only screen and (max-width: 575px) {
 
-}
-@media only screen and (max-width: 575px) {
-
-}
-@media only screen and (max-width: 575px) {
-
-}
-@media only screen and (max-width: 575px) {
-
+  .post-taxonomies {
+    display: none;
+  }
 }
