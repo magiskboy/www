@@ -10,12 +10,14 @@
 />
 <script
   defer
+  async
   src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"
   integrity="sha384-2BKqo+exmr9su6dir+qCw08N2ZKRucY4PrGQPPWU1A7FtlCGjmEGFqXCv5nyM5Ij"
   crossorigin="anonymous"
 ></script>
 <script
   defer
+  async
   src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/auto-render.min.js"
   integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI"
   crossorigin="anonymous"
@@ -24,7 +26,7 @@
 {{ end }}
 
 {{ if eq (getenv "HUGO_ENV" ) "production" }}
-  <script defer type="module" src="/js/firebase.js"></script>
+  <script defer async type="module" src="/js/firebase.js"></script>
 {{ end }}
 
 <script type="text/javascript" src="/js/main.js" defer async></script>

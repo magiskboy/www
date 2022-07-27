@@ -6,7 +6,7 @@
   {{ if eq $external "true" }}
     <img onclick="viewImage(this)" src="{{ $url }}" alt="{{ $title }}" />
   {{ else }}
-    <img onclick="viewImage(this)" src="/images/{{ $url }}" alt="{{ $title }}" />
+    <img onclick="viewImage(this)" src="/images{{ $url }}" alt="{{ $title }}" />
   {{ end }}
   <figcaption>{{ $title }}</figcaption>
 </figure>
