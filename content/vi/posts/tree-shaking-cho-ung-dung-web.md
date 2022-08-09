@@ -207,4 +207,13 @@ Việc giữ nguyên cấu trúc sẽ giúp developer dễ dàng hơn trong vi�
 
 Trong RollupJS, bạn có thể enable chế độ [`preserveModules`](https://rollupjs.org/guide/en/#outputpreservemodules)
 
+## 7. Hạn chế sử dụng `import * from '...'`
+
+Việc sử dụng `import * from ...` đồng nghĩa với việc bạn nói với bundler rằng bạn sẽ sử dụng toàn bộ component mà thư viện đó cung cấp mặc dù trong thực tế bạn chỉ sử dụng rất ít các component. Việc `import` như vậy là nguyên nhân phổ biến làm kích thước của ứng dụng lớn. Hãy `import` chỉ những gì bạn thật sự sử dụng như
+
+```javascript
+import useSWR from 'swr';
+import useInfinite from 'swr/infinite';
+```
+
 Vừa rồi là những king nghiệm của mình trong việc loại bỏ deadcode ra khỏi một ứng dụng web. Mình hi vọng bài viết này sẽ giúp ích phần nào cho các bạn trong việc cải thiện chất lượng của ứng dụng web.
