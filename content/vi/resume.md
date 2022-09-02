@@ -75,34 +75,29 @@ published: true
 		<div class="skill">
 			<h4>Frameworks</h4>
 			<ul>
+				<li>NodeJS, ReactJS, NextJS, ExpressJS</li>
+				<li>Webpack, RollupJS and related tools</li>
 				<li>Các python web framework dựa trên chuẩn WSGI hoặc ASGI như Django, Flask, FastAPI,...</li>
 				<li>Các thư viện bất đồng bộ như curio, gevent, dask,... và các async task queue như celery, arq, rq,...</li>
-				<li>asyncpg, pymysql or SQLAlchemy</li>
-				<li>NodeJS, ReactJS, NextJS, ExpressJS</li>
-				<li>Webpack</li>
-			</ul>
-		</div>
-		<div class="skill">
-			<h4>Hệ quả trị CSDL</h4>
-			<ul>
-				<li>MySQL</li>
-				<li>PostgresSQL</li>
+				<li>asyncpg, pymysql hoặc SQLAlchemy</li>
 			</ul>
 		</div>
 		<div class="skill">
 			<h4>Testing</h4>
 			<ul>
 				<li>Mocking</li>
-				<li>unittest, jest, react-testing-library</li>
-				<li>API testing with Postman</li>
+				<li>unittest, pytest, jest, react-testing-library</li>
+				<li>API testing với Postman</li>
 			</ul>
 		</div>
 		<div class="skill">
 			<h4>Khác</h4>
 			<ul>
-				<li>Linux</li>
-				<li>Docker, Kubernetes</li>
-				<li>OpenAPI</li>
+				<li>Linux, Docker, K8s</li>
+				<li>Phát triển, deploy ứng dụng trên môi trường K8s</li>
+				<li>Monitor ứng dụng trên Promethius, Grafana, Loki, ...</li>
+				<li>MySQL</li>
+				<li>Optimize web performance, RAID, ...</li>
 			</ul>
 		</div>
 	</div>
