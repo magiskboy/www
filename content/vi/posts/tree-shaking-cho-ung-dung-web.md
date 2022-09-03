@@ -161,7 +161,7 @@ src
    └── index.js
 ```
 
-```javascript
+```jsx
 // helpers.js
 
 export function foo() {
@@ -173,8 +173,8 @@ export function bar() {
 }
 ```
 
-```javascript
-// pages/account.js
+```jsx
+// pages/account.jsx
 
 import { foo } from '../helpers';
 
@@ -183,8 +183,8 @@ export default function Home() {
 }
 ```
 
-```javascript
-// pages/index.js
+```jsx
+// pages/index.jsx
 
 import { bar } from '../helpers';
 
