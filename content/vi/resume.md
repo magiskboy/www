@@ -100,6 +100,16 @@ published: true
 				<li>Optimize web performance, RAID, ...</li>
 			</ul>
 		</div>
+		<div>
+			<h4>Leadership</h4>
+			<ul>
+				<li>Lead team (6 thành viên)
+				<li>Tech PIC cho những EPIC đơn giản</li>
+				<li>Training cho thực tập sinh trong team</li>
+				<li>Hỗ trợ fresher và review code các thành viên</li>
+				<li>Tìm và giải quyết các vấn đề kĩ thuật phát sinh, optimize sản phẩm</li>
+			</ul>
+		</div>
 	</div>
 	<div class="section" id="educations">
 		<h4>Học vấn</h4>
