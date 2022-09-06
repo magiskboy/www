@@ -59,6 +59,12 @@ img {
 	margin-bottom: 5px;
 }
 
+#resume #work-experiences .exp h4 a {
+  opacity: 1;
+  position: inherit;
+  left: 0;
+}
+
 #resume #skills .skill h4 {
 	margin-bottom: 0;
 }
