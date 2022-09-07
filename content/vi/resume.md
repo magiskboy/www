@@ -25,7 +25,7 @@ published: true
 		<h4>Giới thiệu bản thân</h4>
 		<p>Mình học Truyền thông và Mạng máy tính tại Trường Đại học Công nghệ, Đại học Quốc Gia Hà Nội nhưng mình đã bỏ dở việc học sau 3 năm học tập, do đó mình đã không thể có tấm bằng Cử nhân. Cũng từ đây, mình dành toàn thời gian để trở thành một kĩ sư phần mềm.</p>
 		<p>Lúc rảnh rỗi, mình thường đọc sách, đọc code của các repo mình thấy thú vị trên Github hoặc học công nghệ mới. Ngoài ra, mình thỉnh thoảng nâng cao kiến thức thuật toán trên các trang lập trình thi đấu và viết blog để ôn tập kiến thức mình đang có.</p>
-		<p>Sở thích của mình là đào sâu nghiên cứu các công nghệ và áp dụng những kiến thức của bản thân để giải quyết các bài toán thực tế. Đặc biệt, mình chỉ có thể  sử dụng Linux/MacOS cho công việc (Windows là đièu không thể :smile:)</p>
+		<p>Sở thích của mình là đào sâu nghiên cứu các công nghệ và áp dụng những kiến thức của bản thân để giải quyết các bài toán thực tế.</p>
 		<p>Ngôn ngữ lập trình chính của mình là Javascript và Python. Đôi khi, trong những trường hợp cần thiết, mình cũng có thể sử dụng C/C++ hoặc Cython để cải thiện chương trình.</p>
 		<div>Kì vọng của mình là được gia nhập vào môi trường làm việc năng động, thoải mái phát triển và luôn có thử thách để bản thân mình có thể luyện tập và ngày một tốt hơn</div>
 	</div>	
@@ -104,7 +104,7 @@ published: true
 			<h4>Leadership</h4>
 			<ul>
 				<li>Lead team (6 thành viên)
-				<li>Tech PIC cho những EPIC đơn giản</li>
+				<li>Tech PIC cho những EPIC</li>
 				<li>Training cho thực tập sinh trong team</li>
 				<li>Hỗ trợ fresher và review code các thành viên</li>
 				<li>Tìm và giải quyết các vấn đề kĩ thuật phát sinh, optimize sản phẩm</li>
