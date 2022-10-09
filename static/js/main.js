@@ -1,6 +1,26 @@
 const postCssSelector = "#main article.post";
 
-window.addEventListener("load", function () {
+window.requestIdleCallback =
+  window.requestIdleCallback ||
+  function (cb) {
+    var start = Date.now();
+    return setTimeout(function () {
+      cb({
+        didTimeout: false,
+        timeRemaining: function () {
+          return Math.max(0, 50 - (Date.now() - start));
+        },
+      });
+    }, 1);
+  };
+
+window.cancelIdleCallback =
+  window.cancelIdleCallback ||
+  function (id) {
+    clearTimeout(id);
+  };
+
+function setupModal() {
   const root = document.querySelector(".container");
   const bgModal = document.createElement("div");
   bgModal.classList.add("modal__bg");
@@ -31,4 +51,15 @@ window.addEventListener("load", function () {
 
     root.appendChild(modal);
   };
+}
+
+window.addEventListener("load", function () {
+  function callback(deadline) {
+    if (deadline.timeRemaining() > 0 || deadline.didTimeout) {
+      setupModal();
+    } else {
+      window.requestIdleCallback(callback);
+    }
+  }
+  window.requestIdleCallback(callback, { timeout: 3000 });
 });
