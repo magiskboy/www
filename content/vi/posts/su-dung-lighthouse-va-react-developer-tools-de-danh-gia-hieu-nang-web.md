@@ -5,7 +5,7 @@ author: "Nguyễn Khắc Thành"
 published: true
 tags:
 - web
-- goole_lighthouse
+- google_lighthouse
 - react_developer_tools
 categories:
 - web_development
