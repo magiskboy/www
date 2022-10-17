@@ -1,0 +1,113 @@
+---
+title: "SOLID Principles"
+date: 2019-08-05T14:31:33+07:00
+published: true
+tags:
+- programming
+- design_pattern
+categories:
+- Design pattern
+author: "Nguyễn Khắc Thành"
+description: "Sau khi học xong các design pattern phổ biến như Singleton, Observer hay phức tạp như MVC hay MVVP, chúng ta đều nhận ra rằng chúng đều áp dụng các nguyên lí thiết kế chung giúp hệ thống dễ dàng tái sử dụng hay bảo trì.
+Vậy các nguyên lí đó là gì? Các nguyên lí đó mang lại lợi ích gì? Và các áp dụng chúng ra sao? Mình sẽ giải đáp các thắc mắc trên trong bài viết này nhé."
+---
+
+Sau khi học xong các design pattern phổ biến như Singleton, Observer hay phức tạp như MVC hay MVVP, chúng ta đều nhận ra rằng chúng đều áp dụng các nguyên lí thiết kế chung giúp hệ thống dễ dàng tái sử dụng hay bảo trì.
+
+Vậy các nguyên lí đó là gì? Các nguyên lí đó mang lại lợi ích gì? Và các áp dụng chúng ra sao? Mình sẽ giải đáp các thắc mắc trên trong bài viết này nhé.
+
+<!--more-->
+
+Ta có 5 nguyên lí thiết kế bắt buộc phải tuân theo khi chúng ta thiết kế ứng dụng theo hướng đối tượng, mình sẽ chia sẻ các nguyên lí trong bài viết này.
+Chúng ta có 5 nguyên lí, gọi tắt là __SOLID__
+
+* Single responsibility principle
+* Open/Close principle
+* Liskov principle
+* Interface segregation principle
+* Dependencies Inversion principle
+
+
+### Ta nói về nguyên lí đầu tiên, S — Single responsibility
+
+Hiểu nôm na nguyên lí này hướng người thiết kế đến mục tiêu là mỗi một class viết ra sẽ chỉ dùng cho 1 mục đích hay 1 nhiệm vụ cụ thể.
+
+Giả sử bạn cần viết một class ConnectDatabase, bạn chỉ nên cài đặt các phương thức phục vụ mục đích tạo kết nối tới database mà không nên cài đặt các phương thức khác như query hay đóng kết nối.
+
+Nguyên lí này giúp lập trình viên kiểm soát tốt thiết kế và luồng hoạt động của ứng dụng, dễ dàng bảo trì, sửa lỗi cho ứng dụng.
+
+{{< image
+	external="true"
+	url="https://miro.medium.com/max/700/0*DWendOmHviffM4Au"
+	title="Photo by Andreas Wagner on Unsplash"
+>}}
+
+### Nguyên lí thứ 2 là O — Open/Close principle
+
+Nguyên lí này nhắc nhở lập trình viên rằng hãy viết class có thể mở rộng mà không được phép sửa đổi các class khác.
+
+Hãy lấy ví dụ sau:
+Giả sử chúng ta có một class là ProductLogs, class này có chức năng quản lí việc log thông tin sản phẩm trên một hệ thống thương mại điện tử. Trong class ProductLogs này bạn có phương thức cài đặt thuật toán bubble sort để sắp xếp các log. Sau một thời gian, bubble sort làm chậm quá trình sắp xếp và bạn muốn thay bubble sort bằng quick sort. Thay vì sửa code trong lớp ProductLogs, bạn tạo ra 1 class mới tên QuickProductLogs kế thừa class ProductLogs với việc Override phương thức sort.
+
+Bằng cách áp dụng nguyên lí này, các lập trình viên dễ dang tái sử dụng code cũng như đem laị sự ổn định cho code, kiểm soát code tốt hơn.
+
+{{< image
+	external="true"
+	url="https://miro.medium.com/max/700/0*Ict0nXXku3iJPjAU"
+	title="Photo by Philipp Berndt on Unsplash"
+>}}
+
+### Nguyên lí thứ 3 mình sẽ nhắc tới đó là L — Liskov principle
+
+Nguyên lí Liskov nói rằng
+
+```
+Nếu class T kế thừa class P thì ta có thể thay thế các class P bằng class T sao cho logic chương trình không bị thay đổi.
+```
+
+Nguyên lí này đã sử dụng triệt để nguyên lí kế thừa của lập trình hướng đối tượng. Các bạn khi tạo ra một class kế thừa một class khác, các bạn chỉ nên mở rộng mà không nên thay đổi behavior của class cha.
+
+Ta lấy một ví dụ, bạn tạo ra một class là SimpleSort có phương thức sort và sau đó boss của bạn hiệu năng của việc sắp xếp cao hơn và bạn quyết định cài đặt thuật toán quick sort. Bạn kế thừa SimpleSort và override lại phương thức sort, good job! Vậy là bạn có thuật toán mới mà không làm thay đổi behavior của class cha đó là sắp xếp.
+
+{{< image
+	external="true"
+	url="https://miro.medium.com/max/700/0*J9q6aGky0ap_si3A"
+	title="Photo by Huy Phan on Unsplash"
+>}}
+
+### Nguyên lí tiếp theo sẽ là I — Interface segregation principle
+
+Nguyên lí này muốn chúng ta chia một task thành các task nhỏ hơn, tránh việc một class phải cài đặt thừa chức năng mà nó đảm nhiệm
+
+Ta cùng lấy ví dụ về nguyên lí này. Giả sử một cửa hàng có cả nhân viên bán hàng và máy bán hàng tự động. Người nhân viên thì có các hành vi như ăn, ngủ, thể dục, kiểm hàng, tính tiền và thu tiền. Bên cạnh đó, máy bán hàng thì chỉ có các hành vi kiểm hàng, tính tiền và thu tiền. Right?. Như vậy nếu bạn tạo ra 1 interface là IEmployee bao gồm các phương thức ăn, ngủ, thể dục, kiểm hàng, tính tiền và thu tiền thì máy bán hàng phải implement các phương thức không cần thiết như ăn, ngủ, thể dục.
+
+Thay vào đó, ta sẽ có thiết kế tốt hơn bằng việc chia IEmployee thành IHuman gồm các phương thức ăn, ngủ, thể dục và IEmployee gồm kiểm hàng, tính tiền và thu tiền.
+Người bán hàng — HumanEmployee sẽ implement cả 2 interface này còn máy bán hàng — MachineEmployee sẽ chỉ implement interface thứ 2.
+
+Việc áp dụng nguyên lí này không đúng cách sẽ là hệ thống trở nên phức tạp và rối rắm nên khi áp dụng nguyên lí này, các bạn nên cân nhắc xem có nên chia hay không nhé :smile:
+
+{{< image
+	external="true"
+	url="https://miro.medium.com/max/700/0*A0t9PwrBbs4fdJUG"
+	title="Photo by John Doyle on Unsplash"
+>}}
+
+### Nguyên lí cuối cùng mình sẽ giới thiệu đó là D — Dependencie Inversion principle
+
+Nguyên lí này nói rằng, các cài đặt chỉ phụ thuộc vào các bên trừu tượng (high level) hơn nó và không phụ thuộc vào các cài đặt cụ thể.
+
+Nôm na là khi kế thừa, các class cụ thể sẽ chỉ kế thừa từ abstract class hoặc implement interface mà không kế thừa từ class được cài đặt cụ thể.
+
+Hãy cùng lấy ví dụ: giả sử bạn có 1 class cài đặt thuật toán ShellSort và bạn muốn tăng hiệu năng ứng dụng bằng thuật toán QuickSort. Bạn không nên kế thừa từ ShellSort mà hay tạo ra một interface ISort và cả ShellSort và QuickSort implement ISort, như vậy thiết kế của bạn trông rất clear và code sẽ dễ hiểu cũng như mở rộng, hãy thử và cảm nhận :)).
+
+
+{{< image
+	external="true"
+	url="https://miro.medium.com/max/700/0*2yWMW5cN1bJandNg"
+	title="Photo by Henry & Co. on Unsplash"
+>}}
+
+Việc áp dụng các nguyên lí không chỉ giúp code tái sử dụng, dễ sửa chữa và bảo trì, nó còn là ngôn ngữ chung giúp các thành viên trong team dễ dàng trao đổi vào hiểu code của nhau.
+
+
+Mình sẽ kết thúc bài viết ở đây. Hi vọng bài viết sẽ giúp mọi người có cái nhìn cơ bản về SOLID.
