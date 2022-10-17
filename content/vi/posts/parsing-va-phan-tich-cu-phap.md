@@ -8,6 +8,7 @@ tags:
 - parser
 categories:
 - Programming_in_deep
+- Programming in deep
 description: "Bạn có bao giờ thắc mắc rằng tại sao các trình biên dịch như C, Java, Rust lại có thể hiểu được những file source code hay tại sao một loại cú pháp nửa JS nửa HTML lại có thể chạy được trên các trình duyệt không?
 Bạn có bao giờ tự hỏi làm thế nào mà JS lại có nhiều biến thể như vậy và các công cụ như Typescript hay Babel lại có thể làm cho những đoạn code React, Typescript lại có thể chạy được trên trình duyệt."
 ---

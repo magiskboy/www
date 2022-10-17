@@ -5,6 +5,7 @@ published: true
 tags:
 - programming
 - design_pattern
+- design pattern
 categories:
 - Design pattern
 author: "Nguyễn Khắc Thành"

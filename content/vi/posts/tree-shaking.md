@@ -9,6 +9,7 @@ tags:
 categories:
 - web_development
 - Javascript
+- Web development
 description: "Tree shaking là một khái niệm phổ biến trong phát triển ứng dụng web, đặc biệt là trong thời đại phát triển mạnh mẽ của các ứng dụng web ngày nay.
 Vậy tree shaking là gì và tại sao vai trò của nó lại quan trọng trong quá trình phát triển ứng dụng web?. Chúng ta cùng tìm hiểu trong bài viết này nhé."
 ---

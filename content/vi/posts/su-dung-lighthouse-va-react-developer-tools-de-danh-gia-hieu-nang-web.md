@@ -7,8 +7,11 @@ tags:
 - web
 - google_lighthouse
 - react_developer_tools
+- google lighthouse
+- react developer tools
 categories:
 - web_development
+- Web development
 description: "Sử dụng Lighthouse và React Developer Tools để đánh giá hiệu năng web"
 ---
 

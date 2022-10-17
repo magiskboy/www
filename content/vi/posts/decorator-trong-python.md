@@ -5,6 +5,7 @@ published: true
 tags:
 - python
 - design_pattern
+- design pattern
 categories:
 - Python
 author: "Nguyễn Khắc Thành"
