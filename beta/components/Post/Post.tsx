@@ -12,7 +12,7 @@ const Post: React.FC<PostProps> = ({ children, meta }) => {
         <div className={style.heading}>
           <h1>{meta.title}</h1>
           <DateTime
-            value={meta.date}
+            value={typeof meta.date === 'string' ? new Date(meta.date) : meta.date}
             style={{
               color: "gray",
               fontSize: "0.9rem",
@@ -31,11 +31,13 @@ export default Post;
 
 interface PostProps {
   children: React.ReactNode;
-  meta: Meta & Record<string, any>;
+  meta: Meta;
 }
 
 export interface Meta {
   title: string;
-  description: string;
-  date: Date;
+  date: string | Date;
+  tags?: string[];
+  categories?: string[];
+  description?: string;
 }

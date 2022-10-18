@@ -14,10 +14,6 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500&display=swap"
           rel="stylesheet"
         />
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/dracula-prism/dist/css/dracula-prism.css"
-        />
       </Head>
       <body>
         <Main />

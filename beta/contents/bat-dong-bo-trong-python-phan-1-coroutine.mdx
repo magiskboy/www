@@ -1,23 +1,19 @@
-import Image from "components/Image";
-import Post from "components/Post";
-import Table from "components/Table";
-
-import asyncOverviewImage from "static/images/async-overview.jpg";
-import ipStatistic from "static/images/IP-statistic.png";
-import ipStatistic2 from "static/images/IP-Statistic-v2.png";
-import subroutineCoroutine from "static/images/subroutine_coroutine.png";
-import coThread from "static/images/co-thread.png";
-import simpleDataProcessing from "static/images/simple-data-processing.png";
-import osSched from "static/images/os-scheduler.png";
-
-export const meta = {
-  title: "Bất đồng bộ trong Python - Coroutine | Phần 1",
-  date: new Date("2021-03-19T08:37:00+07:00"),
-  tags: ["python", "programming", "network", "asynchronous", "coroutine"],
-  categories: ["Python"],
-  description:
-    "Bất đồng bộ là một khái niệm rất hay gặp trong các ngôn ngữ lập trình như Javascript, Kotlin hay Python. Đặc biệt, các lập trình viên làm việc nhiều với networking như các web developer thường xuyên phải làm việc với khái niệm này. Trong bài viết này, mình sẽ giải thích một trong các thành phần cấu tạo nên hệ sinh thái async programming trong Python và tất nhiên, nó cũng mang tư tưởng này lên một số ngôn ngữ khác.",
-};
+---
+title: "Bất đồng bộ trong Python - Coroutine | Phần 1"
+date: 2021-03-19T08:37:00+07:00
+published: true
+favorite: true
+tags:
+- python
+- programming
+- network
+- asynchronous
+- coroutine
+categories:
+- Python
+author: "Nguyễn Khắc Thành"
+description: "Bất đồng bộ là một khái niệm rất hay gặp trong các ngôn ngữ lập trình như Javascript, Kotlin hay Python. Đặc biệt, các lập trình viên làm việc nhiều với networking như các web developer thường xuyên phải làm việc với khái niệm này. Trong bài viết này, mình sẽ giải thích một trong các thành phần cấu tạo nên hệ sinh thái async programming trong Python và tất nhiên, nó cũng mang tư tưởng này lên một số ngôn ngữ khác."
+---
 
 ### Mục tiêu
 
@@ -35,7 +31,7 @@ Theo [Wikipedia](<https://en.wikipedia.org/wiki/Asynchrony_(computer_programming
 Hình ảnh bên dưới cho chúng ta thấy một vài giải pháp cho các vấn đề về bất đồng bộ
 
 <Image
-  src={asyncOverviewImage}
+  src="/images/async-overview.jpg"
   title="Hệ sinh thái của lập trình bất đồng bộ"
 />
 
@@ -98,7 +94,7 @@ Donald Knuth nói rằng:
 
 Đúng vậy, tổng quát hoá, các hàm bình thường chúng ta hay sử dụng (hàm bị giải phóng context sau khi thoát khỏi hàm) là trường hợp đặc biệt của coroutine - nơi đó context có thể được giữ lại khi nó được tạm dùng.
 
-<Image src={subroutineCoroutine} title="Subroutine vs Coroutine" />
+<Image src="/images/subroutine_coroutine.png" title="Subroutine vs Coroutine" />
 
 **Tại sao coroutine lại hữu dụng cho event system?**
 
@@ -287,7 +283,7 @@ Chúng ta có thể thấy rằng, coroutine cần một không gian bộ nhớ 
 
 Hãy nghĩ về các coroutine như là các đoạn của một chương trình, không có bộ nhớ riêng, không thực thi song song và cực kì an toàn.
 
-<Image src={coThread} title="Coroutine vs Thread" />
+<Image src="/images/co-thread.png" title="Coroutine vs Thread" />
 
 Coroutine giảm các lỗi do xử lí đa tiến trình (đa luồng) gây ra và mình nghĩ nó là giải pháp tốt nhất cho các task liên quan đến networking bởi nó chỉ tồn tại trong 1 tiến trình.
 
@@ -506,7 +502,7 @@ Trình lập lịch và task trong các thư viện thực tế: [Kernal curio](
 
 Chúng ta có thể sử dụng coroutine để build một hệ thống xử lí dữ liệu. Về cơ bản, hệ thống tách biệt các khối logic nhỏ. Chúng được đặt vào các coroutine với context riêng. Bạn có thể thấy chúng trong hình bên dưới.
 
-<Image src={simpleDataProcessing} title="Mô hình xử lí dữ liệu" />
+<Image src="/images/simple-data-processing.png" title="Mô hình xử lí dữ liệu" />
 
 Event source có thể là Redis pub/sub, Kafka, RabbitMQ hoặc các tương tác người dùng,...
 
@@ -516,7 +512,7 @@ Ví dụ: build một bộ phân tích địa chỉ IP truy cập của một we
 
 Đầu tiên, bạn cần một [file dữ liệu log](https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/asynchronous-in-python-part-i-coroutine%2Faccess.log?alt=media&token=54c8e7de-db81-49ed-a0b8-f3dfa05c5d24)
 
-<Image src={ipStatistic} title="Thống kê IP" />
+<Image src="/images/IP-statistic.png" title="Thống kê IP" />
 
 ```python
 def coroutine(f):
@@ -603,7 +599,7 @@ Chúng ta có thể bọc các thread trong một couroutine, tại sao không?
 
 OK, hãy thiết kế tại cái sơ đồ nào
 
-<Image src={ipStatistic2} title="Kết hợp coroutine và thread" />
+<Image src="/images/IP-Statistic-v2.png" title="Kết hợp coroutine và thread" />
 
 Trong sơ đồ trên, mình chuyển các logic vào trong các thread và sử dụng hàng đợi như là kênh giao tiếp với các thread.
 
@@ -739,7 +735,7 @@ Mình cho các bạn gợi ý, hay thêm câu lệnh `sleep` trước câu lện
 
 ### 3. Bộ lập lịch cho OS
 
-<Image src={osSched} title="Operation system scheduler" />
+<Image src="/images/os-scheduler.png" title="Operation system scheduler" />
 
 Khi một câu lệnh trong một task `hit trap`, task sẽ trả lại quyền điều khiển cho OS và OS thực thi lệnh hoặc chuyển quyền điều khiển cho task khác trong hàng đợi.
 
