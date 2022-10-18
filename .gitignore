@@ -13,6 +13,8 @@ package-lock.json
 # Firebase cache
 .firebase/
 
+beta/out/
+
 ./themes/*
 public
 .DS_Store

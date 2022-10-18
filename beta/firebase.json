@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "public": "out",
+    "headers": [
+      {
+        "source": "**/*.@(js|css|png|svg|jpg|jpeg)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
+      }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
