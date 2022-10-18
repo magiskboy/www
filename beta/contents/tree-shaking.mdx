@@ -13,11 +13,6 @@ description: "Tree shaking là một khái niệm phổ biến trong phát tri�
 Vậy tree shaking là gì và tại sao vai trò của nó lại quan trọng trong quá trình phát triển ứng dụng web?. Chúng ta cùng tìm hiểu trong bài viết này nhé."
 ---
 
-Tree shaking là một khái niệm phổ biến trong phát triển ứng dụng web, đặc biệt là trong thời đại phát triển mạnh mẽ của các ứng dụng web ngày nay.
-Vậy tree shaking là gì và tại sao vai trò của nó lại quan trọng trong quá trình phát triển ứng dụng web?. Chúng ta cùng tìm hiểu trong bài viết này nhé :smile:.
-
-<!--More-->
-
 Tại Teko, team của mình phát triển một ứng dụng web bán hàng cho nhiều khách hàng như Phong Vũ, VnShop, VinMart, ... Với việc nhiều khách hàng như vậy nên lượng feature để đáp ứng nhu cầu là rất cao, đòi hỏi codebase lớn. Và tất nhiên, bên cạnh phát triển và hoàn thiện tính năng, chúng mình còn phải tối ưu sao cho chúng chạy ổn định và "nhanh".
 
 Một trong những khía cạnh để mình có thể tiếp cận trong việc tối ưu chính là bundle size của sản phẩm. Một trong những công cụ giúp tụi mình phát hiện vấn đề là nhờ một số kĩ thuật đánh giá mà mình có đề cập trong bài viết [trước đây](su-dung-lighthouse-va-react-developer-tools-de-danh-gia-hieu-nang-web.md).
@@ -50,10 +45,10 @@ Có hai điều bạn cần lưu ý là:
 - Tree shaking chỉ xaỷ ra ở code application, không phải ở code library. Vì chỉ ở application, bundler mới biết đâu là đoạn code được sử dụng.
 - Thư viện nên đảm bảo khả năng tree shake cho bundler sau này.
 
-{{< image
-    url="/simple-export-module-graph.svg"
+<Image
+    src="/simple-export-module-graph.svg"
     title="Nguồn: https://blog.theodo.com"
->}}
+/>
 
 Trong hình trên, khi tree shaking hoạt động, hàm **getUserPhoneNumber** sẽ bị gỡ khỏi bundle file.
 
@@ -108,10 +103,10 @@ Hiện nay, đa số các thư viện JS sẽ hỗ trợ đồng thời cả 2 f
 
 ```
 
-{{< image
-    url="/esmodules-module-graph.svg"
+<Image
+    src="/esmodules-module-graph.svg"
     title="Nguồn: https://blog.theodo.com"
->}}
+/>
 
 Với graph ở trên, hàm **getUserAccout** là một unused export nên bundler có thể sẽ gỡ bỏ **userAccount.js** file ra khỏi bundle. Điều này chưa chắc đã đúng, cùng tìm hiểu ở phần sau nhé :smile:
 
@@ -185,10 +180,10 @@ Khi Webpack bundle, mặc dù **checkExistance** không được sử dụng nh�
 
 Nhưng may mắn là trong Rollup, bạn có thể cấu hình **preserveModules: true** nếu muốn giữ nguyên cấu trúc của thư viện và khi đó, lodash sẽ không được import do tối ưu side-effect sẽ cắt bỏ toàn bộ subtree của **checkExistance**
 
-{{< image
-    url="/split-modules-cjs-module-graph.svg"
+<Image
+    src="/split-modules-cjs-module-graph.svg"
     title="Nguồn: https://blog.theodo.com"
->}}
+/>
 
 ### Code split và việc chia nhỏ code
 
@@ -251,10 +246,10 @@ const main = async () => {
 main();
 ```
 
-{{< image
-    url="/code-splitting-without-preserving-module-structure-graph.svg"
+<Image
+    src="/code-splitting-without-preserving-module-structure-graph.svg"
     title="Nguồn: https://blog.theodo.com"
->}}
+/>
 
 Trong trường hợp nếu chỉ sử dụng **usedExports** thì nó không thể phát hiện module nào nên được gỡ bỏ vì phương pháp này chỉ hoạt động ở module scope. Do đó, mặc dù **serviceAccount2.js** không sử dụng **userAccount** nhưng nó vẫn không được gán là unused do nó được dùng trong **serviceAccount1.js**
 
@@ -264,10 +259,10 @@ Nhưng nếu chúng ta sử dụng phương pháp **side-effect**, nó có thể
 
 Một cách dễ hiểu để phân biệt hai phương pháp này là: Nếu ta coi toàn bộ dependencies là một cái cây thì phương pháp **usedExports** sẽ nhìn từ lá lên trên gốc để quyết định việc có nên cắt bỏ chiếc lá đó hay không. Còn **side-effect** sẽ nhìn từ trên xuống để quyết định cắt bỏ toàn bộ subtree đó hay không.
 
-{{< image
-    url="/code-splitting-with-preserving-module-structure-graph.svg"
+<Image
+    src="/code-splitting-with-preserving-module-structure-graph.svg"
     title="Nguồn: https://blog.theodo.com"
->}}
+/>
 
 Tóm lại phần này chúng ta cần nhớ rằng: nếu trên cây, những chiếc lá càng nhỏ, khớp nối càng lỏng lẻo thì việc rung cây để cho lá rụng sẽ dễ hơn những chiếc lá lớn và có khớp nối chắc.
 

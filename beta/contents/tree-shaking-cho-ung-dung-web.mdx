@@ -13,10 +13,6 @@ categories:
 description: "Tree-shaking là một phương pháp phổ biến để tối ưu ứng dụng web. Mục đích của phương pháp này là loại bỏ các deadcode ra khỏi ứng dụng web, giúp ứng dụng của bạn có thể download và chạy dưới trình duyệt được nhanh và mượt mà hơn. Bài viết này sẽ không đi sâu vào chi tiết kĩ thuật mà chỉ trình bày những ý chính, giúp mọi người có một cheatsheet căn bản trước khi thực hiện eliminate deadcode. Còn nếu bạn muốn có cái nhìn chi tiết hơn, bạn có thể đọc [bài viết trước](tree-shaking.md) của mình nhé."
 ---
 
-Tree shaking là một phương pháp phổ biến để tối ưu ứng dụng web. Mục đích của phương pháp này là loại bỏ các deadcode ra khỏi ứng dụng web, giúp ứng dụng của bạn có thể download và chạy dưới trình duyệt được nhanh và mượt mà hơn. Bài viết này sẽ không đi sâu vào chi tiết kĩ thuật mà chỉ trình bày những ý chính, giúp mọi người có một cheatsheet căn bản trước khi thực hiện eliminate deadcode. Còn nếu bạn muốn có cái nhìn chi tiết hơn, bạn có thể đọc [bài viết trước](tree-shaking.md) của mình nhé. OK, let's go!!! 
-
-<!--More-->
-
 ## 1. Viết code và sử dụng các thư viện hỗ trợ định dạng ESModule thay cho CommonJS
 
 Đây là điều cơ bản và dễ thực hiện nhất để ứng dụng của bạn có thể được tree shake một cách hiệu quả. Code javascript có hai loại định dạng phổ biến là CommonJS và ESModule. Mọi người chỉ cần nhớ rằng: **các bundle không thể tree shake nếu code có định dạng là CommonJS**.

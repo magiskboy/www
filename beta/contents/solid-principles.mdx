@@ -12,12 +12,6 @@ description: "Sau khi học xong các design pattern phổ biến như Singleton
 Vậy các nguyên lí đó là gì? Các nguyên lí đó mang lại lợi ích gì? Và các áp dụng chúng ra sao? Mình sẽ giải đáp các thắc mắc trên trong bài viết này nhé."
 ---
 
-Sau khi học xong các design pattern phổ biến như Singleton, Observer hay phức tạp như MVC hay MVVP, chúng ta đều nhận ra rằng chúng đều áp dụng các nguyên lí thiết kế chung giúp hệ thống dễ dàng tái sử dụng hay bảo trì.
-
-Vậy các nguyên lí đó là gì? Các nguyên lí đó mang lại lợi ích gì? Và các áp dụng chúng ra sao? Mình sẽ giải đáp các thắc mắc trên trong bài viết này nhé.
-
-<!--more-->
-
 Ta có 5 nguyên lí thiết kế bắt buộc phải tuân theo khi chúng ta thiết kế ứng dụng theo hướng đối tượng, mình sẽ chia sẻ các nguyên lí trong bài viết này.
 Chúng ta có 5 nguyên lí, gọi tắt là __SOLID__
 
@@ -36,11 +30,10 @@ Giả sử bạn cần viết một class ConnectDatabase, bạn chỉ nên cài
 
 Nguyên lí này giúp lập trình viên kiểm soát tốt thiết kế và luồng hoạt động của ứng dụng, dễ dàng bảo trì, sửa lỗi cho ứng dụng.
 
-{{< image
-	external="true"
-	url="https://miro.medium.com/max/700/0*DWendOmHviffM4Au"
+<Image
+	src="https://miro.medium.com/max/700/0*DWendOmHviffM4Au"
 	title="Photo by Andreas Wagner on Unsplash"
->}}
+/>
 
 ### Nguyên lí thứ 2 là O — Open/Close principle
 
@@ -51,11 +44,10 @@ Giả sử chúng ta có một class là ProductLogs, class này có chức năn
 
 Bằng cách áp dụng nguyên lí này, các lập trình viên dễ dang tái sử dụng code cũng như đem laị sự ổn định cho code, kiểm soát code tốt hơn.
 
-{{< image
-	external="true"
-	url="https://miro.medium.com/max/700/0*Ict0nXXku3iJPjAU"
+<Image
+	src="https://miro.medium.com/max/700/0*Ict0nXXku3iJPjAU"
 	title="Photo by Philipp Berndt on Unsplash"
->}}
+/>
 
 ### Nguyên lí thứ 3 mình sẽ nhắc tới đó là L — Liskov principle
 
@@ -69,11 +61,10 @@ Nguyên lí này đã sử dụng triệt để nguyên lí kế thừa của l�
 
 Ta lấy một ví dụ, bạn tạo ra một class là SimpleSort có phương thức sort và sau đó boss của bạn hiệu năng của việc sắp xếp cao hơn và bạn quyết định cài đặt thuật toán quick sort. Bạn kế thừa SimpleSort và override lại phương thức sort, good job! Vậy là bạn có thuật toán mới mà không làm thay đổi behavior của class cha đó là sắp xếp.
 
-{{< image
-	external="true"
-	url="https://miro.medium.com/max/700/0*J9q6aGky0ap_si3A"
+<Image
+	src="https://miro.medium.com/max/700/0*J9q6aGky0ap_si3A"
 	title="Photo by Huy Phan on Unsplash"
->}}
+/>
 
 ### Nguyên lí tiếp theo sẽ là I — Interface segregation principle
 
@@ -86,11 +77,10 @@ Người bán hàng — HumanEmployee sẽ implement cả 2 interface này còn 
 
 Việc áp dụng nguyên lí này không đúng cách sẽ là hệ thống trở nên phức tạp và rối rắm nên khi áp dụng nguyên lí này, các bạn nên cân nhắc xem có nên chia hay không nhé :smile:
 
-{{< image
-	external="true"
-	url="https://miro.medium.com/max/700/0*A0t9PwrBbs4fdJUG"
+<Image
+	src="https://miro.medium.com/max/700/0*A0t9PwrBbs4fdJUG"
 	title="Photo by John Doyle on Unsplash"
->}}
+/>
 
 ### Nguyên lí cuối cùng mình sẽ giới thiệu đó là D — Dependencie Inversion principle
 
@@ -101,11 +91,10 @@ Nôm na là khi kế thừa, các class cụ thể sẽ chỉ kế thừa từ a
 Hãy cùng lấy ví dụ: giả sử bạn có 1 class cài đặt thuật toán ShellSort và bạn muốn tăng hiệu năng ứng dụng bằng thuật toán QuickSort. Bạn không nên kế thừa từ ShellSort mà hay tạo ra một interface ISort và cả ShellSort và QuickSort implement ISort, như vậy thiết kế của bạn trông rất clear và code sẽ dễ hiểu cũng như mở rộng, hãy thử và cảm nhận :)).
 
 
-{{< image
-	external="true"
-	url="https://miro.medium.com/max/700/0*2yWMW5cN1bJandNg"
+<Image
+	src="https://miro.medium.com/max/700/0*2yWMW5cN1bJandNg"
 	title="Photo by Henry & Co. on Unsplash"
->}}
+/>
 
 Việc áp dụng các nguyên lí không chỉ giúp code tái sử dụng, dễ sửa chữa và bảo trì, nó còn là ngôn ngữ chung giúp các thành viên trong team dễ dàng trao đổi vào hiểu code của nhau.
 

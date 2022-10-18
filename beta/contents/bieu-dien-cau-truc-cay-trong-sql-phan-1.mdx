@@ -11,20 +11,16 @@ categories:
 description: "Cây là một cấu trúc dữ liệu phổ biến và có ứng dụng rất nhiều để việc giải quyết các vấn đề trong máy tính. Để biểu diễn và cài đặt cây trong bộ nhớ trong khá đơn giản. Vậy việc biểu diễn cây trong cơ sở dữ liệu như thế nào, có khác biệt gì so với khi cài đặt trong bộ nhớ trong, chúng ta cùng tìm hiểu nhé."
 ---
 
-Cây là một cấu trúc dữ liệu phổ biến và có ứng dụng rất nhiều để việc giải quyết các vấn đề trong máy tính. Để biểu diễn và cài đặt cây trong bộ nhớ trong khá đơn giản. Vậy việc biểu diễn cây trong cơ sở dữ liệu như thế nào, có khác biệt gì so với khi cài đặt trong bộ nhớ trong, chúng ta cùng tìm hiểu nhé.
-
-<!--more-->
-
 ### Cấu trúc cây
 
 Sau đây là định nghĩa về cây theo [Wikipedia](https://vi.wikipedia.org/wiki/C%C3%A2y_(c%E1%BA%A5u_tr%C3%BAc_d%E1%BB%AF_li%E1%BB%87u))
 
 > Trong khoa học máy tính, cây là một cấu trúc dữ liệu được sử dụng rộng rãi gồm một tập hợp các nút (tiếng Anh: node) được liên kết với nhau theo quan hệ cha-con.
 
-{{< image
-    url="/400px-Binary_tree.png"
+<Image
+    src="/static/400px-Binary_tree.png"
     title="Ví dụ về một cây nhị phân"
->}}
+/>
 
 Cây có rất nhiều loại, tuỳ thuộc vào đặc điểm cũng như những vấn đề mà nó giải quyết như
 - cây nhị phân, cây k phân
@@ -119,10 +115,10 @@ Như bạn biết rằng, cơ sở dữ liệu quan hệ (SQL) biểu diễn d�
 
 Sau đây là ERD cho cấu trúc nút của cây muốn biểu diễn trong SQL
 
-{{< image
-    url="/note-tree-in-db.png"
+<Image
+    src="/static/note-tree-in-db.png"
     title="Node trong cơ sở dữ liệu"
->}}
+/>
 
 Do trong một số loại cơ sở dữ liệu quan hệ không có cấu trúc danh sách nên mình không thể biểu diễn danh sách của một nút dưới dạng danh sách con của nó mà mình sẽ làm ngược lại, trỏ nút đó tới cha của nó (cách biểu diễn thứ 1)
 

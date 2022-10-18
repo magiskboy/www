@@ -12,22 +12,16 @@ author: "Nguyễn Khắc Thành"
 description: "Tôi là một lập trình viên, người mà trước đây rất thích sử dụng các hàm đệ qui, đơn giản bởi vì nó rất ngầu và có thể được sử dụng để khoe khoang kĩ năng lập trình và sự thông minh của tôi. Tuy nhiên, trong đa số các trường hợp, các hàm đệ qui có độ phức tạp rất cao và chúng ta nên tránh sử dụng nó."
 ---
 
-
-Tôi là một lập trình viên, người mà trước đây rất thích sử dụng các hàm đệ qui, đơn giản bởi vì nó rất ngầu và có thể được sử dụng để khoe khoang kĩ năng lập trình và sự thông minh của tôi. Tuy nhiên, trong đa số các trường hợp, các hàm đệ qui có độ phức tạp rất cao và chúng ta nên tránh sử dụng nó.
-
-<!--more-->
-
 Một trong những giải pháp tốt hơn là sử dụng Dynamic Planning khi có thể, cái đó có lẽ là cách tốt nhất để giải quyết một vấn đề có thể được chia thành các vấn đề con. Một trong những bài viết trước đây của tôi đã trình bày về [sức mạnh của Dynamic Planning](https://towardsdatascience.com/using-dynamic-planning-to-help-trump-win-the-elections-7b5b34f63961).
 
 Tuy nhiên, trong bài viết này, tôi sẽ giới thiệu một kĩ thuật khác trong Python có thể trở thành một công cụ thay thế cho hàm đệ qui. Nó sẽ không vượt trội so với Dynamic Planning nhưng dễ dàng hơn để hiểu. Nói cách khác, đôi khi, chúng ta có thể gặp khó khăn để làm việc với Dynamic Planning bởi sự trừu tượng của ý tưởng đó. Nhưng nó sẽ dễ dàng hơn để sử dụng closure.
 
 ## Python Closure là gì? 
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1400/1*k09a_nOeSB7ENbnAv30alA.jpeg"
+<Image
+	src="https://miro.medium.com/max/1400/1*k09a_nOeSB7ENbnAv30alA.jpeg"
 	title="Photo by Free-Photos on Pixabay"
->}}
+/>
 
 Đầu tiên, tôi sử dụng một ví dụ đơn giản để giải thích closure trong Python là gì. Hãy nhìn hàm bên dưới
 
@@ -43,31 +37,28 @@ Hàm `outer` được định nghĩa với hàm `inner` bên trong bản thân n
 
 Trong trường hợp này, hàm lồng nhau được gọi là một closure trong Python. Nếu chúng ra kiểm tra `giá trị trả về` của hàm bên ngoài, chúng ta sẽ thấy rằng giá trị trả về là một hàm.
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1038/1*WCUHtpu2rEBYySkj2jVi0Q.png"
->}}
+<Image
+	src="https://miro.medium.com/max/1038/1*WCUHtpu2rEBYySkj2jVi0Q.png"
+/>
 
 closure làm gì? Bởi vì nó trả về một hàm, chúng ta có thể chạy hàm này, tất nhiên.
 
-{{< image
-	url="https://miro.medium.com/max/518/1*xNm9mScPQMJ1MhSg273QWA.png"
+<Image
+	src="https://miro.medium.com/max/518/1*xNm9mScPQMJ1MhSg273QWA.png"
 >}}
 
 OK, chúng ta có thể thấy rằng hàm bên trong có thể truy cập các biến đã định nghĩa trong hàm bên ngoài. Thông thường, chúng ta không sử dụng closure theo cách như trên, bởi vì nó là tệ. Chúng ta thông thường muốn định nghĩa hàm khác để giữ hàm trả về bởi closure. 
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/554/1*k1yx5D8pCqsue7Vb6s8Osg.png"
+<Image
+	src="https://miro.medium.com/max/554/1*k1yx5D8pCqsue7Vb6s8Osg.png"
 >}}
 
 Vì thể, chúng ta cũng có thể nói rằng trong Python closure, chúng ta định nghĩa một hàm mà hàm đó định nghĩa các hàm khác.
 
 ## Truy cập các biến bên ngoài từ hàm bên trong
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1400/1*wF3YWhf5uXPUvnifMvz8Xg.jpeg"
+<Image
+	src="https://miro.medium.com/max/1400/1*wF3YWhf5uXPUvnifMvz8Xg.jpeg"
 	title="Photo by igorovsyannykov on Pixabay"
 >}}
 
@@ -85,9 +76,8 @@ def outer():
 
 Trong closure bên trên, chúng ta muốn cộng thêm một vào biến bên ngoài `x` trong hàm bên trong. Tuy nhiên, nó sẽ là một công việc không dễ dàng.
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1348/1*YtdEYwPhTs3VDHSE63lnvA.png"
+<Image
+	src="https://miro.medium.com/max/1348/1*YtdEYwPhTs3VDHSE63lnvA.png"
 >}}
 
 Mặc định, bạn sẽ không có khả năng truy cập biến bên ngoài từ hàm bên trong. Tuy nhiên, giống như các chúng ta định nghĩa một biến toàn cục trong Python, chúng ta có thể nói hàm bên trong của một closure rằng biến đó không nên xem xét như là một "biến cục bộ", bằng việc sử dụng từ khoá `nonlocal`.
@@ -113,16 +103,14 @@ for i in range(5):
     print('\n')
 ```
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/786/1*9YWAhoejY9aaI7p_k1SCnQ.png"
+<Image
+	src="https://miro.medium.com/max/786/1*9YWAhoejY9aaI7p_k1SCnQ.png"
 >}}
 
 ## Viết một hàm Fibonacci sử dụng Closure
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1400/1*BGxgXhZ6kOhbXipZ_OhMdg.jpeg"
+<Image
+	src="https://miro.medium.com/max/1400/1*BGxgXhZ6kOhbXipZ_OhMdg.jpeg"
 	title="Photo by Free-Photos on Pixabay"
 >}}
 
@@ -175,16 +163,14 @@ for i in range(2, 21):
     print(f'The {i}th Fibonacci number is {num}')
 ```
 
-{{< image
-    external="true"
+<Image
 	image="https://miro.medium.com/max/922/1*MFdusHsGqPuFJkNLlJpR-w.png"
 >}}
 
 ## So sánh hiệu năng
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1400/1*Aq11kSPToLaS-c4LpsnsEg.jpeg"
+<Image
+	src="https://miro.medium.com/max/1400/1*Aq11kSPToLaS-c4LpsnsEg.jpeg"
 	title="Photo by KahlOrr on Pixabay"
 >}}
 
@@ -204,9 +190,8 @@ def fib_recursion(n):
 
 Chúng ta có thể kiếm chứng hàm này bằng việc đưa ra chuỗi của 20 số Fibonacci.
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/500/1*2Rd5WEbX8MUFIJDH3Y9VEw.png"
+<Image
+	src="https://miro.medium.com/max/500/1*2Rd5WEbX8MUFIJDH3Y9VEw.png"
 >}}
 
 Sau đó, hãy nhúng phiên bản closure trong một hàm để so sánh.
@@ -219,16 +204,14 @@ def fib_closure(n):
     return num
 ```
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/422/1*cgwyZ_RvQAC4LW1eob4a9g.png"
+<Image
+	src="https://miro.medium.com/max/422/1*cgwyZ_RvQAC4LW1eob4a9g.png"
 >}}
 
 Bây giờ, hãy so sánh tốc độ.
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/764/1*wwk1xceOEHGRWApGHa_bnA.png"
+<Image
+	src="https://miro.medium.com/max/764/1*wwk1xceOEHGRWApGHa_bnA.png"
 >}}
 
 2.79ms v.s. 2.75µs. Phương pháp closure nhanh hơn 1000 lần so với đệ qui! Lí do trực quan nhất là tất cả các giá trị tạm thời của hàm đệ qui được lưu trữ riêng biệt, nhưng closure thật sự cập nhật các biến giống nhau trong mỗi lần lặp.
@@ -237,18 +220,16 @@ Ngoài ra, độ sau của đệ qui là có giới hạn. Đối với closure,
 
 Đây là một ví dụ việc tính 1000 số Fibonacci
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1278/1*CP_jHym64CGhY5zob8Mf-Q.png"
+<Image
+	src="https://miro.medium.com/max/1278/1*CP_jHym64CGhY5zob8Mf-Q.png"
 >}}
 
 Đó quả là một con số khổng lồ, nhưng phương thức closure có thể kết thúc việc tính toán trong khoảng 100µs, trong khi hàm đệ qui gặp phải hạn chế của nó.
 
 ## Những trường hợp khác của closure
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1400/1*5LREISfdTUPqkZSBjpONCg.jpeg"
+<Image
+	src="https://miro.medium.com/max/1400/1*5LREISfdTUPqkZSBjpONCg.jpeg"
 	title="Photo by HarinathR on Pixabay"
 >}}
 
@@ -290,18 +271,16 @@ Code trên sẽ cho chúng ta 4 hàm, cái đó sẽ phân loại học sinh th�
 
 Hãy kiểm chứng các hàm đó ngay bây giờ.
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/808/1*jOLfaechDiFOIyWHpy09bA.png"
+<Image
+	src="https://miro.medium.com/max/808/1*jOLfaechDiFOIyWHpy09bA.png"
 >}}
 
 Rất ngăn nắp! Chỉ cần lưu ý rằng chúng ta vẫn cần định nghĩa các class khi trường hợp phức tạp hơn.
 
 ## Tổng kết
 
-{{< image
-    external="true"
-	url="https://miro.medium.com/max/1400/1*mMnFxvUfqI5OnxPD_XsJjg.jpeg"
+<Image
+	src="https://miro.medium.com/max/1400/1*mMnFxvUfqI5OnxPD_XsJjg.jpeg"
 	title="Photo by Free-Photos on Pixabay"
 >}}
 

@@ -12,14 +12,6 @@ description: "Bạn có bao giờ thắc mắc rằng tại sao các trình biê
 Bạn có bao giờ tự hỏi làm thế nào mà JS lại có nhiều biến thể như vậy và các công cụ như Typescript hay Babel lại có thể làm cho những đoạn code React, Typescript lại có thể chạy được trên trình duyệt."
 ---
 
-Bạn có bao giờ thắc mắc rằng tại sao các trình biên dịch như C, Java, Rust lại có thể hiểu được những file source code hay tại sao một loại cú pháp nửa JS nửa HTML lại có thể chạy được trên các trình duyệt không?
-
-Bạn có bao giờ tự hỏi làm thế nào mà JS lại có nhiều biến thể như vậy và các công cụ như Typescript hay Babel lại có thể làm cho những đoạn code React, Typescript lại có thể chạy được trên trình duyệt.
-
-Nếu chưa biết, bạn hãy ngồi xuống để mình "vén bức màn bí ẩn" đó lên nhé, let's go!!!
-
-<!--More-->
-
 Trong thế giới lập trình có rất nhiều ngôn ngữ lập trình và bên cạnh đó cũng tồn tại những công cụ dùng để chuyển đổi từ ngôn ngữ này sang ngôn ngữ khác, những phần mềm như vậy được gọi là các compiler hay trình biên dịch.
 
 Những trình biên dịch mà đa số chúng ta đều biết như Pascal hay C thực hiện việc chuyển ngôn ngữ bậc cao sang ngôn ngữ bậc thấp là các kí tự 0/1. Đơn giản vì chúng ta dễ đọc ngôn ngữ bậc cao trong khi máy móc thích ngôn ngữ bậc thấp hơn.
@@ -30,10 +22,10 @@ Cả hai công cụ trên đều có điểm chung là chuyển đổi code từ
 
 Hình bên dưới mô tả các thành phần cơ bản của một compiler/transpiler:
 
-{{< image
-    url="/parser.png"
+<Image
+    src="/static/parser.png"
     title="Cấu trúc cơ bản của compiler/transpiler"
->}}
+/>
 
 Để có thể chuyển đổi dễ dàng giữa hai ngôn ngữ, các compiler/transpiler phải biểu diễn được dưới cùng một dạng cấu trúc dữ liệu - chúng được gọi là Abstract Syntax Tree hay AST.
 
@@ -92,10 +84,10 @@ Vậy làm sao để từ biểu thức trung tố chuyển sang biểu thức h
 Bạn có thể tham khảo source code của mình ở đây: [bottom-up parser](https://github.com/magiskboy/ast-tut/blob/master/bottom_up_parser.py#L7)
 
 
-{{< image
-    url="/ast.dot.svg"
+<Image
+    src="/static/ast.dot.svg"
     title="AST của biểu thức: (1 + 1 * 2) / (3 + 5 * 8 - 13)"
->}}
+/>
 
 ### Top-down parser
 

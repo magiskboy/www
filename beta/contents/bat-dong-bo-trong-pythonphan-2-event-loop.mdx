@@ -15,21 +15,14 @@ author: "Nguyễn Khắc Thành"
 description: "Một trong những khái niệm quan trọng trong lập trình là __event loop__ hay __vòng lặp sự kiện__. Thật không quá khi nói rằng, __vòng lặp sự kiện__ là trái tim của lập trình bất đồng bộ trong các ngôn ngữ như Python hay Javascript, ..."
 ---
 
-Một trong những khái niệm quan trọng trong lập trình là __event loop__ hay __vòng lặp sự kiện__. Thật không quá khi nói rằng, __vòng lặp sự kiện__ là trái tim của lập trình bất đồng bộ trong các ngôn ngữ như Python hay Javascript, ...
-
-<!--more-->
-
-Đây là bài viết tiếp theo của mình trong chuỗi bài viết về lập trình bất đồng bộ trong Python. Các bạn có thể theo dõi bài viết trước của mình về [coroutine]({{<ref "./bat-dong-bo-trong-python-phan-1-coroutine.md">}}) trước khi đọc bài viết này nhé. Giờ thì cùng bắt đầu thôi, Let's go
+Đây là bài viết tiếp theo của mình trong chuỗi bài viết về lập trình bất đồng bộ trong Python. Các bạn có thể theo dõi bài viết trước của mình về <Link href="/posts/bat-dong-bo-trong-python-phan-1-coroutine.md">coroutine</Link> trước khi đọc bài viết này nhé. Giờ thì cùng bắt đầu thôi, Let's go
 
 Một event loop (hay một vòng lặp sự kiện) là một vòng lặp (vô hạn hoặc hữu hạn), nó duyệt qua tất cảc các task và thực thi chúng. Vòng lặp sự kiện cũng có vai trò duy trì các task này trong một hàng đợi (queue). Sau khi bạn tạo một task, nó sẽ được event loop đẩy vào hàng đợi này để được lập lịch và thực thi.
 
 
 Hình bên dưới cho ta thấy cái nhìn cơ bản của một vòng lặp sự kiện làm việc như thế nào. Nó rất đơn giản để hiểu phải không nào :smile:
 
-{{< image 
-    url="/eventLoop-full.svg"
-    title="Event loop"
->}}
+<Image src="/static/eventLoop-full.svg" title="Event loop" />
 
 Nhớ lại trong bài viết trước, mình nói là các coroutine có thể ghi nhớ vị trí mà nó trả quyền điều khiển chương trình cho lời gọi coroutine đó và nó có thể tái khởi động tại vị trí đó trong lần gọi tiếp theo.
 
@@ -43,10 +36,10 @@ Vòng lặp sự kiện sẽ dừng chỉ khi hàng đợi này rỗng hoặc n�
 
 #### Làm thế nào mà vòng lặp sự kiện có thể thực thi và duy trì các task?
 
-{{< image 
-    url="/Untitled Diagram-2.png"
+<Image
+    src="/static/Untitled Diagram-2.png"
     title="Vòng lặp sự kiện với một task (coroutine)"
->}}
+/>
 
 Sau khi task thực thi xong một phần (chưa kết thúc), nó sẽ trả quyền điều khiển về cho người gọi (vòng lặp sự kiện) sau khi đã thay đổi và lưu trạng thái nội tại của nó. Lúc này, vòng lặp sự kiện đã có quyền điều khiển chương trình và sẽ đẩy task vào trong hàng đợi.
 

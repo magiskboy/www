@@ -1,6 +1,5 @@
 ---
 title: Counting
-author: Nguyen Khac Thanh
 date: 2019-07-12T10:10:17+07:00
 published: true
 tags:
@@ -10,9 +9,6 @@ categories:
 author: "Nguyễn Khắc Thành"
 description: "Đếm là phương pháp toán học giúp chúng ta giải quyết khá nhiều các vấn đề trong cuộc sống hằng ngày. Đây là một phương pháp đơn giản nhưng hiệu quả mà chúng ta ít để ý tới hoặc đôi khi không nhận ra. Mở đầu về phép đếm, mình sẽ giới thiệu với các bạn về quy tắc cộng — Rule of Sum."
 ---
-
-Đếm là phương pháp toán học giúp chúng ta giải quyết khá nhiều các vấn đề trong cuộc sống hằng ngày. Đây là một phương pháp đơn giản nhưng hiệu quả mà chúng ta ít để ý tới hoặc đôi khi không nhận ra. Mở đầu về phép đếm, mình sẽ giới thiệu với các bạn về quy tắc cộng — __Rule of Sum__.
-<!--more-->
 
 Khi nhắc đến đếm, chúng ta tập trung vào 2 vấn đề: __đối tượng đếm và số lượng__.
 
@@ -73,38 +69,33 @@ Giống như số, toán học cho bạn một số các phép toán cơ bản �
 
 __Phép hợp__: bao gồm tất cả các phần tử thuộc A hoặc thuộc B
 
-{{< image
-	external="true"
-	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Funion-venn.png?alt=media&token=7c302f12-ab27-485e-8de3-59374ac3fb48"
+<Image
+	src="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Funion-venn.png?alt=media&token=7c302f12-ab27-485e-8de3-59374ac3fb48"
 	title="Phép hợp trong biểu đồ Venn"
->}}
+/>
 
 __Phép giao__: tập hợp mà các phần tử thuộc cả A và B hay nôm na là các phần tử chung của A và B
 
-{{< image
-	external="true"
-	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Fintersection-venn.png?alt=media&token=a05dee0c-f2e3-4bb4-a0b7-42f09c625992"
+<Image
+	src="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Fintersection-venn.png?alt=media&token=a05dee0c-f2e3-4bb4-a0b7-42f09c625992"
 	title="Phép giao trong biều đồ Venn"
->}}
+/>
 
 __Phép trừ__ (A — B): tập hợp gồm các phần tử thuộc A nhưng không thuộc B
 
-{{< image
-	external="true"
-	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Fdifferent-venn.png?alt=media&token=44816c2d-f823-4108-9ad4-2db2be4c33d8"
+<Image
+	src="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Fdifferent-venn.png?alt=media&token=44816c2d-f823-4108-9ad4-2db2be4c33d8"
 	title="Phép trừ trong biều đồ Venn"
->}}
+/>
 
 Hãy ánh xạ ví dụ 3 sang ngôn ngữ toán học nhé:
 
 - Tập hợp các số chia hết cho 2 là A, vâỵ ta có A chứa các phần tử 2, 4, 6, 8, 10
 - Tập hợp các số chia hết cho 3 là B, vâỵ ta có B chứa các phần tử 3, 6, 9
 
-{{< image
-	external="true"
-	url="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Funion2-venn.png?alt=media&token=57b26b3f-f3f0-427d-89b3-69c32b734357"
-	token="57b26b3f-f3f0-427d-89b3-69c32b734357"
->}}
+<Image
+	src="https://firebasestorage.googleapis.com/v0/b/myblog-e552f.appspot.com/o/counting%2Funion2-venn.png?alt=media&token=57b26b3f-f3f0-427d-89b3-69c32b734357"
+/>
 
 Bạn có thể nhận thấy rằng số 6 nằm trong phần giao nhau của A và B, và do đó, tập hợp các số chia hết cho 2 hoặc chia hết cho 3 bằng A hợp B trừ A giao B. Right? Vậy kết quả sẽ là 5 + 3 — 1 = 7
 

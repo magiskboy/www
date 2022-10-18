@@ -1,6 +1,7 @@
 import { serialize } from 'next-mdx-remote/serialize';
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { MDXRemote } from 'next-mdx-remote';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
+import Link from 'next/link';
 import fm from 'front-matter';
 import path from 'path';
 import fs from 'fs/promises';
@@ -9,7 +10,7 @@ import Table from 'components/Table';
 import PostWrapper, { Meta } from 'components/Post';
 
 
-const components = { Image, Table };
+const components = { Image, Table, Link };
 const contentDir = 'contents';
 
 const Post: NextPage<PageProps> = ({ source, meta }) => {
