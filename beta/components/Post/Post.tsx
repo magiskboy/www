@@ -1,5 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
+import { MDXRemote } from 'next-mdx-remote';
 import DateTime from "components/DateTime";
 import style from "./Post.module.scss";
 
@@ -19,7 +20,7 @@ const Post: React.FC<PostProps> = ({ children, meta }) => {
               fontStyle: "italic",
             }}
           />
-          <p>{meta.description}</p>
+          <MDXRemote compiledSource={meta.description!} />
         </div>
         <div className={style.content}>{children}</div>
       </div>

@@ -5,12 +5,16 @@
   margin: 0 auto;
   text-align: justify;
 
+  h1,h2,h3,h4,h5,h6 {
+    font-weight: 400;
+  }
+
   h3 {
     margin: 0;
   }
 
   pre {
-    overflow-x: scroll;
+    overflow-x: auto;
   }
 }
 
@@ -48,20 +52,20 @@
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
   .root {
-    width: 80%;
+    width: 50%;
   }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
   .root {
-    width: 70%;
+    width: 50%;
   }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
   .root {
-    width: 70%;
+    width: 50%;
   }
 }

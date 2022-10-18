@@ -45,13 +45,13 @@ closure làm gì? Bởi vì nó trả về một hàm, chúng ta có thể chạ
 
 <Image
 	src="https://miro.medium.com/max/518/1*xNm9mScPQMJ1MhSg273QWA.png"
->}}
+/>
 
 OK, chúng ta có thể thấy rằng hàm bên trong có thể truy cập các biến đã định nghĩa trong hàm bên ngoài. Thông thường, chúng ta không sử dụng closure theo cách như trên, bởi vì nó là tệ. Chúng ta thông thường muốn định nghĩa hàm khác để giữ hàm trả về bởi closure. 
 
 <Image
 	src="https://miro.medium.com/max/554/1*k1yx5D8pCqsue7Vb6s8Osg.png"
->}}
+/>
 
 Vì thể, chúng ta cũng có thể nói rằng trong Python closure, chúng ta định nghĩa một hàm mà hàm đó định nghĩa các hàm khác.
 
@@ -60,7 +60,7 @@ Vì thể, chúng ta cũng có thể nói rằng trong Python closure, chúng ta
 <Image
 	src="https://miro.medium.com/max/1400/1*wF3YWhf5uXPUvnifMvz8Xg.jpeg"
 	title="Photo by igorovsyannykov on Pixabay"
->}}
+/>
 
 Làm thế nào chúng ta có thể sử dụng một closure để thay thế một đệ qui? Đừng quá hấp tấp. Hãy xem một vấn đề khác ở đây, đó là việc truy cập các biến bên ngoài từ hàm bên trong.
 
@@ -78,7 +78,7 @@ Trong closure bên trên, chúng ta muốn cộng thêm một vào biến bên n
 
 <Image
 	src="https://miro.medium.com/max/1348/1*YtdEYwPhTs3VDHSE63lnvA.png"
->}}
+/>
 
 Mặc định, bạn sẽ không có khả năng truy cập biến bên ngoài từ hàm bên trong. Tuy nhiên, giống như các chúng ta định nghĩa một biến toàn cục trong Python, chúng ta có thể nói hàm bên trong của một closure rằng biến đó không nên xem xét như là một "biến cục bộ", bằng việc sử dụng từ khoá `nonlocal`.
 
@@ -105,14 +105,14 @@ for i in range(5):
 
 <Image
 	src="https://miro.medium.com/max/786/1*9YWAhoejY9aaI7p_k1SCnQ.png"
->}}
+/>
 
 ## Viết một hàm Fibonacci sử dụng Closure
 
 <Image
 	src="https://miro.medium.com/max/1400/1*BGxgXhZ6kOhbXipZ_OhMdg.jpeg"
 	title="Photo by Free-Photos on Pixabay"
->}}
+/>
 
 Fibonacci được sử dụng phổ biến như là một ví dụ "hello world" của các hàm đệ qui. Nếu bạn không nhớ nó, đừng lo lắng, nó khá là đơn giản để được giải thích.
 
@@ -164,15 +164,15 @@ for i in range(2, 21):
 ```
 
 <Image
-	image="https://miro.medium.com/max/922/1*MFdusHsGqPuFJkNLlJpR-w.png"
->}}
+	src="https://miro.medium.com/max/922/1*MFdusHsGqPuFJkNLlJpR-w.png"
+/>
 
 ## So sánh hiệu năng
 
 <Image
 	src="https://miro.medium.com/max/1400/1*Aq11kSPToLaS-c4LpsnsEg.jpeg"
 	title="Photo by KahlOrr on Pixabay"
->}}
+/>
 
 Tốt, chúng ta đã biết rằng chúng ta có thể sử dụng closure để thay thế một hàm đệ qui trong phần trước. Thế còn về hiệu suất? Hãy so sánh chúng!
 
@@ -192,7 +192,7 @@ Chúng ta có thể kiếm chứng hàm này bằng việc đưa ra chuỗi củ
 
 <Image
 	src="https://miro.medium.com/max/500/1*2Rd5WEbX8MUFIJDH3Y9VEw.png"
->}}
+/>
 
 Sau đó, hãy nhúng phiên bản closure trong một hàm để so sánh.
 
@@ -206,13 +206,13 @@ def fib_closure(n):
 
 <Image
 	src="https://miro.medium.com/max/422/1*cgwyZ_RvQAC4LW1eob4a9g.png"
->}}
+/>
 
 Bây giờ, hãy so sánh tốc độ.
 
 <Image
 	src="https://miro.medium.com/max/764/1*wwk1xceOEHGRWApGHa_bnA.png"
->}}
+/>
 
 2.79ms v.s. 2.75µs. Phương pháp closure nhanh hơn 1000 lần so với đệ qui! Lí do trực quan nhất là tất cả các giá trị tạm thời của hàm đệ qui được lưu trữ riêng biệt, nhưng closure thật sự cập nhật các biến giống nhau trong mỗi lần lặp.
 
@@ -222,7 +222,7 @@ Ngoài ra, độ sau của đệ qui là có giới hạn. Đối với closure,
 
 <Image
 	src="https://miro.medium.com/max/1278/1*CP_jHym64CGhY5zob8Mf-Q.png"
->}}
+/>
 
 Đó quả là một con số khổng lồ, nhưng phương thức closure có thể kết thúc việc tính toán trong khoảng 100µs, trong khi hàm đệ qui gặp phải hạn chế của nó.
 
@@ -231,7 +231,7 @@ Ngoài ra, độ sau của đệ qui là có giới hạn. Đối với closure,
 <Image
 	src="https://miro.medium.com/max/1400/1*5LREISfdTUPqkZSBjpONCg.jpeg"
 	title="Photo by HarinathR on Pixabay"
->}}
+/>
 
 Python closure rất hữu dụng không chỉ trong việc thay thế các hàm đệ qui. Trong một vài trường hợp, nó cũng có thể thay thế các Python class với một giải pháp ngắn gọn, đặc biệt là không có quá nhiều những thuộc tính và các phương thức của class.
 
@@ -273,7 +273,7 @@ Hãy kiểm chứng các hàm đó ngay bây giờ.
 
 <Image
 	src="https://miro.medium.com/max/808/1*jOLfaechDiFOIyWHpy09bA.png"
->}}
+/>
 
 Rất ngăn nắp! Chỉ cần lưu ý rằng chúng ta vẫn cần định nghĩa các class khi trường hợp phức tạp hơn.
 
@@ -282,7 +282,7 @@ Rất ngăn nắp! Chỉ cần lưu ý rằng chúng ta vẫn cần định ngh�
 <Image
 	src="https://miro.medium.com/max/1400/1*mMnFxvUfqI5OnxPD_XsJjg.jpeg"
 	title="Photo by Free-Photos on Pixabay"
->}}
+/>
 
 Trong bài viết này, tôi đã giới thiệu một kĩ thuật gọi là closure trong Python. Nó có thể được sử dụng để viết lại các hàm đệ qui trong hầu hết các trường hợp và làm tốt hơn các hàm đệ qui rất nhiều.
 

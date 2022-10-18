@@ -1,5 +1,5 @@
 .root {
-  width: 70%;
+  width: var(--main-width);
   margin: 0 auto;
   padding: 1rem;
 
@@ -13,8 +13,10 @@
 .bottom {
   display: flex;
   justify-content: space-around;
-  width: 40%;
+  align-items: center;
   margin: 0 auto;
+  height: 50px;
+  background-color: whitesmoke;
 }
 
 .top {
@@ -26,7 +28,6 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .root {
-    width: 100%;
     padding: 1rem;
   }
 
@@ -46,28 +47,6 @@
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   .root {
-    width: 100%;
     padding: 0.5rem;
-  }
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-  .root {
-    width: 80%;
-  }
-}
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-  .root {
-    width: 70%;
-  }
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-  .root {
-    width: 70%;
   }
 }

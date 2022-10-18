@@ -28,6 +28,7 @@ body {
   color: var(--font-color);
   background-color: var(--bg-color);
   width: 100%;
+  /* letter-spacing: 1.2px; */
 }
 
 a {
@@ -42,5 +43,51 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+hr {
+  margin: 2rem 0;
+  width: 100%;
+  color: var(--hr-color);
+}
+
+
+@media only screen and (max-width: 600px) {
+  :root {
+    --main-width: 100%;
+    --main-padding: 1rem;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  :root {
+    --main-width: 100%;
+    --main-padding: 0.5rem;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  :root {
+    --main-width: 80%;
+    --main-padding: 0;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  :root {
+    --main-width: 50%;
+    --main-padding: 0;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  :root {
+    --main-width: 50%;
+    --main-padding: 0;
   }
 }

@@ -23,7 +23,7 @@ Cả hai công cụ trên đều có điểm chung là chuyển đổi code từ
 Hình bên dưới mô tả các thành phần cơ bản của một compiler/transpiler:
 
 <Image
-    src="/static/parser.png"
+    src="/images/parser.png"
     title="Cấu trúc cơ bản của compiler/transpiler"
 />
 
@@ -85,7 +85,7 @@ Bạn có thể tham khảo source code của mình ở đây: [bottom-up parser
 
 
 <Image
-    src="/static/ast.dot.svg"
+    src="/images/ast.dot.svg"
     title="AST của biểu thức: (1 + 1 * 2) / (3 + 5 * 8 - 13)"
 />
 
@@ -93,7 +93,7 @@ Bạn có thể tham khảo source code của mình ở đây: [bottom-up parser
 
 Ở phương pháp này, chúng ta sẽ mô tả một biểu thức trên dưới dạng các rules (cú pháp) bằng một meta language, ở đây mình sẽ sử dụng [Backus Naur Form](https://en.wikipedia.org/wiki/Backus–Naur_form) hay BNF.
 
-```bnf
+```
 <expression> ::=
    <number>
     | "(" <expression> ")"
@@ -157,7 +157,7 @@ Các phần mềm như vậy xuất hiện từ khá lâu như [GNU Bison](https
 
 Với biểu thức ban đầu, mình có thể sinh ra đoạn MIPS code như sau:
 
-```asm
+```
 mov $0 1
 mul $0 2
 mov $1 1

@@ -8,7 +8,8 @@ import fs from 'fs/promises';
 import Image from 'components/Image';
 import Table from 'components/Table';
 import PostWrapper, { Meta } from 'components/Post';
-
+import { getSlugByMdx } from 'helper';
+import rehypeHighlight from "rehype-highlight"
 
 const components = { Image, Table, Link };
 const contentDir = 'contents';
@@ -18,8 +19,7 @@ const Post: NextPage<PageProps> = ({ source, meta }) => {
   newMeta.date = new Date(meta.date);
   return (
     <PostWrapper meta={newMeta}>
-      <MDXRemote {...source} components={components}
-      />
+      <MDXRemote {...source} components={components} />
     </PostWrapper>
   );
 }
@@ -29,15 +29,21 @@ export default Post;
 export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
   const slug = (context.params?.slug as string) || '';
   const { meta, source } = await getPostContent(slug);
-  const mdxSource = await serialize(source);
-  return { props: { source: mdxSource, meta } };
+
+  const mdxSource = await serialize(source, {
+    mdxOptions: { rehypePlugins: [rehypeHighlight] },
+  });
+
+  const mdxDescription = await serialize(meta.description || '');
+
+  return { props: { source: mdxSource, meta: { ...meta, description: mdxDescription.compiledSource } } };
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const dir = path.join('.', 'contents');
   const files = await fs.readdir(dir);
   return {
-    paths: files.map(file => ({ params: { slug: file.replace(/\.mdx?$/, '') } })),
+    paths: files.map(file => ({ params: { slug: getSlugByMdx(file) } })),
     fallback: false
   }
 }

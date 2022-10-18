@@ -73,7 +73,7 @@ urlpatterns += static(
 
 OK, vậy là mình đã config xong đối với Django, giờ sẽ config Nginx để serve đúng chỗ của static file, ở đây là /var/demo/static . Mình tạo file /etc/nginx/conf.d/demo.conf, với nội dung như sau:
 
-```nginx
+```
 server {
     listen 80;
     server_name demo;
