@@ -12,7 +12,7 @@ const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
   }
   return (
     <div className={`image ${style.root}`}>
-      <NextImage {...rest} layout="responsive" loader={({ src }) => src} />
+      <NextImage {...rest} layout="responsive" />
       <h5>{title}</h5>
     </div>
   );
