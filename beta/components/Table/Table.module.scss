@@ -1,0 +1,23 @@
+.root {
+  width: 100%;
+  display: block;
+  overflow: auto;
+
+  th {
+    background-color: var(--thead-bg-color);
+  }
+
+  th,
+  td {
+    padding: 0.5rem 1.25rem;
+    text-align: center;
+  }
+}
+
+.border {
+  th,
+  td {
+    border: 1px solid var(--table-border-color);
+  }
+  border-collapse: collapse;
+}
