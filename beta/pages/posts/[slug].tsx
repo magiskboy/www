@@ -14,11 +14,11 @@ import rehypeHighlight from "rehype-highlight"
 const components = { Image, Table, Link };
 const contentDir = 'contents';
 
-const Post: NextPage<PageProps> = ({ source, meta }) => {
+const Post: NextPage<PageProps> = ({ source, meta, mdxDescription }) => {
   const newMeta = meta;
   newMeta.date = new Date(meta.date);
   return (
-    <PostWrapper meta={newMeta}>
+    <PostWrapper meta={newMeta} mdxDescription={mdxDescription}>
       <MDXRemote {...source} components={components} />
     </PostWrapper>
   );
@@ -36,7 +36,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
 
   const mdxDescription = await serialize(meta.description || '');
 
-  return { props: { source: mdxSource, meta: { ...meta, description: mdxDescription.compiledSource } } };
+  return { props: { source: mdxSource, meta, mdxDescription } };
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -51,6 +51,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 interface PageProps {
   meta: Meta,
   source: Awaited<ReturnType<typeof serialize>>;
+  mdxDescription: Awaited<ReturnType<typeof serialize>>;
 }
 
 async function getPostContent(slug: string): Promise<{ meta: Meta, source: string }> {

@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  exportTrailingSlash: true,
   images: {
     domains: ['miro.medium.com'],
     loader: 'custom'

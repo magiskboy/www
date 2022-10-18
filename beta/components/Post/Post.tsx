@@ -3,8 +3,9 @@ import { NextSeo } from "next-seo";
 import { MDXRemote } from 'next-mdx-remote';
 import DateTime from "components/DateTime";
 import style from "./Post.module.scss";
+import { serialize } from "next-mdx-remote/serialize";
 
-const Post: React.FC<PostProps> = ({ children, meta }) => {
+const Post: React.FC<PostProps> = ({ children, meta, mdxDescription }) => {
   return (
     <>
       <NextSeo title={meta.title} description={meta.description} />
@@ -20,7 +21,7 @@ const Post: React.FC<PostProps> = ({ children, meta }) => {
               fontStyle: "italic",
             }}
           />
-          <MDXRemote compiledSource={meta.description!} />
+          <MDXRemote {...mdxDescription} />
         </div>
         <div className={style.content}>{children}</div>
       </div>
@@ -33,6 +34,7 @@ export default Post;
 interface PostProps {
   children: React.ReactNode;
   meta: Meta;
+  mdxDescription: Awaited<ReturnType<typeof serialize>>;
 }
 
 export interface Meta {
