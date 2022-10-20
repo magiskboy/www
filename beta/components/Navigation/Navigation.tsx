@@ -22,7 +22,7 @@ const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
         </Link>
         <div className={style.social}>
           {socials.map((item) => (
-            <a href={item.link} target="_blank" style={{ margin: "0 .5rem" }} key={item.link}>
+            <a href={item.link} target="_blank" style={{ margin: "0 .5rem" }} rel="noreferrer" key={item.link}>
               {item.title}
             </a>
           ))}

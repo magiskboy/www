@@ -10,7 +10,7 @@ const GithubComment: React.FC<Props> = ({ repo, file }) => {
 
   const onSubmitComment = useCallback(() => {
     console.log('comment with', user);
-  }, [repo, file, user?.accessToken]);
+  }, [repo, file, user]);
 
   const onChangComment = useCallback<React.ChangeEventHandler<HTMLTextAreaElement>>((event) => {
     setComment(event.target.value);
