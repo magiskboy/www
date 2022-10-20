@@ -13,6 +13,7 @@ const About: NextPage<Props> = ({ source, meta }) => {
   return <div style={{
     width: 'var(--main-width)',
     margin: '0 auto',
+    padding: 'var(--main-padding)',
   }}>
     <NextSeo title={meta.title} description={meta.description} />
     <MDXRemote {...source} components={components} />
