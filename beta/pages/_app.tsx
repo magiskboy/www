@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { MDXProvider } from "@mdx-js/react";
 import Navigation from "components/Navigation";
+import Footer from 'components/Footer';
 
 const socials = [
   {
@@ -37,9 +37,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Navigation socials={socials} navs={navs} />
-      <MDXProvider>
-        <Component {...pageProps} />
-      </MDXProvider>
+      <Component {...pageProps} />
+      <Footer />
     </>
   );
 }

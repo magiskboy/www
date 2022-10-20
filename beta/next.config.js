@@ -3,8 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['miro.medium.com'],
+    domains: ['miro.medium.com', 'avatars.githubusercontent.com'],
   },
+  pageExtensions: ['mdx', 'md', 'tsx', 'ts'],
   async redirects() {
     return [
       {

@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  justify-content: stretch;
+  width: 100%;
+  font-style: italic;
+
+  span {
+    display: block;
+    text-align: left;
+  } 
+}
+
+.left {
+  width: 100%;
+}
+
+.right {
+  width: 100%;
+}

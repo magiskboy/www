@@ -1,7 +1,7 @@
 .root {
   width: var(--main-width);
   margin: 0 auto;
-  padding: 1rem;
+  padding: var(--main-padding);
 
   a {
     &:hover {
@@ -12,11 +12,15 @@
 
 .bottom {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   margin: 0 auto;
   height: 50px;
-  background-color: whitesmoke;
+  background-color: var(--nav-bg-color);
+
+  a {
+    margin: 0 1rem;
+  }
 }
 
 .top {
@@ -41,12 +45,9 @@
 
   .bottom {
     width: 100%;
-  }
-}
 
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-  .root {
-    padding: 0.5rem;
+    a {
+      margin: 0 0.5rem;
+    }
   }
 }

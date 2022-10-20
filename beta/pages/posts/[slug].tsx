@@ -1,18 +1,18 @@
+import path from 'path';
+import fs from 'fs/promises';
 import { serialize } from 'next-mdx-remote/serialize';
 import { MDXRemote } from 'next-mdx-remote';
+import rehypeHighlight from "rehype-highlight"
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
 import fm from 'front-matter';
-import path from 'path';
-import fs from 'fs/promises';
 import Image from 'components/Image';
 import Table from 'components/Table';
 import PostWrapper, { Meta } from 'components/Post';
 import { getSlugByMdx } from 'helper';
-import rehypeHighlight from "rehype-highlight"
+import { POST_DIR } from 'contants';
 
 const components = { Image, Table, Link };
-const contentDir = 'contents';
 
 const Post: NextPage<PageProps> = ({ source, meta, mdxDescription }) => {
   const newMeta = meta;
@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const dir = path.join('.', 'contents');
+  const dir = path.join('.', POST_DIR);
   const files = await fs.readdir(dir);
   return {
     paths: files.map(file => ({ params: { slug: getSlugByMdx(file) } })),
@@ -55,7 +55,7 @@ interface PageProps {
 }
 
 async function getPostContent(slug: string): Promise<{ meta: Meta, source: string }> {
-  const filename = path.join('.', contentDir, `${slug}.mdx`);
+  const filename = path.join('.', POST_DIR, `${slug}.mdx`);
   const stat = await fs.stat(filename);
 
   if (stat.isFile()) {

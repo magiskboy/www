@@ -22,9 +22,9 @@ const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
         </Link>
         <div className={style.social}>
           {socials.map((item) => (
-            <Link href={item.link} target="_blank" key={item.link}>
-              <a style={{ margin: "0 .5rem" }}>{item.title}</a>
-            </Link>
+            <a href={item.link} target="_blank" style={{ margin: "0 .5rem" }} key={item.link}>
+              {item.title}
+            </a>
           ))}
         </div>
       </div>

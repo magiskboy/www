@@ -36,7 +36,7 @@ const DAYS = [
   "Thứ tư",
   "Thứ năm",
   "Thứ sáu",
-  "Thứ 7",
+  "Thứ bảy",
 ];
 
 export default DateTime;
