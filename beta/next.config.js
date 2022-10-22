@@ -5,6 +5,36 @@ const nextConfig = {
   publicRuntimeConfig: {
     utterancRepo: "magiskboy/www",
     theme: "light",
+    socials: [
+      {
+        title: "Github",
+        link: "https://github.com/magiskboy",
+      },
+      {
+        title: "LinkedIn",
+        link: "https://www.linkedin.com/in/thanh-nguyen-khac",
+      },
+      {
+        title: "Twitter",
+        link: "https://twitter.com/mag1skboy",
+      },
+    ],
+
+    navs: [
+      {
+        title: "Bài viết",
+        link: "/posts",
+      },
+      {
+        title: "Bản thân",
+        link: "/about",
+      },
+      {
+        title: "Danh mục",
+        link: "/categories",
+      },
+    ],
+    title: "Nguyễn Khắc Thành",
   },
   images: {
     domains: ["miro.medium.com", "meme-arsenal.com"],
