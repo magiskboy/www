@@ -2,6 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  publicRuntimeConfig: {
+    utterancRepo: 'magiskboy/www',
+    theme: 'light',
+  },
   images: {
     domains: ['miro.medium.com', 'avatars.githubusercontent.com'],
   },

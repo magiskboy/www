@@ -6,6 +6,7 @@ import rehypeHighlight from "rehype-highlight"
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
 import fm from 'front-matter';
+import GithubComment from 'components/GithubComment';
 import Image from 'components/Image';
 import Table from 'components/Table';
 import PostWrapper, { Meta } from 'components/Post';
@@ -18,9 +19,12 @@ const Post: NextPage<PageProps> = ({ source, meta, mdxDescription }) => {
   const newMeta = meta;
   newMeta.date = new Date(meta.date);
   return (
+    <>
     <PostWrapper meta={newMeta} mdxDescription={mdxDescription}>
       <MDXRemote {...source} components={components} />
     </PostWrapper>
+    <GithubComment />
+    </>
   );
 }
 
