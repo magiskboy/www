@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import getConfig from 'next/config';
 
 const GithubComment: React.FC = () => {
-  const renderUtternce = useCallback((commentRef: HTMLDivElement) => {
+  const renderUtternce = useCallback((commentWrapperEl: HTMLDivElement) => {
     const { publicRuntimeConfig } = getConfig();
     const { utterancRepo, theme } = publicRuntimeConfig;
     const commentsTheme = theme && theme === 'dark'
@@ -19,12 +19,13 @@ const GithubComment: React.FC = () => {
     commentScript.setAttribute('theme', commentsTheme);
     commentScript.setAttribute('crossorigin', 'anonymous');
 
-    commentRef.appendChild(commentScript);
+    commentWrapperEl.appendChild(commentScript);
   }, []);
 
-  return <div ref={commentRef => {
-    if (!commentRef) return;
-    renderUtternce(commentRef);
+  return <div ref={commentWrapperEl => {
+    if (!commentWrapperEl) return;
+    if(commentWrapperEl.children.length) return;
+    renderUtternce(commentWrapperEl);
   }}></div>
 }
 

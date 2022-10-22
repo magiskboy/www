@@ -7,18 +7,9 @@ const nextConfig = {
     theme: 'light',
   },
   images: {
-    domains: ['miro.medium.com', 'avatars.githubusercontent.com'],
+    domains: ['miro.medium.com'],
   },
   pageExtensions: ['mdx', 'md', 'tsx', 'ts'],
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/posts',
-        permanent: true,
-      },
-    ]
-  },
 };
 
 module.exports = nextConfig;

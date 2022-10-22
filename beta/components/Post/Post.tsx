@@ -11,7 +11,7 @@ const Post: React.FC<PostProps> = ({ children, meta, mdxDescription }) => {
   const { asPath } = router;
   return (
     <>
-      <NextSeo title={meta.title} description={meta.description} canonical={`https://nkthanh.dev${asPath}`} />
+      <NextSeo title={meta.title} description={meta.description} />
 
       <div className={style.root}>
         <div className={style.heading}>
