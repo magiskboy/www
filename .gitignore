@@ -16,7 +16,7 @@ package-lock.json
 beta/out/
 
 ./themes/*
-public
+/public
 .DS_Store
 
 *~
