@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import getConfig from 'next/config';
 
 const GithubComment: React.FC = () => {
-  const renderUtternce = useCallback((commentRef: HTMLDListElement) => {
+  const renderUtternce = useCallback((commentRef: HTMLDivElement) => {
     const { publicRuntimeConfig } = getConfig();
     const { utterancRepo, theme } = publicRuntimeConfig;
     const commentsTheme = theme && theme === 'dark'
