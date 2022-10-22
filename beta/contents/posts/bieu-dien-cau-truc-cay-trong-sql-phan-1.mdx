@@ -3,26 +3,28 @@ title: "Biểu diễn cấu trúc cây trong cơ sở dữ liệu quan hệ | Ph
 date: 2021-05-14T07:14:00+07:00
 published: true
 tags:
-- programming
-- database
-- tree
+  - programming
+  - database
+  - tree
 categories:
-- Database
+  - Database
 description: "Cây là một cấu trúc dữ liệu phổ biến và có ứng dụng rất nhiều để việc giải quyết các vấn đề trong máy tính. Để biểu diễn và cài đặt cây trong bộ nhớ trong khá đơn giản. Vậy việc biểu diễn cây trong cơ sở dữ liệu như thế nào, có khác biệt gì so với khi cài đặt trong bộ nhớ trong, chúng ta cùng tìm hiểu nhé."
 ---
 
 ### Cấu trúc cây
 
-Sau đây là định nghĩa về cây theo [Wikipedia](https://vi.wikipedia.org/wiki/C%C3%A2y_(c%E1%BA%A5u_tr%C3%BAc_d%E1%BB%AF_li%E1%BB%87u))
+Sau đây là định nghĩa về cây theo [Wikipedia](<https://vi.wikipedia.org/wiki/C%C3%A2y_(c%E1%BA%A5u_tr%C3%BAc_d%E1%BB%AF_li%E1%BB%87u)>)
 
 > Trong khoa học máy tính, cây là một cấu trúc dữ liệu được sử dụng rộng rãi gồm một tập hợp các nút (tiếng Anh: node) được liên kết với nhau theo quan hệ cha-con.
 
 <Image
-    src="/images/400px-Binary_tree.png"
-    title="Ví dụ về một cây nhị phân"
+  src="/images/400px-Binary_tree.png"
+  title="Ví dụ về một cây nhị phân"
+  height={200}
 />
 
 Cây có rất nhiều loại, tuỳ thuộc vào đặc điểm cũng như những vấn đề mà nó giải quyết như
+
 - cây nhị phân, cây k phân
 - cây nhị phân tìm kiếm - binary search tree
 - cây đỏ đen
@@ -39,7 +41,7 @@ Nút {
 }
 ```
 
-hoặc 
+hoặc
 
 ```
 Nút {
@@ -52,6 +54,7 @@ Nút {
 Chắc hẳn các bạn thường cài đặt theo cách thứ 2 :smile:
 
 Bây giờ, mình cùng nói qua các toán tử chính với cấu trúc cây phổ biến - cây k phân
+
 - thêm một nút vào cây
 - xoá một nút khỏi cây
 - tìm kiếm một nút trong cây (nâng cao hơn trong thực tế là lấy tất cả cây với nút gốc)
@@ -69,6 +72,7 @@ class Node:
 ```
 
 Bây giờ mình sẽ biểu diễn cấu trúc hình bên dưới bằng class Node bên trên nhé
+
 ```
 store
 ├─ book
@@ -116,13 +120,15 @@ Như bạn biết rằng, cơ sở dữ liệu quan hệ (SQL) biểu diễn d�
 Sau đây là ERD cho cấu trúc nút của cây muốn biểu diễn trong SQL
 
 <Image
-    src="/images/note-tree-in-db.png"
-    title="Node trong cơ sở dữ liệu"
+  src="/images/note-tree-in-db.png"
+  title="Node trong cơ sở dữ liệu"
+  height={120}
 />
 
 Do trong một số loại cơ sở dữ liệu quan hệ không có cấu trúc danh sách nên mình không thể biểu diễn danh sách của một nút dưới dạng danh sách con của nó mà mình sẽ làm ngược lại, trỏ nút đó tới cha của nó (cách biểu diễn thứ 1)
 
 Sự khác nhau ở đây là gì? Khi ta có một nút trong tay
+
 - cách 1: ta có thể biết ngay nút cha của nó
 - cách 2: ta có thể biết ngay các nút con của nó
 
@@ -149,11 +155,12 @@ Vậy làm sao ta có thể tìm tất cả các nút con của một nút cho t
 
 Mình có một thủ thuật nhỏ ở đây, ta sẽ thêm một trường hỗ trợ việc này là `path`
 
-Cấu trúc trường `path` như sau: 
+Cấu trúc trường `path` như sau:
 
 <center> `key ông/key cha/key nút hiện tại` </center>
 
 Lúc truy vấn, ta sẽ truy vấn subtree của một nút có key là `store` như sau:
+
 ```sql
 SELECT * FROM nodes WHERE path LIKE '%/store/%' OR path LIKE 'store/%';
 ```
@@ -166,15 +173,26 @@ Lưu ý, kết quả ta nhận được có cấu trúc như sau
 
 ```json
 [
-    {"key": 2, "data": "book", "path": "store/book", "parent_key": 1},
-    {"key": 4, "data": "science", "path": "store/book/science", "parent_key": 2},
-    {"key": 3, "data": "novel", "path": "store/book/novel", "parent_key": 2},
-    {"key": 6, "data": "macbook", "path": "store/computer/macbook", "parent_key": 5},
-    {"key": 1, "data": "store", "path": "store", "parent_key": null},
-    {"key": 5, "data": "computer", "path": "store/computer", "parent_key": 1},
-    {"key": 7, "data": "dell", "path": "store/computer/dell", "parent_key": 5},
+  { "key": 2, "data": "book", "path": "store/book", "parent_key": 1 },
+  {
+    "key": 4,
+    "data": "science",
+    "path": "store/book/science",
+    "parent_key": 2
+  },
+  { "key": 3, "data": "novel", "path": "store/book/novel", "parent_key": 2 },
+  {
+    "key": 6,
+    "data": "macbook",
+    "path": "store/computer/macbook",
+    "parent_key": 5
+  },
+  { "key": 1, "data": "store", "path": "store", "parent_key": null },
+  { "key": 5, "data": "computer", "path": "store/computer", "parent_key": 1 },
+  { "key": 7, "data": "dell", "path": "store/computer/dell", "parent_key": 5 }
 ]
 ```
+
 OK, giờ các bạn hãy đọc đoạn code sau và suy ngẫm điểm tương đồng nhé
 
 ```python
@@ -241,7 +259,7 @@ for path in sorted(paths):
 
 Bạn có thể thấy rằng, cách duyệt cây theo thứ tự prefix có kết quả tương tự như cách sắp xếp trường `path` theo thứ tự tăng dần, và dựa vào đặc điểm này, ta sẽ có hàm xây dựng cấu trúc thứ 2 như sau
 
- Đầu tiên, mình sẽ thêm truy vấn sắp xếp như sau
+Đầu tiên, mình sẽ thêm truy vấn sắp xếp như sau
 
 ```sql
 SELECT * FROM nodes WHERE path LIKE '%/store/%' OR path LIKE 'store/%' ORDER BY path;
@@ -251,13 +269,23 @@ Ta sẽ nhận được kết quả
 
 ```json
 [
-    {"key": 1, "data": "store", "path": "store", "parent_key": null},
-    {"key": 2, "data": "book", "path": "store/book", "parent_key": 1},
-    {"key": 3, "data": "novel", "path": "store/book/novel", "parent_key": 2},
-    {"key": 4, "data": "science", "path": "store/book/science", "parent_key": 2},
-    {"key": 5, "data": "computer", "path": "store/computer", "parent_key": 1},
-    {"key": 6, "data": "macbook", "path": "store/computer/macbook", "parent_key": 5},
-    {"key": 7, "data": "dell", "path": "store/computer/dell", "parent_key": 5},
+  { "key": 1, "data": "store", "path": "store", "parent_key": null },
+  { "key": 2, "data": "book", "path": "store/book", "parent_key": 1 },
+  { "key": 3, "data": "novel", "path": "store/book/novel", "parent_key": 2 },
+  {
+    "key": 4,
+    "data": "science",
+    "path": "store/book/science",
+    "parent_key": 2
+  },
+  { "key": 5, "data": "computer", "path": "store/computer", "parent_key": 1 },
+  {
+    "key": 6,
+    "data": "macbook",
+    "path": "store/computer/macbook",
+    "parent_key": 5
+  },
+  { "key": 7, "data": "dell", "path": "store/computer/dell", "parent_key": 5 }
 ]
 ```
 

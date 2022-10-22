@@ -4,13 +4,13 @@ date: 2021-03-19T08:37:00+07:00
 published: true
 favorite: true
 tags:
-- python
-- programming
-- network
-- asynchronous
-- coroutine
+  - python
+  - programming
+  - network
+  - asynchronous
+  - coroutine
 categories:
-- Python
+  - Python
 author: "Nguyễn Khắc Thành"
 description: "Bất đồng bộ là một khái niệm rất hay gặp trong các ngôn ngữ lập trình như Javascript, Kotlin hay Python. Đặc biệt, các lập trình viên làm việc nhiều với networking như các web developer thường xuyên phải làm việc với khái niệm này. Trong bài viết này, mình sẽ giải thích một trong các thành phần cấu tạo nên hệ sinh thái async programming trong Python và tất nhiên, nó cũng mang tư tưởng này lên một số ngôn ngữ khác."
 ---
@@ -94,7 +94,11 @@ Donald Knuth nói rằng:
 
 Đúng vậy, tổng quát hoá, các hàm bình thường chúng ta hay sử dụng (hàm bị giải phóng context sau khi thoát khỏi hàm) là trường hợp đặc biệt của coroutine - nơi đó context có thể được giữ lại khi nó được tạm dùng.
 
-<Image src="/images/subroutine_coroutine.png" title="Subroutine vs Coroutine" />
+<Image
+  src="/images/subroutine_coroutine.png"
+  title="Subroutine vs Coroutine"
+  height={200}
+/>
 
 **Tại sao coroutine lại hữu dụng cho event system?**
 

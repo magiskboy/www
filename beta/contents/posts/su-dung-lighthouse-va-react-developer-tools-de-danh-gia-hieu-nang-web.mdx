@@ -4,11 +4,11 @@ date: 2022-02-12T23:32:00+07:00
 author: "Nguyễn Khắc Thành"
 published: true
 tags:
-- web
-- google_lighthouse
-- react_developer_tools
+  - web
+  - google_lighthouse
+  - react_developer_tools
 categories:
-- web_development
+  - web_development
 description: "Sử dụng Lighthouse và React Developer Tools để đánh giá hiệu năng web"
 ---
 
@@ -19,14 +19,13 @@ Làm sao chúng ta có thể trả lời câu hỏi: **Website này có hiệu n
 Có nhiều cách để đo các chỉ số trên và trong bài viết này mình sẽ sử dụng [Google Lighthouse](https://developers.google.com/web/tools/lighthouse/) và [React Developer Tools
 ](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) để đo lường chất lượng cũng như phát hiện những vấn đề mà website của chúng ta có thể đang gặp phải.
 
-
 ## 1. Lighthouse
 
 Google Lighthouse là công cụ được tích hợp sẵn trong Google Chrome. Để mở nó, bạn nhấn tổ hợp phím **Ctrl + Shift + I** (hoặc **Optional + Command + J** trên MacOS) để truy cập DevTools, sau đó chọn tab **Lighthouse**
 
 <Image
-    src="/images/lighthouse-1.png"
-    title="Màn hình Lighthouse trên Google Chrome"
+  src="/images/lighthouse-1.png"
+  title="Màn hình Lighthouse trên Google Chrome"
 />
 
 Có 2 phần chính bạn cần chú ý trên Lighthouse là **Categorise** và **Device**. **Categories** là những loại chỉ số mà bạn cần đo, ở đây mình chọn các chỉ số liên quan đến hiệu năng - Performance. Tiếp theo, chọn loại thiết bị mà bạn muốn đo, ở đây mình chọn Desktop.
@@ -38,13 +37,14 @@ Trong bài viết này, mình tập trung vào phần **Performance** vì đó l
 ### Điểm tổng quan
 
 <Image
-    src="/images/lighthouse-2.png"
-    title="Điểm hiệu năng trung bình và điểm của từng chỉ số"
+  src="/images/lighthouse-2.png"
+  title="Điểm hiệu năng trung bình và điểm của từng chỉ số"
 />
 
 Bạn có thể thấy trong hình, điểm trung bình về hiệu năng là 40. Điểm số này được tính dựa trên điểm các chỉ số khác về hiệu năng, mỗi chỉ số khác nhau sẽ có các trọng số khác nhau. Các chỉ số có màu đỏ là những thứ chúng ta cần khắc phục, nên quan tâm đến những chỉ số màu vàng và những chỉ số màu xanh là những chỉ số tốt chúng ta cần duy trì.
 
 Ở đây có thể thấy website này đang khá tệ do:
+
 - thời gian block cao - [Total Block Time](https://web.dev/tbt/): 0.5s
 - thời gian cần để lượng lớn các phần tử hiển thị trên viewport lớn - [Largest Contentful Paint](https://web.dev/lcp/): 2.5s
 - thời gian nội dung được hiển thị trực quan khi trang đang được tải lớn - [Speed Index](https://web.dev/speed-index/): 3.3s
@@ -56,12 +56,10 @@ Lưu ý: điểm của các chỉ số này chỉ là tương đối ngay tại 
 
 ### Những chỉ số có thể cải thiện
 
-<Image
-    src="/images/lighthouse-3.png"
-    title="Những chỉ số có thể cải thiện"
-/>
+<Image src="/images/lighthouse-3.png" title="Những chỉ số có thể cải thiện" />
 
 Lighthouse đưa ra một viễn cảnh nơi website của bạn có thể đạt được như sau:
+
 - Thời gian server phản hồi có thể cải thiện 0.88s
 - Bạn có thể cắt bỏ những đoạn JS thừa để giảm thời gian load 0.6s
 
@@ -72,8 +70,8 @@ Nói chung đây chỉ là những dự đoán của Lighthouse và nó còn tu�
 ### Chẩn đoán những vấn đề hiện tại
 
 <Image
-    src="/images/lighthouse-4.png"
-    title="Nguyên nhân (có thể) cần khắc phục"
+  src="/images/lighthouse-4.png"
+  title="Nguyên nhân (có thể) cần khắc phục"
 />
 
 Ở đây mình thấy có 2 vấn đề quan trọng là thời gian main thread bị block quá dài và lượng JS thừa làm thời gian xử li kéo dài 2.3s.
@@ -91,8 +89,8 @@ React Developer Tools là công cụ cho phép bạn debug ứng dụng ReactJS 
 Sau khi load trang, bạn mở Chrome DevTools như phần trên rồi chọn tab **Profiler** như hình
 
 <Image
-    src="/images/react-developer-tools-1.png"
-    title="React Developer Tools"
+  src="/images/react-developer-tools-1.png"
+  title="React Developer Tools"
 />
 
 Để bắt đầu recording, bạn click vào biểu tượng reload góc trên bên trái. Cơ bản, website sẽ reload và được record lại, sau khi thấy website được load hết, bạn click vào biểu tượng stop màu đỏ góc trên bên trái để dừng việc record và hiển thị kết quả đo lường như hình dưới
@@ -100,8 +98,8 @@ Sau khi load trang, bạn mở Chrome DevTools như phần trên rồi chọn ta
 Ở đây mình chọn **Flamegraph** cho bài viết này, các bạn có thể tham khảo thêm **Ranked** trên google nhé :smile:
 
 <Image
-    src="/images/react-developer-tools-2.png"
-    title="Thời gian render của từng component dưới dạng Flamegraph"
+  src="/images/react-developer-tools-2.png"
+  title="Thời gian render của từng component dưới dạng Flamegraph"
 />
 
 Để hiểu rõ hơn về biểu đồ này, mình sẽ giải thích sơ qua về quá trình render của React.
@@ -114,8 +112,9 @@ Phần bên phải là thông tin chi tiết về lần commit đó của cả a
 Ngoài ra, góc trên bên phải có 1 barchart. Mỗi cột trong barchart đại diện cho thời gian render của commit đó. Trong hình có thể thấy có 5 lần commit có thời gian render khá dài.
 
 <Image
-    src="/images/react-developer-tools-4.png"
-    title="Tổng quan các lần commit của app"
+  src="/images/react-developer-tools-4.png"
+  title="Tổng quan các lần commit của app"
+  height={80}
 />
 
 Nhìn hình trên, chúng ta thấy số lần commit là 60 và biểu đồ hiện tại là commit đầu tiên.
@@ -123,8 +122,8 @@ Nhìn hình trên, chúng ta thấy số lần commit là 60 và biểu đồ hi
 Khi click vào từng component sẽ hiển thị số lần render của component đó.
 
 <Image
-    src="/images/react-developer-tools-3.png"
-    title="Chi tiết về render Layout component"
+  src="/images/react-developer-tools-3.png"
+  title="Chi tiết về render Layout component"
 />
 
 Như trong hình bạn có thể thấy, component cha ở trên, các component con đứng ngang hàng với nhau và ở dưới component cha.
@@ -133,6 +132,6 @@ Thời gian render component cha là tổng thời gian render các component co
 
 Khi tối ưu render, bạn sẽ nhìn lên barchart và click vào những thanh cao nhất hoặc màu vàng vì đó là những lần commit có thời gian render cao, cần tối ưu.
 
-## 3. Kết bài 
+## 3. Kết bài
 
 Sau bài viết này, các bạn đã có thêm những công cụ hữu ích để có thể đưa ra đánh giá về 1 website có hiệu năng cao hay thấp, đặc biệt là có cái nhìn chi tiết hơn về ứng dụng web nói chung và ứng dụng React nói riêng để từ đó đưa ra những quyết định nên tối ưu ở đâu và như thế nào.

@@ -3,16 +3,19 @@ import NextImage, { ImageProps as NextImageProps } from "next/image";
 import style from "./Image.module.scss";
 
 const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
-  if (!rest.width) {
-    rest.width = '500px';
-  }
+  rest = {
+    ...rest,
+    width: rest.width || 500,
+    height: rest.height || 300,
+    layout: "responsive",
+    objectFit: "contain",
+    blurDataURL: "/images/empty.jpg",
+    placeholder: "blur",
+  };
 
-  if (!rest.height) {
-    rest.height = '300px';
-  }
   return (
     <div className={`image ${style.root}`}>
-      <NextImage {...rest} layout="responsive" />
+      <NextImage {...rest} />
       <h5>{title}</h5>
     </div>
   );

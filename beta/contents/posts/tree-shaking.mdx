@@ -42,12 +42,13 @@ Bằng việc tạo ra một dependency graph, các bundler sẽ biết những 
 Cách đơn giản nhất là bạn có thể bundle ứng dụng của bạn khi sử dụng thư viện đó và sau đó kiểm tra output của nó. Nếu nó chứa những đoạn code không sử dụng, đồng nghĩa với việc thư viện đó có khả năng không thể tree shake được.
 
 Có hai điều bạn cần lưu ý là:
+
 - Tree shaking chỉ xaỷ ra ở code application, không phải ở code library. Vì chỉ ở application, bundler mới biết đâu là đoạn code được sử dụng.
 - Thư viện nên đảm bảo khả năng tree shake cho bundler sau này.
 
 <Image
-    src="/simple-export-module-graph.svg"
-    title="Nguồn: https://blog.theodo.com"
+  src="/images/simple-export-module-graph.svg"
+  title="Nguồn: https://blog.theodo.com"
 />
 
 Trong hình trên, khi tree shaking hoạt động, hàm **getUserPhoneNumber** sẽ bị gỡ khỏi bundle file.
@@ -100,17 +101,18 @@ Hiện nay, đa số các thư viện JS sẽ hỗ trợ đồng thời cả 2 f
   "main": "dist/index.cjs",
   "module": "dist/index.ejs"
 }
-
 ```
 
 <Image
-    src="/esmodules-module-graph.svg"
-    title="Nguồn: https://blog.theodo.com"
+  src="/images/esmodules-module-graph.svg"
+  title="Nguồn: https://blog.theodo.com"
+  height={400}
 />
 
 Với graph ở trên, hàm **getUserAccout** là một unused export nên bundler có thể sẽ gỡ bỏ **userAccount.js** file ra khỏi bundle. Điều này chưa chắc đã đúng, cùng tìm hiểu ở phần sau nhé :smile:
 
 Tóm lại, ở phần này, bạn cần nắm được:
+
 - ESM là điều kiện cần có để tree-shaking có thể hoạt động
 - Hãy đảm bảo thư viện mà bạn cung cấp hỗ trợ ESM
 - Chắc chắn thư viện mà bạn sử dụng hỗ trợ ESM khi có thể hoặc bạn sẽ không thể tree-shake :smile:
@@ -118,6 +120,7 @@ Tóm lại, ở phần này, bạn cần nắm được:
 ### Sử dụng side-effect optimization nếu có thể
 
 Trong Webpack có hai loại tối ưu:
+
 - **usedExports**: phát hiện những export module được sử dụng hoặc không được sử dụng ở bất kì đâu
 - **sideEffects**: bỏ qua những module mà ở đó không có bất kì export nào được sử dụng và free side-effect.
 
@@ -131,21 +134,21 @@ Trong vài trường hợp, chúng ta không muốn áp dụng side-effect optim
 
 ```json
 {
-  "sideEffects": [
-    "dist/style.css"
-  ]
+  "sideEffects": ["dist/style.css"]
 }
 ```
 
 Như vậy, ta có thể thấy sideEffect hoạt động hiệu quả hơn khi nó sẽ bỏ qua toàn bộ module/file và subtree.
 
 Để hiểu hơn về 2 tối ưu này, bạn cần nhớ rằng:
+
 - sideEffects bỏ qua toàn bộ những module được import nếu không có bất kì nội dung nào của nó được sử dụng.
 - usedExports gỡ bỏ hoàn toàn những export không được sử dụng ở bất kì module nào.
 
 Side effect sẽ không thực sự hiệu quả nếu module không được chia đủ nhỏ và phần sau mình sẽ nói rõ hơn ý này.
 
 Tóm lại, ở phần này, các bạn cần nắm những ý sau:
+
 - tree shaking có 2 phần: **used exports** và **side effects**
 - Side efffect hiệu quả hơn việc chỉ sử dụng **used exports**
 - Đảm bảo thư viện của bạn phải free side-effect trước khi dùng tối ưu này
@@ -181,8 +184,9 @@ Khi Webpack bundle, mặc dù **checkExistance** không được sử dụng nh�
 Nhưng may mắn là trong Rollup, bạn có thể cấu hình **preserveModules: true** nếu muốn giữ nguyên cấu trúc của thư viện và khi đó, lodash sẽ không được import do tối ưu side-effect sẽ cắt bỏ toàn bộ subtree của **checkExistance**
 
 <Image
-    src="/split-modules-cjs-module-graph.svg"
-    title="Nguồn: https://blog.theodo.com"
+  src="/images/split-modules-cjs-module-graph.svg"
+  title="Nguồn: https://blog.theodo.com"
+  height={400}
 />
 
 ### Code split và việc chia nhỏ code
@@ -247,8 +251,9 @@ main();
 ```
 
 <Image
-    src="/code-splitting-without-preserving-module-structure-graph.svg"
-    title="Nguồn: https://blog.theodo.com"
+  src="/images/code-splitting-without-preserving-module-structure-graph.svg"
+  title="Nguồn: https://blog.theodo.com"
+  height={400}
 />
 
 Trong trường hợp nếu chỉ sử dụng **usedExports** thì nó không thể phát hiện module nào nên được gỡ bỏ vì phương pháp này chỉ hoạt động ở module scope. Do đó, mặc dù **serviceAccount2.js** không sử dụng **userAccount** nhưng nó vẫn không được gán là unused do nó được dùng trong **serviceAccount1.js**
@@ -260,8 +265,9 @@ Nhưng nếu chúng ta sử dụng phương pháp **side-effect**, nó có thể
 Một cách dễ hiểu để phân biệt hai phương pháp này là: Nếu ta coi toàn bộ dependencies là một cái cây thì phương pháp **usedExports** sẽ nhìn từ lá lên trên gốc để quyết định việc có nên cắt bỏ chiếc lá đó hay không. Còn **side-effect** sẽ nhìn từ trên xuống để quyết định cắt bỏ toàn bộ subtree đó hay không.
 
 <Image
-    src="/code-splitting-with-preserving-module-structure-graph.svg"
-    title="Nguồn: https://blog.theodo.com"
+  src="/images/code-splitting-with-preserving-module-structure-graph.svg"
+  title="Nguồn: https://blog.theodo.com"
+  height={400}
 />
 
 Tóm lại phần này chúng ta cần nhớ rằng: nếu trên cây, những chiếc lá càng nhỏ, khớp nối càng lỏng lẻo thì việc rung cây để cho lá rụng sẽ dễ hơn những chiếc lá lớn và có khớp nối chắc.
@@ -269,6 +275,7 @@ Tóm lại phần này chúng ta cần nhớ rằng: nếu trên cây, những c
 Điều này ám chỉ những chiếc lá là module và code được chia vào các module nhỏ (lá bé) và free side-effect (khớp nối lỏng lẻo) thì càng dễ dàng cho việc tree-shaking.
 
 Vậy tóm lại qua bài viết này, các bạn cần nhớ được những ý sau:
+
 - luôn sử dụng những thư viện hỗ trợ chuẩn ESM khi có thể, nếu bạn thấy một đoạn code nào đó không thể tree-shaking, hãy kiểm tra lại format của nó trước tiên
 - Giữ cho code free side-effect
 - Chia code logic vào các module đủ nhỏ để dễ dàng cho việc tree-shaking

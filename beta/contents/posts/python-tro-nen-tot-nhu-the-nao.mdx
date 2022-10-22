@@ -3,9 +3,9 @@ title: 'Python trở nên "tốt" như thế nào?'
 date: 2021-08-12T13:09:00+07:00
 published: true
 tags:
-- python
+  - python
 categories:
-- Python
+  - Python
 author: "Nguyễn Khắc Thành"
 description: "Python xuất hiện từ rất lâu, tầm những năm đầu thập niên 90. Nhưng cho đến nay, nhiều người vẫn chỉ biết đến Python là ngôn ngữ lập trình dành cho các lĩnh vực như trí tuệ nhân tạo, khoa học dữ liệu, ... Qua bài viết này, mình muốn cho các bạn thấy Python có thể làm những gì và tại sao Python trở thành một trong những ngôn ngữ có vai trò quan trọng trong thế giới lập trình."
 ---
@@ -15,6 +15,7 @@ Trong nhiều năm phát triển, các lập trình viên đã biến Python th�
 <Image
   src="/images/GuidoAvatar_400x400.jpg"
   title="Guido van Rossum - cha đẻ của Python"
+  height={200}
 />
 
 Python xuất hiện khoảng hơn 30 năm và đúng như chiến lược và mục đích của những nhà sáng lập: tính đơn giản, linh hoạt, khả năng mở rộng cùng với sự phát triển mạnh mẽ của sức mạnh phần cứng đã giúp Python có chỗ đứng vững chắc trên bản đồ thế giới các ngôn ngữ lập trình.
@@ -31,12 +32,12 @@ Như mình đã nói, Python thường được mọi người biết đến là
 
 Ngoài ra, ở mảng này, còn có các thư viện cho học máy như Theano, MXnet, Tensorflow, scikit-learn, ...
 
-
-Vào năm 2003, Phillip J. Eby đề xuất một tiêu chuẩn nhằm cải thiện mảng phát triển web cho Python thay vì sử dụng giao tiếp CGI trước đó. Nó được biết đến  với cái tên [PEP333](https://www.python.org/dev/peps/pep-0333/). Nhờ nó, các lập trình viên như có một quy chuẩn để phát triển các ứng dụng web mà không phải lo về vấn đề giao tiếp với webserver. Thời điểm này, có rất nhiều các framework web ra đời và nổi tiếng đến tận ngày nay như Diango(2005), web2py(2007), Bottle(2009), pyramid(2010), Flask(2010).
+Vào năm 2003, Phillip J. Eby đề xuất một tiêu chuẩn nhằm cải thiện mảng phát triển web cho Python thay vì sử dụng giao tiếp CGI trước đó. Nó được biết đến với cái tên [PEP333](https://www.python.org/dev/peps/pep-0333/). Nhờ nó, các lập trình viên như có một quy chuẩn để phát triển các ứng dụng web mà không phải lo về vấn đề giao tiếp với webserver. Thời điểm này, có rất nhiều các framework web ra đời và nổi tiếng đến tận ngày nay như Diango(2005), web2py(2007), Bottle(2009), pyramid(2010), Flask(2010).
 
 <Image
   src="/images/logoPython.png"
   title="Biểu tượng của Python"
+  height={150}
 />
 
 Khoảng những năm 2015 đến 2016, các thành viên trong core team của Python đã đề xuất một tiêu chuẩn cho phép các nhà phát triển tạo ra các task vụ bất đồng bộ một cách dễ dàng mà không phải phụ thuộc vào các thư viện bên thứ ba khác nhau. Đó là PEP 492 và PEP 530 và mình có giới thiệu về chúng trong [bài viết này](<Link href="/posts/bat-dong-bo-trong-python-phan-1-coroutine" />). Thật đáng ngưỡng mộ vì khi sinh ra, Python không được định hướng để thực hiện các toán tử async như Javasript hay Go, nhưng quá trình thai nghén làm nền cho việc này đã xuất hiện từ các phiên bản tiền nhiệm và nó có một hiệu năng có thể coi là chấp nhận được.
@@ -60,12 +61,13 @@ Chúng ta có một công cụ giúp bạn transpile code tựa Python sang C l�
 
 <Image
   src="/images/django-hexbin.png"
-  title="Django - một trong những web framaework nổi tiếng được viết bằng Python" 
+  title="Django - một trong những web framaework nổi tiếng được viết bằng Python"
+  height={150}
 />
 
 Khi chưa có sự tham gia của JS hay Go như bây giờ, các nhà phát triển sử dụng nhiều các thư viện xử lí bất đồng bộ để tăng hiệu năng của Python như dask, eventlet hay curio...
 
-Vào năm 2015, thời điểm phát triển mạnh mẽ của JS với engine V8 đã biến JS trở thành ông vua của thể loại bất động bộ, đặc biệt là các ứng dụng network. Nhận thấy điều này, các nhà phát triển Python đã  đề xuất các tiêu chuẩn để Python có thể cạnh tranh với JS ở lĩnh vực này. Họ đã build tính năng này từ đầu và thật kinh ngạc, hiệu năng của nó chẳng thua kém gì người hàng xóm JS cả.
+Vào năm 2015, thời điểm phát triển mạnh mẽ của JS với engine V8 đã biến JS trở thành ông vua của thể loại bất động bộ, đặc biệt là các ứng dụng network. Nhận thấy điều này, các nhà phát triển Python đã đề xuất các tiêu chuẩn để Python có thể cạnh tranh với JS ở lĩnh vực này. Họ đã build tính năng này từ đầu và thật kinh ngạc, hiệu năng của nó chẳng thua kém gì người hàng xóm JS cả.
 
 Vậy tóm lại, sự thành công của Python là kết quả của việc luôn làm mới bản thân, có sự đóng góp của chính những người trực tiếp trải nghiệm, hàng loạt các PEP, những hội nghị chia sẻ được tổ chức hằng năm đã đưa Python lên đến thời kì đỉnh cao như bây giờ.
 
@@ -77,4 +79,4 @@ Tuy Python có nhiều lợi thế như vậy nhưng chúng ta không nên áp d
 - chính sự sáng sủa, dễ học, dễ đọc của Python nên nó khiến code của bạn có quá nhiều black box. Bạn có các hàm có sẵn những thực sự bạn không biết chúng chạy ra sao, bạn cũng không cần phải khai báo biến mà có thể dụng với bất kì loại giá trị nào. Chính điều đó khiến code của bạn trở nên rối rắm và khó lường.
 - việc Python thường xuyên có những cập nhật dẫn đến việc mất tính ổn định và đồng nhất giữa các phiên bản. Bạn phải cân nhắc kĩ lưỡng trước khi nâng cấp lên một phiên bản mới hơn và thường thì nó sẽ có một vài breaking change rất dễ gặp nếu như không đọc kĩ lưu ý của nhà phát triển.
 
-Như vậy, mình đã chia sẻ cho bạn những lí do mà theo mình đã đưa Python đến một vị trí như bây giờ. Hi vọng qua bài viết này, bạn sẽ có cái nhìn chính xác hơn trước khi đưa Python vào dự án của bản thân. 
+Như vậy, mình đã chia sẻ cho bạn những lí do mà theo mình đã đưa Python đến một vị trí như bây giờ. Hi vọng qua bài viết này, bạn sẽ có cái nhìn chính xác hơn trước khi đưa Python vào dự án của bản thân.
