@@ -19,7 +19,6 @@ const nextConfig = {
         link: "https://twitter.com/mag1skboy",
       },
     ],
-
     navs: [
       {
         title: "Bài viết",
@@ -35,6 +34,9 @@ const nextConfig = {
       },
     ],
     title: "Nguyễn Khắc Thành",
+    pagination: {
+      perPage: 5,
+    },
   },
   images: {
     domains: ["miro.medium.com", "meme-arsenal.com"],
