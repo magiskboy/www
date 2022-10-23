@@ -1,5 +1,3 @@
-import Row from './Row';
-import Col from './Col';
-import MainWrapper  from './MainWrapper';
-
-export { Row, Col, MainWrapper };
+export * from "./Col";
+export * from "./Row";
+export * from "./Layout";

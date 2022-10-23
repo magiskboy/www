@@ -1,19 +1,9 @@
-import path from "path";
-import fs from "fs/promises";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote";
-import rehypeHighlight from "rehype-highlight";
-import rehypeKatex from "rehype-katex";
-import remarkMath from "remark-math";
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Link from "next/link";
-import fm from "front-matter";
-import GithubComment from "components/GithubComment";
-import Image from "components/Image";
-import Table from "components/Table";
-import PostWrapper, { Meta } from "components/Post";
-import { getSlugByMdx } from "helper";
-import { POST_DIR } from "contants";
+import { Comment, Image, Table, Meta, Post as PostWrapper } from "components";
+import getPosts from "get-post";
 
 const components = { Image, Table, Link };
 
@@ -25,7 +15,7 @@ const Post: NextPage<PageProps> = ({ source, meta, mdxDescription }) => {
       <PostWrapper meta={newMeta} mdxDescription={mdxDescription}>
         <MDXRemote {...source} components={components} />
       </PostWrapper>
-      <GithubComment />
+      <Comment />
     </>
   );
 };
@@ -34,25 +24,26 @@ export default Post;
 
 export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
   const slug = (context.params?.slug as string) || "";
-  const { meta, source } = await getPostContent(slug);
-
-  const mdxSource = await serialize(source, {
-    mdxOptions: {
-      rehypePlugins: [rehypeHighlight, rehypeKatex],
-      remarkPlugins: [remarkMath],
+  const post = (await getPosts()).find((post) => post.slug === slug);
+  if (!post) throw new Error(`${slug} not found`);
+  return {
+    props: {
+      source: post.mdxBody,
+      meta: {
+        ...post.meta,
+        date: (post.meta.date as Date).toUTCString(),
+      },
+      mdxDescription: post.mdxDescription,
     },
-  });
-
-  const mdxDescription = await serialize(meta.description || "");
-
-  return { props: { source: mdxSource, meta, mdxDescription } };
+  };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const dir = path.join(".", POST_DIR);
-  const files = await fs.readdir(dir);
+  const paths = (await getPosts()).map((post) => ({
+    params: { slug: post.slug },
+  }));
   return {
-    paths: files.map((file) => ({ params: { slug: getSlugByMdx(file) } })),
+    paths,
     fallback: false,
   };
 };
@@ -61,26 +52,4 @@ interface PageProps {
   meta: Meta;
   source: Awaited<ReturnType<typeof serialize>>;
   mdxDescription: Awaited<ReturnType<typeof serialize>>;
-}
-
-async function getPostContent(
-  slug: string
-): Promise<{ meta: Meta; source: string }> {
-  const filename = path.join(".", POST_DIR, `${slug}.mdx`);
-  const stat = await fs.stat(filename);
-
-  if (stat.isFile()) {
-    const data = await fs.readFile(filename, { encoding: "utf8" });
-    const parsed = fm<Meta>(data.toString());
-    const meta = parsed.attributes;
-    if (typeof meta.date === "object") {
-      meta.date = meta.date.toUTCString();
-    }
-    return {
-      meta,
-      source: parsed.body,
-    };
-  }
-
-  throw new Error(`${slug} not found`);
 }

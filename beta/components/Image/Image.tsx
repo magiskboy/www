@@ -2,7 +2,7 @@ import React from "react";
 import NextImage, { ImageProps as NextImageProps } from "next/image";
 import style from "./Image.module.scss";
 
-const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
+export const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
   rest = {
     ...rest,
     width: rest.width || 500,
@@ -20,7 +20,5 @@ const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
     </div>
   );
 };
-
-export default Image;
 
 type ImageProps = NextImageProps & { title?: string };

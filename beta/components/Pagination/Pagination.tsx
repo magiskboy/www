@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import style from "./Pagination.module.scss";
 
-const Pagination: React.FC<PaginationProps> = ({ pagination }) => {
+export const Pagination: React.FC<PaginationProps> = ({ pagination }) => {
   return (
     <div className={style.root}>
       {pagination.hasPrevious && (
@@ -19,8 +19,6 @@ const Pagination: React.FC<PaginationProps> = ({ pagination }) => {
     </div>
   );
 };
-
-export default Pagination;
 
 export interface PaginationProps {
   pagination: {

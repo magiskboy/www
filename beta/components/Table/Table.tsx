@@ -2,7 +2,7 @@ import style from "./Table.module.scss";
 import classnames from "classnames";
 import React, { ReactNode } from "react";
 
-const Table: React.FC<Props> = ({ data, headline, border = true }) => {
+export const Table: React.FC<Props> = ({ data, headline, border = true }) => {
   return (
     <table
       className={classnames({
@@ -36,5 +36,3 @@ interface Props {
   headline: string[];
   border?: boolean;
 }
-
-export default Table;

@@ -1,7 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import Navigation from "components/Navigation";
-import Footer from "components/Footer";
+import { Footer, Navigation } from "components";
 import { NextSeo } from "next-seo";
 import getConfig from "next/config";
 

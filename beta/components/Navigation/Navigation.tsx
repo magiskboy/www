@@ -3,7 +3,7 @@ import Link from "next/link";
 import style from "./Navigation.module.scss";
 import classnames from "classnames";
 
-const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
+export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
   navs,
   socials,
   ...rest
@@ -22,7 +22,13 @@ const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
         </Link>
         <div className={style.social}>
           {socials.map((item) => (
-            <a href={item.link} target="_blank" style={{ margin: "0 .5rem" }} rel="noreferrer" key={item.link}>
+            <a
+              href={item.link}
+              target="_blank"
+              style={{ margin: "0 .5rem" }}
+              rel="noreferrer"
+              key={item.link}
+            >
               {item.title}
             </a>
           ))}
@@ -43,5 +49,3 @@ interface Props {
   navs: { title: string; link: string }[];
   socials: { title: string; link: string }[];
 }
-
-export default Navigation;
