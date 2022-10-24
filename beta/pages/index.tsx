@@ -1,6 +1,6 @@
 import React from "react";
 import { NextPage, GetStaticProps } from "next";
-import getConfig from 'next/config';
+import getConfig from "next/config";
 import {
   PostItem,
   PostItemProps,
@@ -8,7 +8,7 @@ import {
   PaginationProps,
   Layout,
 } from "components";
-import getPaginations from 'get-pagination';
+import { getPosts, getPaginations } from "post-tool";
 
 const Homepage: NextPage<Props> = ({ paths, pagination }) => {
   return (
@@ -25,9 +25,12 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
+  const {
+    publicRuntimeConfig: { pagination: paginationConfig },
+  } = getConfig();
   const pageId = 1;
-  const pages = await getPaginations(paginationConfig.perPage);
+  const allPosts = await getPosts();
+  const pages = await getPaginations(allPosts, paginationConfig.perPage);
   const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,

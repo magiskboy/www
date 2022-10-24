@@ -2,9 +2,9 @@ import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote";
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Link from "next/link";
-import Head from 'next/head';
+import Head from "next/head";
 import { Comment, Image, Table, Meta, Post as PostWrapper } from "components";
-import getPosts from "get-post";
+import { getPosts } from "post-tool";
 
 const components = { Image, Table, Link };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
-import getConfig from 'next/config';
+import getConfig from "next/config";
 import {
   PostItem,
   PostItemProps,
@@ -8,7 +8,7 @@ import {
   PaginationProps,
   Layout,
 } from "components";
-import getPaginations from 'get-pagination';
+import { getPosts, getPaginations } from "post-tool";
 
 const Page: NextPage<Props> = ({ paths, pagination }) => {
   return (
@@ -25,12 +25,15 @@ const Page: NextPage<Props> = ({ paths, pagination }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
-  const paginations = await getPaginations(paginationConfig.perPage);
+  const {
+    publicRuntimeConfig: { pagination: paginationConfig },
+  } = getConfig();
+  const allPosts = await getPosts();
+  const paginations = await getPaginations(allPosts, paginationConfig.perPage);
   const paths = [];
   for (let i = 1; i <= paginations.length; ++i) {
     paths.push({
-      params: { id: i.toString() }
+      params: { id: i.toString() },
     });
   }
   return {
@@ -40,9 +43,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
+  const {
+    publicRuntimeConfig: { pagination: paginationConfig },
+  } = getConfig();
   const pageId = parseInt(context.params!.id as string);
-  const pages = await getPaginations(paginationConfig.perPage);
+  const allPosts = await getPosts();
+  const pages = await getPaginations(allPosts, paginationConfig.perPage);
   const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,
