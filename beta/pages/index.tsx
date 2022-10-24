@@ -1,5 +1,5 @@
 import React from "react";
-import { NextPage, GetStaticProps, GetStaticPaths } from "next";
+import { NextPage, GetStaticProps } from "next";
 import getConfig from 'next/config';
 import {
   PostItem,

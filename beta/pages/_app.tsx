@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const { socials, navs, title } = publicRuntimeConfig;
   return (
     <>
-      <NextSeo title={title} />
+      <NextSeo title={title} description={title} />
       <Navigation socials={socials} navs={navs} />
       <Component {...pageProps} />
       <Footer />
