@@ -1,9 +1,16 @@
 import React from "react";
-import { NextPage, GetStaticProps } from "next";
-import { PostItem, PostItemProps, Layout } from "components";
-import getPosts from "get-post";
+import { NextPage, GetStaticProps, GetStaticPaths } from "next";
+import getConfig from 'next/config';
+import {
+  PostItem,
+  PostItemProps,
+  Pagination,
+  PaginationProps,
+  Layout,
+} from "components";
+import getPaginations from 'get-pagination';
 
-const PostIndex: NextPage<Props> = ({ paths }) => {
+const Homepage: NextPage<Props> = ({ paths, pagination }) => {
   return (
     <Layout>
       {paths.map((path) => (
@@ -12,12 +19,16 @@ const PostIndex: NextPage<Props> = ({ paths }) => {
           <hr />
         </React.Fragment>
       ))}
+      <Pagination pagination={pagination} />
     </Layout>
   );
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const posts = (await getPosts()).filter((post) => post.meta.published);
+  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
+  const pageId = 1;
+  const pages = await getPaginations(paginationConfig.perPage);
+  const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,
     description: post.mdxDescription.compiledSource,
@@ -28,12 +39,14 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   return {
     props: {
       paths,
+      pagination,
     },
   };
 };
 
 interface Props {
   paths: PostItemProps[];
+  pagination: PaginationProps["pagination"];
 }
 
-export default PostIndex;
+export default Homepage;

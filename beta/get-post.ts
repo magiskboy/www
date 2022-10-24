@@ -37,7 +37,7 @@ async function getPosts(): Promise<Post[]> {
       })
   );
 
-  return posts.sort((a, b) => {
+  return posts.filter(post => post.meta.published).sort((a, b) => {
     const t1 = (a.meta.date as Date).getTime();
     const t2 = (b.meta.date as Date).getTime();
     if (t1 < t2) return 1;
@@ -48,7 +48,7 @@ async function getPosts(): Promise<Post[]> {
 
 type MDXContent = Awaited<ReturnType<typeof serialize>>;
 
-interface Post {
+export interface Post {
   slug: string;
   meta: Meta;
   mdxBody: MDXContent;

@@ -1,5 +1,6 @@
 import React from "react";
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
+import getConfig from 'next/config';
 import {
   PostItem,
   PostItemProps,
@@ -7,7 +8,7 @@ import {
   PaginationProps,
   Layout,
 } from "components";
-import getPosts from "get-post";
+import getPaginations from 'get-pagination';
 
 const Page: NextPage<Props> = ({ paths, pagination }) => {
   return (
@@ -23,15 +24,26 @@ const Page: NextPage<Props> = ({ paths, pagination }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
+  const paginations = await getPaginations(paginationConfig.perPage);
+  const paths = [];
+  for (let i = 1; i <= paginations.length; ++i) {
+    paths.push({
+      params: { id: i.toString() }
+    });
+  }
   return {
-    paths: [{ params: { id: "1" } }],
+    paths,
     fallback: false,
   };
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const posts = (await getPosts()).filter((post) => post.meta.published);
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
+  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
+  const pageId = parseInt(context.params!.id as string);
+  const pages = await getPaginations(paginationConfig.perPage);
+  const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,
     description: post.mdxDescription.compiledSource,
@@ -42,11 +54,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   return {
     props: {
       paths,
-      pagination: {
-        hasNext: true,
-        hasPrevious: true,
-        current: 2,
-      },
+      pagination,
     },
   };
 };
