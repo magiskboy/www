@@ -30,6 +30,7 @@
   padding: 0;
   margin: 0;
   flex-wrap: wrap;
+  list-style-type: none;
 
   :global .tag {
     margin-right: 1rem;
@@ -43,4 +44,5 @@
   &:hover {
     color: var(--link-state-color);
   }
+
 }

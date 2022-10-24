@@ -34,13 +34,15 @@ export const PostItem: React.FC<PostItemProps> = ({
         </div>
       )}
       <ul className={style.tags}>
-        {tags?.map((tag) => (
-          <Link key={tag} href={genTagLink(tag)} className="tag">
-            <a>
-              <span className={`tag ${style.tag}`}>{tag}</span>
-            </a>
-          </Link>
-        ))}
+        <li>
+          {tags?.map((tag) => (
+            <Link key={tag} href={genTagLink(tag)} className="tag">
+              <a>
+                <span className={`tag ${style.tag}`}>{tag}</span>
+              </a>
+            </Link>
+          ))}
+        </li>
       </ul>
     </div>
   );

@@ -45,6 +45,10 @@ const nextConfig = {
   async redirects() {
     return [{ source: "/posts", destination: "/", permanent: true }];
   },
+  i18n: {
+    locales: ['vi'],
+    defaultLocale: 'vi',
+  },
 };
 
 module.exports = nextConfig;
