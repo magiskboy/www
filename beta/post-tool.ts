@@ -104,7 +104,7 @@ export async function getCollection(
   return collections;
 }
 
-interface Collection {
+export interface Collection {
   label: string;
   slug: string;
   paginations: Pagination[];
