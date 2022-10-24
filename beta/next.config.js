@@ -19,7 +19,6 @@ const nextConfig = {
         link: "https://twitter.com/mag1skboy",
       },
     ],
-
     navs: [
       {
         title: "Bài viết",
@@ -35,11 +34,17 @@ const nextConfig = {
       },
     ],
     title: "Nguyễn Khắc Thành",
+    pagination: {
+      perPage: 5,
+    },
   },
   images: {
     domains: ["miro.medium.com", "meme-arsenal.com"],
   },
   pageExtensions: ["mdx", "md", "tsx", "ts"],
+  async redirects() {
+    return [{ source: "/posts", destination: "/", permanent: true }];
+  },
 };
 
 module.exports = nextConfig;

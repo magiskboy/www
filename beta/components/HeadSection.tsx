@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-const MetaSection: React.FC<{ meta: MetaProps }> = ({ meta }) => (
+export const MetaSection: React.FC<{ meta: MetaProps }> = ({ meta }) => (
   <Head>
     <title>{meta.title}</title>
     <meta name="description" content={meta.description} />

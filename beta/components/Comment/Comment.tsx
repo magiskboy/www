@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import getConfig from "next/config";
 
-const GithubComment: React.FC = () => {
+export const Comment: React.FC = () => {
   const renderUtternce = useCallback((commentWrapperEl: HTMLDivElement) => {
     const { publicRuntimeConfig } = getConfig();
     const { utterancRepo, theme } = publicRuntimeConfig;
@@ -31,5 +31,3 @@ const GithubComment: React.FC = () => {
     ></div>
   );
 };
-
-export default GithubComment;

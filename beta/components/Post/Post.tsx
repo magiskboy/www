@@ -1,12 +1,16 @@
 import React from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
-import { MDXRemote } from 'next-mdx-remote';
-import DateTime from "components/DateTime";
+import { MDXRemote } from "next-mdx-remote";
 import style from "./Post.module.scss";
 import { serialize } from "next-mdx-remote/serialize";
+import { DateTime } from "../DateTime";
 
-const Post: React.FC<PostProps> = ({ children, meta, mdxDescription }) => {
+export const Post: React.FC<PostProps> = ({
+  children,
+  meta,
+  mdxDescription,
+}) => {
   const router = useRouter();
   const { asPath } = router;
   return (
@@ -17,7 +21,9 @@ const Post: React.FC<PostProps> = ({ children, meta, mdxDescription }) => {
         <div className={style.heading}>
           <h1>{meta.title}</h1>
           <DateTime
-            value={typeof meta.date === 'string' ? new Date(meta.date) : meta.date}
+            value={
+              typeof meta.date === "string" ? new Date(meta.date) : meta.date
+            }
             style={{
               color: "gray",
               fontSize: "0.9rem",
@@ -31,8 +37,6 @@ const Post: React.FC<PostProps> = ({ children, meta, mdxDescription }) => {
     </>
   );
 };
-
-export default Post;
 
 interface PostProps {
   children: React.ReactNode;

@@ -1,4 +1,3 @@
-import Row from './Row';
-import Col from './Col';
-
-export { Row, Col };
+export * from "./Col";
+export * from "./Row";
+export * from "./Layout";

@@ -10,7 +10,7 @@ import {
 } from "components";
 import getPaginations from 'get-pagination';
 
-const Homepage: NextPage<Props> = ({ paths, pagination }) => {
+const Page: NextPage<Props> = ({ paths, pagination }) => {
   return (
     <Layout>
       {paths.map((path) => (
@@ -24,9 +24,24 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
-  const pageId = 1;
+  const paginations = await getPaginations(paginationConfig.perPage);
+  const paths = [];
+  for (let i = 1; i <= paginations.length; ++i) {
+    paths.push({
+      params: { id: i.toString() }
+    });
+  }
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
+  const { publicRuntimeConfig: { pagination: paginationConfig } } = getConfig();
+  const pageId = parseInt(context.params!.id as string);
   const pages = await getPaginations(paginationConfig.perPage);
   const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
@@ -49,4 +64,4 @@ interface Props {
   pagination: PaginationProps["pagination"];
 }
 
-export default Homepage;
+export default Page;

@@ -1,6 +1,6 @@
 import React, { HTMLAttributes, useMemo } from "react";
 
-const DateTime: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({
+export const DateTime: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({
   value,
   ...rest
 }) => {
@@ -38,5 +38,3 @@ const DAYS = [
   "Thứ sáu",
   "Thứ bảy",
 ];
-
-export default DateTime;
