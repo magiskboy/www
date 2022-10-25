@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 export default function Document() {
   return (
@@ -14,13 +15,19 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
           rel="stylesheet"
         />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS && (
           <>
-            <script
-              async
+            <Script
+              strategy="afterInteractive"
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
             />
-            <script
+            <Script
+              strategy="afterInteractive"
+              id="ga-initial"
               dangerouslySetInnerHTML={{
                 __html: `
             window.dataLayer = window.dataLayer || [];
@@ -34,10 +41,6 @@ export default function Document() {
             />
           </>
         )}
-      </Head>
-      <body>
-        <Main />
-        <NextScript />
       </body>
     </Html>
   );
