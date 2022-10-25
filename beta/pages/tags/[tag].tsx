@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { getCollection, Collection } from "post-tool";
 import { Layout, Pagination, PaginationProps, PostItem } from "components";
 
-const Category: NextPage<Collection> = ({ label, paginations, slug }) => {
+const Tag: NextPage<Collection> = ({ label, paginations, slug }) => {
   const router = useRouter();
   const page = parseInt(router.query.page as (string | undefined) || "1");
   const pagination = paginations[page - 1];
@@ -20,9 +20,9 @@ const Category: NextPage<Collection> = ({ label, paginations, slug }) => {
 
   return (
     <Layout>
-      <h1>{label}</h1>
+      <h1>Tag: {label}</h1>
       {pagination.posts.map(post => <React.Fragment key={post.slug}>
-        <PostItem title={post.meta.title} date={post.meta.date} slug={post.slug} description={post.mdxDescription.compiledSource} tags={post.meta.tags} />
+        <PostItem title={post.meta.title} date={post.meta.date} slug={post.slug} description={post.mdxDescription.compiledSource} />
         <hr />
       </React.Fragment>)}
       <Pagination pagination={pagination.pagination} nextGenerator={nextGenerator} prevGenerator={prevGenerator} />
@@ -36,11 +36,11 @@ export const getStaticProps: GetStaticProps<Collection> = async (context) => {
       pagination: { perPage },
     },
   } = getConfig();
-  const categorySlug = context.params?.slug || "";
-  const collection = (await getCollection("categories", perPage)).find(
-    (collection) => collection.slug === categorySlug
+  const tag = context.params?.tag || "";
+  const collection = (await getCollection("tags", perPage)).find(
+    (collection) => collection.slug === tag
   );
-  if (!collection) throw new Error(`Category ${categorySlug} not found`);
+  if (!collection) throw new Error(`Category ${tag} not found`);
   return {
     props: {
       ...collection,
@@ -61,11 +61,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
       pagination: { perPage },
     },
   } = getConfig();
-  const collections = await getCollection('categories', perPage);
+  const collections = await getCollection('tags', perPage);
   const paths = collections.reduce<StaticPathType>((prev, curr) => {
     const collectionPaths: StaticPathType = curr.paginations.map(pagination => ({
       params: {
-        slug: curr.slug,
+        tag: curr.slug,
         page: pagination.pagination.current.toString(),
       }
     }));
@@ -79,4 +79,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type StaticPathType = GetStaticPathsResult['paths'];
 
-export default Category;
+export default Tag;
