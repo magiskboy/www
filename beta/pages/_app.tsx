@@ -1,11 +1,12 @@
 import "../styles/globals.scss";
+import "../styles/github.css";
 import type { AppProps } from "next/app";
-import { useEffect } from 'react';
-import { Router } from 'next/router';
+import { useEffect } from "react";
+import { Router } from "next/router";
 import { Footer, Navigation } from "components";
 import { NextSeo } from "next-seo";
 import getConfig from "next/config";
-import * as ga from '../ga';
+import * as ga from "../ga";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { publicRuntimeConfig } = getConfig();
@@ -13,12 +14,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
-      ga.pageview(url)
-    }
+      ga.pageview(url);
+    };
 
-    Router.events.on('routeChangeComplete', handleRouteChange);
+    Router.events.on("routeChangeComplete", handleRouteChange);
 
-    return () => Router.events.off('routeChangeComplete', handleRouteChange);
+    return () => Router.events.off("routeChangeComplete", handleRouteChange);
   }, []);
 
   return (

@@ -1,31 +1,53 @@
-import React, { useCallback } from 'react';
-import { NextPage, GetStaticPaths, GetStaticProps, GetStaticPathsResult } from "next";
+import React, { useCallback } from "react";
+import {
+  NextPage,
+  GetStaticPaths,
+  GetStaticProps,
+  GetStaticPathsResult,
+} from "next";
 import getConfig from "next/config";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { getCollection, Collection } from "post-tool";
 import { Layout, Pagination, PaginationProps, PostItem } from "components";
 
 const Tag: NextPage<Collection> = ({ label, paginations, slug }) => {
   const router = useRouter();
-  const page = parseInt(router.query.page as (string | undefined) || "1");
+  const page = parseInt((router.query.page as string | undefined) || "1");
   const pagination = paginations[page - 1];
 
-  const nextGenerator = useCallback<PaginationProps['nextGenerator']>((current) => {
-    return `/tags/${slug}?page=${current + 1}`;
-  }, [slug]);
+  const nextGenerator = useCallback<PaginationProps["nextGenerator"]>(
+    (current) => {
+      return `/tags/${slug}?page=${current + 1}`;
+    },
+    [slug]
+  );
 
-  const prevGenerator = useCallback<PaginationProps['prevGenerator']>((current) => {
-    return `/tags/${slug}?page=${current - 1}`;
-  }, [slug]);
+  const prevGenerator = useCallback<PaginationProps["prevGenerator"]>(
+    (current) => {
+      return `/tags/${slug}?page=${current - 1}`;
+    },
+    [slug]
+  );
 
   return (
     <Layout>
       <h1>Tag: {label}</h1>
-      {pagination.posts.map(post => <React.Fragment key={post.slug}>
-        <PostItem title={post.meta.title} date={post.meta.date} slug={post.slug} description={post.mdxDescription.compiledSource} />
-        <hr />
-      </React.Fragment>)}
-      <Pagination pagination={pagination.pagination} nextGenerator={nextGenerator} prevGenerator={prevGenerator} />
+      {pagination.posts.map((post) => (
+        <React.Fragment key={post.slug}>
+          <PostItem
+            title={post.meta.title}
+            date={post.meta.date}
+            slug={post.slug}
+            description={post.mdxDescription.compiledSource}
+          />
+          <hr />
+        </React.Fragment>
+      ))}
+      <Pagination
+        pagination={pagination.pagination}
+        nextGenerator={nextGenerator}
+        prevGenerator={prevGenerator}
+      />
     </Layout>
   );
 };
@@ -61,14 +83,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
       pagination: { perPage },
     },
   } = getConfig();
-  const collections = await getCollection('tags', perPage);
+  const collections = await getCollection("tags", perPage);
   const paths = collections.reduce<StaticPathType>((prev, curr) => {
-    const collectionPaths: StaticPathType = curr.paginations.map(pagination => ({
-      params: {
-        tag: curr.slug,
-        page: pagination.pagination.current.toString(),
-      }
-    }));
+    const collectionPaths: StaticPathType = curr.paginations.map(
+      (pagination) => ({
+        params: {
+          tag: curr.slug,
+          page: pagination.pagination.current.toString(),
+        },
+      })
+    );
     return [...prev, ...collectionPaths];
   }, []);
   return {
@@ -77,6 +101,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type StaticPathType = GetStaticPathsResult['paths'];
+type StaticPathType = GetStaticPathsResult["paths"];
 
 export default Tag;
