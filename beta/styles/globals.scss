@@ -41,6 +41,10 @@ h4,h5,h6,b,strong {
 
 a {
   text-decoration: none;
+
+  &:hover {
+    color: var(--link-state-color);
+  }
 }
 
 * {
@@ -56,8 +60,7 @@ a {
 
 hr {
   margin: 2rem 0;
-  width: 100%;
-  color: var(--hr-color);
+  border: 1px solid var(--hr-color);
 }
 
 
@@ -66,6 +69,10 @@ hr {
     --main-width: 100%;
     --main-padding: 1rem;
   }
+
+  hr {
+    margin: 1rem 0;
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -73,6 +80,10 @@ hr {
   :root {
     --main-width: 100%;
     --main-padding: 1rem;
+  }
+
+  hr {
+    margin: 1rem 0;
   }
 }
 

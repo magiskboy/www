@@ -1,13 +1,31 @@
-import { NextPage, GetStaticPaths, GetStaticProps } from "next";
+import React, { useCallback } from 'react';
+import { NextPage, GetStaticPaths, GetStaticProps, GetStaticPathsResult } from "next";
 import getConfig from "next/config";
+import { useRouter } from 'next/router';
 import { getCollection, Collection } from "post-tool";
-import { Layout, Pagination } from "components";
+import { Layout, Pagination, PaginationProps, PostItem } from "components";
 
-const Category: NextPage<Collection> = ({ label, paginations }) => {
+const Category: NextPage<Collection> = ({ label, paginations, slug }) => {
+  const router = useRouter();
+  const page = parseInt(router.query.page as (string | undefined) || "1");
+  const pagination = paginations[page - 1];
+
+  const nextGenerator = useCallback<PaginationProps['nextGenerator']>((current) => {
+    return `/categories/${slug}?page=${current + 1}`;
+  }, []);
+
+  const prevGenerator = useCallback<PaginationProps['prevGenerator']>((current) => {
+    return `/categories/${slug}?page=${current - 1}`;
+  }, []);
+
   return (
     <Layout>
       <h1>{label}</h1>
-      <Pagination prefix="/categories" pagination={paginations[0].pagination} />
+      {pagination.posts.map(post => <React.Fragment key={post.slug}>
+        <PostItem title={post.meta.title} date={post.meta.date} slug={post.slug} description={post.mdxDescription.compiledSource} />
+        <hr />
+      </React.Fragment>)}
+      <Pagination pagination={pagination.pagination} nextGenerator={nextGenerator} prevGenerator={prevGenerator} />
     </Layout>
   );
 };
@@ -43,17 +61,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
       pagination: { perPage },
     },
   } = getConfig();
-  const paths = (await getCollection("categories", perPage)).map(
-    (collection) => ({
+  const collections = await getCollection('categories', perPage);
+  const paths = collections.reduce<StaticPathType>((prev, curr) => {
+    const collectionPaths: StaticPathType = curr.paginations.map(pagination => ({
       params: {
-        slug: collection.slug,
-      },
-    })
-  );
+        slug: curr.slug,
+        page: pagination.pagination.current.toString(),
+      }
+    }));
+    return [...prev, ...collectionPaths];
+  }, []);
   return {
     paths,
     fallback: false,
   };
 };
+
+type StaticPathType = GetStaticPathsResult['paths'];
 
 export default Category;

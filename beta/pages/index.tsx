@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { NextPage, GetStaticProps } from "next";
 import getConfig from "next/config";
 import {
@@ -11,6 +11,14 @@ import {
 import { getPosts, getPaginations } from "post-tool";
 
 const Homepage: NextPage<Props> = ({ paths, pagination }) => {
+  const nextGenerator = useCallback<PaginationProps['nextGenerator']>((current) => {
+    return `/page/${current + 1}`;
+  }, []);
+
+  const prevGenerator = useCallback<PaginationProps['prevGenerator']>((current) => {
+    return `/page/${current - 1}`;
+  }, []);
+
   return (
     <Layout>
       {paths.map((path) => (
@@ -19,7 +27,7 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
           <hr />
         </React.Fragment>
       ))}
-      <Pagination pagination={pagination} />
+      <Pagination pagination={pagination} prevGenerator={prevGenerator} nextGenerator={nextGenerator} />
     </Layout>
   );
 };
