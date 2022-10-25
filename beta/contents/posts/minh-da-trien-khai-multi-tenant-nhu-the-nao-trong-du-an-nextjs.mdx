@@ -4,14 +4,13 @@ date: 2021-09-28T21:52:00+07:00
 author: "Nguyễn Khắc Thành"
 published: false
 tags:
-- nextjs
-- web-development
+  - nextjs
+  - web-development
 categories:
-- Javascript
-- web_development
+  - Javascript
+  - Web development
 description: "Nếu bạn chỉ phát triển một website trên một codebase thì mọi chuyện thật đơn giản với đa số các web framework nhưng sẽ thế nào nếu bạn muốn phát triển cả một hệ thống các website chỉ với một codebase, cụ thể là trong NextJS. Đây là bài toán mình đã gặp phải trong công ty và đây là bài chia sẻ về hướng giải quyết của mình với vấn đề multi-tenant trong NextJS."
 ---
-
 
 #### Yêu cầu của bài toán
 
@@ -20,7 +19,6 @@ Yêu cầu đặt ra là:
 - phát triển nhiều website
 - các website có khả năng kế thừa và customize từ 1 template
 - phát triển trên một app NextJS
-
 
 #### Hướng giải quyết thứ nhất
 
@@ -36,10 +34,10 @@ Ví dụ như trang web của chúng ta như sau
 
 do đó, chúng ta phải tạo thư mục pages trong ứng dụng NextJS như sau:
 
-```	
+```
 └── pages
    ├── index.tsx        --> /
-   └── products         
+   └── products
       ├── [id].tsx       --> /products/1
       └── index.tsx      --> /products
 ```
@@ -76,23 +74,23 @@ Bạn có thể thấy, chúng ta có một thư mục template và các thư m�
 server.com/website-A/products/1
 server.com/website-B/products
 ```
- 
- Vậy nếu chúng ta muốn người dùng truy cập từ domain: website-A.com hay website-B.com lần lượt tương ứng với các folder của từng website như website-A và website-B thì sao?
- 
- NextJS cung cấp cho chúng ta giải pháp là custom server. Tại đây, chúng ta có thể nhận toàn bộ request từ người dùng và xử lí theo ý của chúng ta bao gồm việc dispatch cho ứng dụng NextJS xử lí.
- 
- ```javascript
- import { parse } from 'url';
- 
- function handleRequest(req, res) {
-    const parsedUrl = parse(req.url, true)
-    const { pathname, query } = parsedUrl;
-    const tenant = req.hostname.split('.')[0];
-    
-    app.render(req, res, `${tenant}${pathname}`, query);
- }
- ```
- 
+
+Vậy nếu chúng ta muốn người dùng truy cập từ domain: website-A.com hay website-B.com lần lượt tương ứng với các folder của từng website như website-A và website-B thì sao?
+
+NextJS cung cấp cho chúng ta giải pháp là custom server. Tại đây, chúng ta có thể nhận toàn bộ request từ người dùng và xử lí theo ý của chúng ta bao gồm việc dispatch cho ứng dụng NextJS xử lí.
+
+```javascript
+import { parse } from "url";
+
+function handleRequest(req, res) {
+  const parsedUrl = parse(req.url, true);
+  const { pathname, query } = parsedUrl;
+  const tenant = req.hostname.split(".")[0];
+
+  app.render(req, res, `${tenant}${pathname}`, query);
+}
+```
+
 Đoạn code trên sẽ chuyển domain xuống pathname của ứng dụng NextJS.
 
 Vậy vấn đề của giải pháp này là gì?
@@ -101,8 +99,9 @@ Như bạn có thể thấy, việc tạo thêm những page mà page đó khôn
 Lấy ví dụ trên, chúng ta không cần customize pages `/products/[id]` của website-A nhưng trong thư mục của website-A vẫn phải có file `[id].tsx` mặc dù chúng chỉ có tác dụng re-export từ template.
 
 Điều này dẫn tới 2 điều sau:
+
 - nếu app của chúng ta có 20 website và template có 50 pages => app chúng ta phải handle 1000 route khác nhau => có 1000 file chúng ta phải xử lí trong quá trình dev và deploy.
-- NextJS sẽ sinh ra hai file build-manifest và route-manifest cho client, các file này chứa thông tin của toàn bộ route mà app có, bạn có thể xem source [ở đây](https://github.com/vercel/next.js/blob/v11.1.2/packages/next/build/webpack/plugins/build-manifest-plugin.ts). Nếu số lượng route lớn, việc download, parser và lookup  file đó ở browser sẽ cực kì chậm.
+- NextJS sẽ sinh ra hai file build-manifest và route-manifest cho client, các file này chứa thông tin của toàn bộ route mà app có, bạn có thể xem source [ở đây](https://github.com/vercel/next.js/blob/v11.1.2/packages/next/build/webpack/plugins/build-manifest-plugin.ts). Nếu số lượng route lớn, việc download, parser và lookup file đó ở browser sẽ cực kì chậm.
 
 #### Giải pháp tốt hơn
 

@@ -7,7 +7,7 @@ tags:
 - compiler
 - parser
 categories:
-- Programming_in_deep
+- Programming in deep
 description: "Bạn có bao giờ thắc mắc rằng tại sao các trình biên dịch như C, Java, Rust lại có thể hiểu được những file source code hay tại sao một loại cú pháp nửa JS nửa HTML lại có thể chạy được trên các trình duyệt không?
 Bạn có bao giờ tự hỏi làm thế nào mà JS lại có nhiều biến thể như vậy và các công cụ như Typescript hay Babel lại có thể làm cho những đoạn code React, Typescript lại có thể chạy được trên trình duyệt."
 ---
@@ -23,16 +23,15 @@ Cả hai công cụ trên đều có điểm chung là chuyển đổi code từ
 Hình bên dưới mô tả các thành phần cơ bản của một compiler/transpiler:
 
 <Image
-    src="/images/parser.png"
-    title="Cấu trúc cơ bản của compiler/transpiler"
+  src="/images/parser.png"
+  title="Cấu trúc cơ bản của compiler/transpiler"
 />
 
 Để có thể chuyển đổi dễ dàng giữa hai ngôn ngữ, các compiler/transpiler phải biểu diễn được dưới cùng một dạng cấu trúc dữ liệu - chúng được gọi là Abstract Syntax Tree hay AST.
 
 Như bạn có thể thấy, source code sau khi được chuẩn hoá và phân tách từ vựng bởi lexical sẽ được parser chuyển thành cấu trúc ngữ pháp mà có thể biểu diễn được ở cả ngôn ngữ nguồn và ngôn ngữ đích - cấu trúc này gọi là Abstract Syntax Tree. Sau đó, AST được đưa qua translator để chuyển hoá thành ngôn ngữ đích.
 
-Trong compiler/transpiler có nhiều thành phần, nhưng trong phạm vi bài viết này, mình chỉ giới thiệu một thành phần không thể thiếu giúp cho chúng có thể hiểu được ngữ pháp của source code, đó là __parser__.
-
+Trong compiler/transpiler có nhiều thành phần, nhưng trong phạm vi bài viết này, mình chỉ giới thiệu một thành phần không thể thiếu giúp cho chúng có thể hiểu được ngữ pháp của source code, đó là **parser**.
 
 ### Parser là gì?
 
@@ -78,15 +77,13 @@ Vậy làm sao để từ biểu thức trung tố chuyển sang biểu thức h
 
 6. Nếu chưa duyệt hết danh sách token, chuyển đến bước 1. Ngược lại, trả về danh sách output.
 
-
 Để tối ưu, chúng ta có thể gộp hai bước này và không cần chuyển qua dạng biểu thức hậu tố làm trung gian. Chúng ta sẽ chuyển trực tiếp từ biểu thức trung tố sang AST với 2 stack.
 
 Bạn có thể tham khảo source code của mình ở đây: [bottom-up parser](https://github.com/magiskboy/ast-tut/blob/master/bottom_up_parser.py#L7)
 
-
 <Image
-    src="/images/ast.dot.svg"
-    title="AST của biểu thức: (1 + 1 * 2) / (3 + 5 * 8 - 13)"
+  src="/images/ast.dot.svg"
+  title="AST của biểu thức: (1 + 1 * 2) / (3 + 5 * 8 - 13)"
 />
 
 ### Top-down parser
@@ -106,9 +103,7 @@ Bạn có thể tham khảo source code của mình ở đây: [bottom-up parser
 
 Điểm mạnh của BNF là nó có thể mô tả các cấu trúc đệ quy một cách dễ dàng và nó cũng là một công cụ ưa thích của các nhà khoa học máy tính khi họ muốn mô tả cú pháp ngôn ngữ của họ. Ví dụ đây là [bản mô tả ngôn ngữ C bằng BNF](https://cs.wmich.edu/~gupta/teaching/cs4850/sumII06/The%20syntax%20of%20C%20in%20Backus-Naur%20form.htm)
 
-
 Bây giờ, chúng ta sẽ chuyển các rule từ BNF sang các hàm của bộ parser một cách dễ dàng như sau:
-
 
 ```python
 def number():
@@ -229,7 +224,6 @@ console.log(result.outputText);
 ```
 
 Đoạn code trên sẽ thay thế toàn bộ lời gọi `console.log` thành `void 0` trước khi chuyển chúng sang Javascript
-
 
 ```typescript
 function fib(n: number): number {

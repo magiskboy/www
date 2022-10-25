@@ -3,23 +3,23 @@ title: "Flask Context và những điều cần biết"
 date: 2021-03-18T08:43:00+07:00
 published: true
 tags:
-- python
-- web
-- flask
-- local thread
+  - python
+  - web
+  - flask
+  - local thread
 categories:
-- Python
-- web_development
+  - Python
+  - Web development
 author: "Nguyễn Khắc Thành"
 description: "Trong Flask có một khái niệm rất quan trọng và nó đã làm nên thương hiệu của riêng mình giữa các web framework của Python - Context"
 ---
-
 
 Để hiểu rõ hơn về context trong Flask, chúng ta cũng tìm hiểu xem một web khi viết bằng Python sẽ hoạt động ra sao.
 
 ### 1. [WSGI](https://wsgi.readthedocs.io/en/latest/what.html)
 
 Theo [PEP 333](https://www.python.org/dev/peps/pep-0333/), một ứng dụng web khi cài đặt về cơ bản sẽ một hàm với 2 tham số
+
 - `environment`: một `dict` chứa toàn bộ dữ liệu client gửi đến server, nói các khác, đây chính là gói tin HTTP request đã được parse
 - `start_response`: một hàm nhận vào status code và danh sách các header, những cái này sẽ được ghi vào phần đầu của gói tin HTTP response
 
@@ -67,7 +67,7 @@ def nest_nest_function(request):
 	...
 
 def nest_function(request):
-	# chả dùng request những vẫn cần phải truyền vào để cho con nó dùng 
+	# chả dùng request những vẫn cần phải truyền vào để cho con nó dùng
 	nest_nest_function(request)
 
 def index(request):
@@ -83,7 +83,7 @@ Như bạn thấy ở trên, các request sẽ được isolate trong các threa
 
 Ngược lại, trong process scope bao gồm nhiều thread, các environment này không được phép dùng lẫn của nhau và chúng ta nên thắc mắc
 
-__Tại sao khi dùng `flask.request`, tôi có thể gọi nó ở mọi nơi (process scope) mà không bị nhầm lẫn các environment?.__
+**Tại sao khi dùng `flask.request`, tôi có thể gọi nó ở mọi nơi (process scope) mà không bị nhầm lẫn các environment?.**
 
 Vâng, tất nhiên, `flask.request` hay một vài thứ khác tương tự không phải là một object bình thường, chúng là các proxy có behavior để phân biệt nó đang được gọi ở thread nào để có thể lựa chọn context sao cho phù hợp.
 
@@ -132,6 +132,7 @@ Bằng cách này, khi chúng ta gọi các proxy trong các thread xác định
 Vậy các bạn thử đoán xem trong ví dụ ở phần 1, chúng ta nên set environment ở đâu để nó trở thành context của một thread?
 
 Để biết thêm về cài đặt chi tiết trong Flask, các bạn có thể tìm hiểu về một vài class cũng như những package sau
+
 - [`werkzeug.local.LocalStack`](https://github.com/pallets/werkzeug/blob/master/src/werkzeug/local.py#L170)
 - [`werkzeug.local.LocalProxy`](https://github.com/pallets/werkzeug/blob/master/src/werkzeug/local.py#L467)
 - [`flask.globals`](https://github.com/pallets/flask/blob/master/src/flask/globals.py)
@@ -144,6 +145,7 @@ Ngoài request, flask còn có application context chứa application hiện t�
 Flask cũng cho phép chúng ta có thể hoàn toàn tự tạo một context cho riêng mình:
 
 Xử lí ở thread khác
+
 ```python
 @app.route('/')
 def index():
@@ -157,12 +159,13 @@ def index():
 ```
 
 Hay xử lí ở process (thread) khác
+
 ```python
 app = Flask(__name__)
 
 with app.request_context(envỉonment):
 	do_something()
-``` 
+```
 
 Thiết kế này cũng được các extension của flask tuân thủ như Flask-Login, Flask-Admin hay Flask-Celery...
 
