@@ -11,11 +11,11 @@ const Tag: NextPage<Collection> = ({ label, paginations, slug }) => {
   const pagination = paginations[page - 1];
 
   const nextGenerator = useCallback<PaginationProps['nextGenerator']>((current) => {
-    return `/categories/${slug}?page=${current + 1}`;
+    return `/tags/${slug}?page=${current + 1}`;
   }, [slug]);
 
   const prevGenerator = useCallback<PaginationProps['prevGenerator']>((current) => {
-    return `/categories/${slug}?page=${current - 1}`;
+    return `/tags/${slug}?page=${current - 1}`;
   }, [slug]);
 
   return (
