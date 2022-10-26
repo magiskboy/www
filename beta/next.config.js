@@ -22,7 +22,7 @@ const nextConfig = {
     navs: [
       {
         title: "Bài viết",
-        link: "/posts",
+        link: "/",
       },
       {
         title: "Bản thân",
@@ -42,9 +42,6 @@ const nextConfig = {
     domains: ["miro.medium.com", "meme-arsenal.com"],
   },
   pageExtensions: ["mdx", "md", "tsx", "ts"],
-  async redirects() {
-    return [{ source: "/posts", destination: "/", permanent: true }];
-  },
   i18n: {
     locales: ['vi'],
     defaultLocale: 'vi',
