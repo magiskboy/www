@@ -7,7 +7,7 @@ import {
 } from "next";
 import getConfig from "next/config";
 import { useRouter } from "next/router";
-import { getCollection, Collection } from "post-tool";
+import { getCollection, Collection } from "tools/post-tool";
 import { Layout, Pagination, PaginationProps, PostItem } from "components";
 
 const Tag: NextPage<Collection> = ({ label, paginations, slug }) => {

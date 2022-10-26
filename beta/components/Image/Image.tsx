@@ -7,8 +7,6 @@ export const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
     ...rest,
     width: rest.width || 500,
     height: rest.height || 300,
-    layout: "responsive",
-    objectFit: "contain",
     blurDataURL: "/images/empty.jpg",
     placeholder: "blur",
   };

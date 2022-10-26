@@ -15,6 +15,7 @@ const SERIALIZE_OPTS = {
 };
 
 const POST_DIR = path.join(".", "contents", "posts");
+console.log(process.cwd());
 
 export async function getPosts(): Promise<Post[]> {
   const filenames = await fs.readdir(POST_DIR);
