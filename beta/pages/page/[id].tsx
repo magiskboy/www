@@ -8,16 +8,22 @@ import {
   PaginationProps,
   Layout,
 } from "components";
-import { getPosts, getPaginations } from "post-tool";
+import { getPosts, getPaginations } from "tools/post-tool";
 
 const Page: NextPage<Props> = ({ paths, pagination }) => {
-  const nextGenerator = useCallback<PaginationProps['nextGenerator']>((current) => {
-    return `/page/${current + 1}`;
-  }, []);
+  const nextGenerator = useCallback<PaginationProps["nextGenerator"]>(
+    (current) => {
+      return `/page/${current + 1}`;
+    },
+    []
+  );
 
-  const prevGenerator = useCallback<PaginationProps['prevGenerator']>((current) => {
-    return `/page/${current - 1}`;
-  }, []);
+  const prevGenerator = useCallback<PaginationProps["prevGenerator"]>(
+    (current) => {
+      return `/page/${current - 1}`;
+    },
+    []
+  );
 
   return (
     <Layout>
@@ -27,7 +33,11 @@ const Page: NextPage<Props> = ({ paths, pagination }) => {
           <hr />
         </React.Fragment>
       ))}
-      <Pagination pagination={pagination} nextGenerator={nextGenerator} prevGenerator={prevGenerator} />
+      <Pagination
+        pagination={pagination}
+        nextGenerator={nextGenerator}
+        prevGenerator={prevGenerator}
+      />
     </Layout>
   );
 };

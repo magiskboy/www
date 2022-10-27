@@ -20,9 +20,7 @@ export const PostItem: React.FC<PostItemProps> = ({
       })}
     >
       <Link href={genPostLink(slug)}>
-        <a>
-          <h2 className={style.title}>{title}</h2>
-        </a>
+        <h2 className={style.title}>{title}</h2>
       </Link>
       <DateTime
         className={style.date}
@@ -37,9 +35,7 @@ export const PostItem: React.FC<PostItemProps> = ({
         <li>
           {tags?.map((tag) => (
             <Link key={tag} href={genTagLink(tag)} className="tag">
-              <a>
-                <span className={`tag ${style.tag}`}>{tag}</span>
-              </a>
+              <span className={`tag ${style.tag}`}>{tag}</span>
             </Link>
           ))}
         </li>

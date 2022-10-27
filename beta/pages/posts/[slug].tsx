@@ -3,7 +3,7 @@ import { MDXRemote } from "next-mdx-remote";
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Link from "next/link";
 import { Comment, Image, Table, Meta, Post as PostWrapper } from "components";
-import { getPosts } from "post-tool";
+import { getPosts } from "tools/post-tool";
 
 const components = { Image, Table, Link };
 

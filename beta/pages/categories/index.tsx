@@ -2,7 +2,7 @@ import { NextPage, GetStaticProps } from "next";
 import getConfig from "next/config";
 import Link from "next/link";
 import { Layout } from "components";
-import { getCollection } from "post-tool";
+import { getCollection } from "tools/post-tool";
 import React from "react";
 
 const CategoryIndex: NextPage<Props> = ({ paths }) => {
