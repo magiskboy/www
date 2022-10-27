@@ -9,6 +9,10 @@ export const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
     height: rest.height || 300,
     blurDataURL: "/images/empty.jpg",
     placeholder: "blur",
+    style: {
+      ...(rest.style || {}),
+      objectFit: 'contain',
+    }
   };
 
   return (
