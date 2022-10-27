@@ -31,15 +31,12 @@
   margin: 0;
   flex-wrap: wrap;
   list-style-type: none;
-
-  :global .tag {
-    margin-right: 1rem;
-  }
 }
 
 .tag {
   font-weight: 300;
   font-size: 0.8rem;
+  margin-right: 0.5rem;
 
   &:hover {
     color: var(--link-state-color);
