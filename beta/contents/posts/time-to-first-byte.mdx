@@ -8,71 +8,77 @@ tags:
 - Metric
 categories:
 - Web Metrics
-description: "Time to First Byte (TTFB) is a foundational metric for 
-measuring connection setup time and web server responsiveness in both
-the lab and the field. It helps identify when a web server is too slow
-to respond to requests. In the case of navigation requests—that is,
-requests for an HTML document—it precedes every other meaningful loading
-performance metric."
+description: "Time to First Byte (TTFB) là một chỉ số căn bản để 
+đo lường thời gian kết nối và phản hồi của máy chủ trong thử nghiệm và
+thực nghiệm, giúp xác định việc một máy chủ phản hồi các request quá chậm.
+Trong trường hợp điều hướng các request, nghĩa là các request cho các tài liệu HTML,
+nó đứng trước tất cả các chỉ số `loading time` khác." 
 ---
 
-## What is TTFB?
+##  TTFB là gì?
 
-TTFB is a metric that measures the time between the request for a resource and when the first byte of a response begins to arrive.
+TTFB là chỉ số đo lường thời gian từ khi request tài nguyên tới khi nhận được byte response đầu tiên trả về.
 
 <Image 
   src="https://web-dev.imgix.net/image/jL3OLOhcWUQDnR4XjewLBx4e3PC3/ccT8ltSPrTri3tz7AA3h.png"
-  title="A diagram of network request phases and their associated timings. TTFB measures the elapsed time between startTime and responseStart."
+  title="Một biểu đồ các `pha` khi request tài nguyên và thời gian của chúng. TTFB đo lường khoảng thời gian từ startTime tới responseTime."
 />
 
-TTFB is the sum of the following request phases:
 
-- Redirect time
-- Service worker startup time (if applicable)
-- DNS lookup
-- Connection and TLS negotiation
-- Request, up until the point at which the first byte of the response has arrived
+TTFB là tổng của các `pha` dưới đây:
 
-Reducing latency in connection setup time and on the backend will contribute to a lower TTFB.
+- Thời gian điều hướng
+- Thời gian service worker khởi động (nếu có)
+- Phân giải tên miền (DNS lookup)
+- Thiết lập kết nối và khởi tạo TLS
+- Request tài nguyên, cho đến thời điểm nhận được byte đầu tiên trong response trả về
 
-## What is a good TTFB score? #
+Giảm độ trễ khi thiết lập kết nối  khi khởi tạo backend sẽ góp phần làm giảm TTFB.
 
-Because TTFB precedes [user-centric metrics](https://web.dev/user-centric-performance-metrics/) such as [First Contentful Paint (FCP)](https://web.dev/fcp/) and
-[Largest Contentful Paint (LCP)](https://web.dev/lcp/), it's recommended that your server responds to navigation
-requests quickly enough so that the 75th percentile of users experience an [FCP within the
-"good" threshold](https://web.dev/fcp/#what-is-a-good-fcp-score). As a rough guide, most sites should strive to have Time To First Byte of **0.8 seconds** or less.
+## Thế nào là một điểm TTFB tốt? #
+
+
+Vì TTFB là chỉ số đứng trước [các chỉ số quan trọng của người dùng](https://web.dev/user-centric-performance-metrics) như
+[First Contentful Paint (FCP)](https://web.dev/fcp) và [Largest Contentful Paint (LCP)](https://web.dev/lcp), 
+nên máy chủ của bạn phải phản hồi đủ nhanh để [75% người dùng đạt ngưỡng FCP tốt](https://web.dev/fcp/#what-is-a-good-fcp-score).
+Theo các nghiên cứu sơ bộ, đa số các trang web nên cố gắng có TTFB **dưới 0.8 giây**.
 
 <Image 
   src="https://web-dev.imgix.net/image/W3z1f5ZkBJSgL1V1IfloTIctbIF3/ILJ1xKjzVisqOPPyHYVA.svg"
   title=""
 />
 
+TTFB không phải là một chỉ số [Core Web Vitals](https://web.dev/vitals). Do đó các trang web không nhất thiết
+phải đạt được một giá trị TTFB `tốt`, miễn là nó không làm ảnh hưởng tới các chỉ số quan trọng của trang web.
 
-TTFB is not a [Core Web Vitals](https://web.dev/vitals) metric, so it's not absolutely necessary that sites
-meet the "good" TTFB threshold, provided that it doesn't impede their ability to score well on the metrics that matter.
 
+## Làm thế nào để đo lường TTFB #
 
-## How to measure TTFB #
+TTFB có thể được đo lường trong [thử nghiệm](https://web.dev/user-centric-performance-metrics/#in-the-lab)
+hoặc [trong thực nghiệm](https://web.dev/user-centric-performance-metrics/#in-the-field) theo các cách sau
 
-TTFB can be measured in [the lab](https://web.dev/user-centric-performance-metrics/#in-the-lab) or in [the field](https://web.dev/user-centric-performance-metrics/#in-the-field) in the following ways.
-
-### Field tools #
+### Trong thử nghiệm #
 
 - [Chrome User Experience Report](https://developer.chrome.com/docs/crux/)
 - [web-vitals JavaScript library](https://github.com/GoogleChrome/web-vitals)
 
-### Lab tools #
+### Trong thực nghiệm #
 
-- In the [network panel](https://developer.chrome.com/docs/devtools/network/) of Chrome's DevTools
+- Trong [network panel](https://developer.chrome.com/docs/devtools/network/) của Chrome's DevTools
 - [WebPageTest](https://www.webpagetest.org/)
 
-### Measure TTFB in JavaScript #
+### Đo lường TTFB trong JavaScript #
 
-Browser support: // Updating
+Những trình duyệt hỗ trợ ([nguồn](https://developer.mozilla.org/docs/Web/API/PerformanceResourceTiming/responseStart#browser_compatibility)):
+- Google Chrome 43
+- Firefox 31
+- Edge 12
+- Safari 11
 
-You can measure the TTFB of [navigation requests](https://developer.mozilla.org/docs/Web/API/Request/mode) in the browser with the [Navigation Timing API](https://developer.mozilla.org/docs/Web/API/Navigation_timing_API).
-The following example shows how to create a [PerformanceObserver](https://developer.mozilla.org/docs/Web/API/PerformanceObserver) that listens for a `navigation` entry
-and logs it to the console:
+Bạn có thể đo TTFB của [các request điều hướng](https://developer.mozilla.org/docs/Web/API/Request/mode)
+trên trình duyệt với [Navigation Timing API](https://developer.mozilla.org/docs/Web/API/Navigation_timing_API).
+Ví dụ sau cho thấy cách tạo [PerformanceObserver](https://developer.mozilla.org/docs/Web/API/PerformanceObserver)
+để lắng nghe một entry `điều hướng` và logs nó ra console:
 
 ```javascript
 new PerformanceObserver((entryList) => {
@@ -85,36 +91,35 @@ new PerformanceObserver((entryList) => {
 });
 ```
 
-**Caution**
+<Caution>
+Không phải tất cả các trình duyệt đều hỗ trợ `PerformanceObserver` hoặc có cờ `buffered`.
+Để hỗ trợ nhiều trình duyệt nhất có thể, xem xét sử dụng `web-vitals`,  thư viện được nhắc đến ở bên dưới.
+</Caution>
 
-Not all browsers support `PerformanceObserver` or its `buffered` flag.
-To get the largest possible browser support, consider adopting the `web-vitals` package,
-which is discussed below.
-
-
-The web-vitals JavaScript library can also measure TTFB in the browser with less complexity:
+`web-vitals` là một thư viện JavaScript có thể đo TTFB trên trình duyệt một các đơn giản:
 
 ```javascript
 import {onTTFB} from 'web-vitals';
 
-// Measure and log TTFB as soon as it's available.
+// Đo và log TTFB khi có thể.
 onTTFB(console.log);
 ```
 
-### Measuring resource requests
+### Đo lường request của các tài nguyên
 
-TTFB applies to all requests, not just navigation requests. In particular, resources hosted on cross-origin
-servers can introduce latency due to the need to set up connections to those servers.
-To measure TTFB for resources in the field, use the [Resource Timing API](https://developer.mozilla.org/docs/Web/API/Resource_Timing_API/Using_the_Resource_Timing_API) within a `PerformanceObserver`:
+TTFB áp dụng cho tất cả các request, không chỉ riêng với request điều hướng. Đặc biệt, các tài nguyên trên các 
+máy chủ khác (cross-origin) có thể trễ hơn do cần phải thiết lập kết nối tới các máy chủ đó.
+Để đo TTFB cho các tài nguyên trong thử nghiệm, sử dụng
+[Resource Timing API](https://developer.mozilla.org/docs/Web/API/Resource_Timing_API/Using_the_Resource_Timing_API) với `PerformanceObserver`:
 
 ```javascript
 new PerformanceObserver((entryList) => {
   const entries = entryList.getEntries();
 
   for (const entry of entries) {
-    // Some resources may have a responseStart value of 0, due
-    // to the resource being cached, or a cross-origin resource
-    // being served without a Timing-Allow-Origin header set.
+    // Một vài tài nguyên có thể có responseStart bằng 0, do
+    // tài nguyên đó được cache hoặc một tài nguyên cross-origin
+    // được tải về mà không có header Timing-Allow-Origin
     if (entry.responseStart > 0) {
       console.log(`TTFB: ${entry.responseStart}`, entry.name);
     }
@@ -125,37 +130,40 @@ new PerformanceObserver((entryList) => {
 });
 ```
 
-The above code snippet is similar to the one used to measure the TTFB for a navigation request,
-except instead of querying for `'navigation'` entries, you query for `'resource'` entries instead.
-It also accounts for the fact that some resources loaded from the primary origin may return a value of `0`,
-since the connection is already open, or a resource is instantaneously retrieved from a cache.
+Đoạn code ở trên khá giống để đo TTFB cho 1 request điều hướng, ngoại trừ thay vì lấy `navigation`
+entry thì bạn lấy `resource` entry. Nó cũng giải thích vì sao một số tài nguyên primary origin có thể trả về giá
+trị 0 do kết nối đã được mở hoặc một tài nguyên được truy xuất trực tiếp từ cache.
 
 **Gotchas**
 
-TTFB for cross-origin requests will not be measurable in the field if cross-origin servers fail to
-set a [`Timing-Allow-Origin` header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Timing-Allow-Origin).
+TTFB của các cross-origin sẽ không thể đo trong thử nghiệm nếu cross-origin server không thiết lập một
+header [`Timing-Allow-Origin` header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Timing-Allow-Origin).
 
 
-## How to improve TTFB
+## Làm thế nào để cải thiện TTFB
 
-Improving TTFB is largely dependent on your hosting provider and backend application stack.
-High TTFB values could be due to one or more of the following problems:
+Việc cải thiện TTFB phần lớn phụ thuộc vào nhà cung cấp dịch vụ lưu trữ và stack backend của bạn.
+Giá trị TTFB cao có thể do một trong các vấn đề sau:
 
-- Hosting services with inadequate infrastructure to handle high traffic loads
-- Web servers with insufficient memory that can lead to [thrashing](https://en.wikipedia.org/wiki/Memory_paging#Thrashing)
-- Unoptimized database tables
-- Suboptimal database server configuration
+- Nhà cung cấp dịch vụ với cơ sở hạ tầng không đủ để xử lí tải cho lượng truy cập cao
+- Máy chủ web không đủ bộ nhớ có thể dẫn tới [thrashing](https://en.wikipedia.org/wiki/Memory_paging#Thrashing)
+- Các bảng trong cơ sở dữ liệu không được tối ưu
+- Cấu hình máy chủ cơ sở dữ liệu dưới mức tối ưu
 
-Minimizing TTFB is often done by choosing a suitable hosting provider with infrastructure to ensure high uptime and responsiveness. This—in combination with a CDN—can help.
+Tối thiểu hoá TTFB thường được thực hiện bằng cách chọn một nhà cung cấp dịch vụ với hạ tầng đảm bảo thời gian hoạt động và khả năng đáp ứng cao.
+Điều này kết hợp với một CDN có thể hữu ích.
 
-Use the [Server-Timing API](https://developer.mozilla.org/docs/Web/HTTP/Headers/Server-Timing) to gather additional field data on the performance of application backend processes.
-This can help identify opportunities for improvements that might otherwise go unnoticed.
+Sử dụng [Server-Timing API](https://developer.mozilla.org/docs/Web/HTTP/Headers/Server-Timing) để thu thập thêm thêm các dữ liệu
+về hiệu năng của các backend service.
+Điều này có thể giúp xác định các khả năng có thể cải thiện mà không được chú ý đến.
 
-Other opportunities to improve high TTFB times and related perceptual delays include:
+Các khả năng khác để cải thiện TTFB cao và độ trẽ trải nghiệm bao gồm:
 
-- [Avoid multiple page redirects](https://web.dev/redirects/).
-- [Preconnect to required origins](https://web.dev/uses-rel-preconnect/) for cross-origin resources.
-- Submit your origin to the [HSTS preload list](https://hstspreload.org/) to eliminate HTTP-to-HTTPS redirect latency.
-- Use [HTTP/2](https://web.dev/uses-http2/) or [HTTP/3](https://en.wikipedia.org/wiki/HTTP/3).
-- Consider [predictive prefetching](https://web.dev/predictive-prefetching/) for fast page navigations for users who have not specified [a preference for reduced data usage](https://developer.mozilla.org/docs/Web/CSS/@media/prefers-reduced-data).
-- Use server-side generation (SSG) for markup instead of SSR where possible and appropriate.
+- [Tránh redirects page nhiều lần](https://web.dev/redirects/).
+- [Preconnect tới các server được yêu cầu](https://web.dev/uses-rel-preconnect/) cho các tài nguyên cross-origin.
+- Gửi origin của bạn tới [danh sách HSTS được preload](https://hstspreload.org/)  loại bỏ độ trễ redirect từ HTTP sang HTTPS.
+- Sử dụng [HTTP/2](https://web.dev/uses-http2/) hoặc [HTTP/3](https://en.wikipedia.org/wiki/HTTP/3).
+- Cân nhắc sử dụng [predictive prefetching](https://web.dev/predictive-prefetching/) để điều hướng các trang nhanh chóng cho người dùng chưa được xác định [một tuỳ chọn để giảm mức sử dụng dữ liệu](https://developer.mozilla.org/docs/Web/CSS/@media/prefers-reduced-data).
+- Sử dụng server-side generation (SSG) thay vì SSR (server-side rendering) khi có thể.
+
+Nguồn: [https://web.dev/ttfb](https://web.dev/ttfb/)

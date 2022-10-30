@@ -2,10 +2,10 @@ import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote";
 import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Link from "next/link";
-import { Comment, Image, Table, Meta, Post as PostWrapper } from "components";
+import { Comment, Image, Table, Meta, Post as PostWrapper, Caution } from "components";
 import { getPosts } from "tools/post-tool";
 
-const components = { Image, Table, Link };
+const components = { Image, Table, Link, Caution };
 
 const Post: NextPage<PageProps> = ({ source, meta, mdxDescription }) => {
   const newMeta = meta;

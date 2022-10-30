@@ -10,3 +10,4 @@ export * from "./PostItem";
 export * from "./Resume";
 export * from "./Table";
 export * from "./HeadSection";
+export * from './Caution';
