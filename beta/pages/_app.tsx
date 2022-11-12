@@ -24,7 +24,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-    {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS && (
+      <NextSeo title={title} description={title} />
+      <Navigation socials={socials} navs={navs} />
+      <Component {...pageProps} />
+      <Footer />
+      {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS && (
           <>
             <Script
               strategy="afterInteractive"
@@ -42,10 +46,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Script>
           </>
         )}
-      <NextSeo title={title} description={title} />
-      <Navigation socials={socials} navs={navs} />
-      <Component {...pageProps} />
-      <Footer />
     </>
   );
 }

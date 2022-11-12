@@ -48,7 +48,7 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["miro.medium.com", "meme-arsenal.com"],
+    domains: ["miro.medium.com", "meme-arsenal.com", "web-dev.imgix.net"],
   },
   pageExtensions: ["mdx", "md", "tsx", "ts"],
   i18n: {

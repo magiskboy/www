@@ -1,0 +1,23 @@
+.root {
+  background-color: #a50e0e;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+}
+
+.title {
+  color: #ffe9e8;
+  font-weight: 600;
+  &:after {
+    content: ":";
+  }
+}
+
+.content {
+  *, code {
+    color: #ffe9e8;
+  }
+
+  code {
+    background-color: #590909;
+  }
+}

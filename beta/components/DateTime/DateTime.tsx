@@ -11,7 +11,7 @@ export const DateTime: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({
     stringVal += ", ngày ";
     stringVal += rawValue.getDate();
     stringVal += " tháng ";
-    stringVal += rawValue.getMonth();
+    stringVal += rawValue.getMonth() + 1;
     stringVal += " năm ";
     stringVal += rawValue.getFullYear();
     return stringVal;
