@@ -1,0 +1,66 @@
+---
+title: "Trải nghiệm làm mentor trong 1 năm"
+date: 2023-03-18T23:21:00+07:00
+published: true
+tags:
+- experience
+- Life
+categories:
+- Experience
+description: "Bài viết này mình muốn chia sẽ về trải nghiệm lần đầu làm mentor của mình và những gì mình rút ra được trong thời gian đó."
+---
+
+Thời gian mình còn làm thực tập sinh trong một phòng thí nghiệm với các thầy giáo bộ môn, mình thực sự thấy mình phát triển rất nhiều về kĩ năng cứng. Có lẽ một phần vì các thầy là giảng viên, một phần chính các thầy cũng là những người làm thực tế tại các công ty công nghệ. Thời gian đó, mình được các thầy chủ yếu hướng dẫn về cách phát triển phần mềm, cách tư duy xử lí vấn đề và cách để mở rộng vốn kiến thức. Và đó cũng là cái mình muốn nói tới trong bài hôm nay dưới vai trò là một mentor cho các bạn thực tập sinh.
+
+
+Trước khi mình thực sự làm mentor, mình đã từng support khá nhiều các thành viên mới khi họ join vào team (các bạn tầm junior/fresher). Tại thời điểm đó, mình cũng mới chỉ làm được ở trong team khoảng 5 tháng nhưng có lẽ là người có nhiều hiểu biết nhất về những việc mà team đang làm và phát triển. Để làm được điều đó, có lẽ nhờ vào anh leader và anh mentor cũ của mình đã hướng dẫn mình khá cụ thể khi mình mới join (anh mentor cũ của mình nghỉ việc sau 3 tháng khi mình join team).
+
+
+Sau khoàng 6 tháng mình join team, mình được anh leader giao 1 bạn thực tập sinh cho mình làm mentor. Thời điểm phỏng vấn bạn đó, anh leader có nói với mình rằng bạn thực tập sinh đó khá yếu về thuật toán và hỏi mình có training được cho bạn ấy không?. Bản thân mình là đứa yêu thích thuật toán nhưng trải qua 5 năm làm việc, mình thấy điểm yếu của bạn đó không phải vấn đề quá lớn nên nói hỏi tư duy xử lí vấn đề của bạn ấy ổn không thì anh leader bảo là "Có". Do đó, mình cũng trả lời anh rằng: "OK, em nghĩ thuật toán yếu không phải vấn đề quá lớn đâu, nếu được anh có thể nhận bạn ấy vào được".
+
+
+Thật lòng mà nói, thuật toán đối với mình chỉ là 1 trong nhiều công cụ để đánh giá khả năng tư duy và tiềm năng của 1 software engineer. Có khá nhiều phương pháp khác mà mình tin rằng nó có ích như khả năng tổ chức code (cách tổ chức các câu lệnh, các function, các class,...), các câu đố tư duy, khả năng debug, khả năng research,...
+
+
+Một vài ngày sau, bạn ứng viên kia join team và được sắp xếp cho mình hướng dẫn. Điều đầu tiên mà bạn ấy cần phải biết là cách làm việc với hệ sinh thái trong công ty, cũng là kinh nghiệm đầu tiên mình rút ra khi làm mentor: sự thân thiện.
+
+# Cởi mở, thân thiện và chủ động
+
+Bản thân mình là đứa ít nói và khó gần. Hồi đầu, mình lại rất sợ và ngại sự mới lạ của việc làm tại một công ty mới. Nhưng ở Teko thời gian đầu mình join được anh Project Manager (cũng là anh phỏng vấn mình luôn) làm mentor. Anh PM khá cởi mở và luôn hỗ trợ mình trong công việc. Có thể nói, thời gian đó đối với mình vô cùng quan trọng, giúp mình bước tiếp về sau này.
+
+Từ trải nghiệm đầu đó, mình chủ động quan tâm hơn đối với bạn mentee của mình. Mình hướng dẫn bạn ấy xin quyền và cách truy cập vào các nguồn tài nguyên của công ty, hướng dẫn bạn ấy tiếp cận dự án trong team và với mọi người trong công ty (ít nhất là trong mảng công việc).
+
+Sự thân thiện và cởi mở tuy vô cùng quan trọng nhưng lại rất dễ tạo ra. Đơn giản đó chỉ là 1 câu chào mỗi sáng, mình thường gọi mentee của mình là "Ngài" - khá là fun và thỉnh thoảng mình sẽ "Chào Ngài" khi mentee đi qua mình. Trong giờ làm việc, thỉnh thoảng mình sẽ qua chỗ mentee của mình hỏi xem bạn đó đang làm gì, có cần giúp gì không kèm cái bóp vai, tiện thể giúp chính bản thân mình xả stress sau khi ngồi làm việc quá lâu.
+
+Biến những việc làm đơn giản hằng ngày thành những việc khiến bạn trở nên thân thiện, cởi mở hơn với các mentee, giúp các bạn đó thoải mái trong công việc, từ đó có được hiệu quả công việc tốt hơn. 
+
+# Luôn tạo cơ hội cho mentee nhiều nhất có thể
+
+Sự phát triển của mình ờ mảng FrontEnd không thể không nhắc tới sự đóng góp của anh leader mình tại thời điểm ấy. Anh ấy luôn tạo thử thách và cơ hội cho mình có thể phát huy khả năng của mình. Mình từ đứa không biết gì về Frontend nhưng chỉ sau 6 tháng, mình đã đạt được những thành tựu nhất định với nó. Mình có thói quen sẽ để ý những gì xảy ra xung quanh do đó, cách anh leader "hướng" mình cũng được mình áp dụng vào bạn mentee sau này của mình.
+
+Thời gian đầu làm mentor của mình, anh leader thường nhắc nhờ mình rằng "Những task mày chưa biết thì mày nên làm, còn những cái biết rồi thì để thằng X nó làm, đừng ôm hết như thế". Ngày đầu mình thường xuyên nghĩ rằng nếu task này để cho bạn thực tập sinh làm sẽ không tốt bằng của mình làm và mình sẽ là người trực tiếp làm. Sau mình nghĩ lại việc anh leader hướng dẫn, mình đã thoáng hơn trong việc giao task này, task kia cho mentee. Mình sẽ review kĩ nhưng gì mà mentee làm để chắc chắn mọi chuyện vẫn đang đi đúng hướng. (đoạn này mình làm chưa thực sự được tốt :D).
+
+Để là một mentor tốt, bạn nên tạo cơ hội nhiều nhất có thể cho mentee của mình nhưng vẫn phải đảm bảo được chất lượng của công việc đó.
+
+# Là người dẫn đường, không phải người cầm tay
+
+Các bạn thực tập sinh đa phần khá yếu trong khi debug và tìm lỗi (đó cũng là 1 phương pháp thể hiện sự tư duy). Mình và mentee khá thường xuyên ngồi debug code với nhau và mình thường xuyên hỏi rằng "Em có biết anh làm vậy để làm gì không?". Mình luôn yêu cầu mentee đừng để ý mình click chuột vào đâu, làm những việc theo thứ tự nào mà hãy tổng quát hóa rằng làm như vậy có mục đích gì, với vấn đề có input như này sẽ đi nên tìm hiểu từ đâu.
+
+Mình thường tư duy trừu tượng, tổng quát nên mình thường xuyên nhắc nhở mentee nên mô hình hóa các vấn đề ở trong đầu trước khi làm bất kì điều gì với vấn đề đó. Mình cũng dẫn mentee của mình tiếp cận vấn đề theo hướng bản chất của vấn đề cần xử lí. 
+Ví dụ như Protocol Buffer đơn giản là 1 serializer/deserializer data hay bản chất của RestAPI và GRPC là function. Hiểu bản chất/abstract sẽ giúp tiếp cận vấn đề nhanh hơn.
+
+Mình sẽ không chỉ tận tay mentee của mình nên làm như thế này hay như thế kia để giải quyết bài toán cụ thể, mình sẽ hướng dẫn cách suy nghĩ, cách tiếp cận bài toán như thế nào rồi nâng lên tổng quát cho mọi bài toán, có như vậy mới giúp mentee nhanh chóng "lớn" lên được.
+
+# Luôn lắng nghe ý kiến của mentee
+
+Mình luôn coi mối quan hệ của mình và mentee là quan hệ đồng nghiệp hơn là mối quan hệ thầy trò. Như ở phần trước, mình luôn đặt mình vào vai trò là một người dẫn đường thì ở phần này, mình muốn nhấn mạnh vào việc mentor phải là một tấm gương phản chiếu cho mentee.
+
+Mentor sẽ luôn lắng nghe ý kiến của mentee và phản biện một cách tích cực và có logic, từ đó có thể nâng cao khả năng của mentee và của chính bản thân. Mình rất thích phương pháp luận của Socrates, đó là việc đặt mình vào vị trí của người không biết gì và đặt câu hỏi cho người đối thoại để tìm ra điểm yếu của họ. Vấn đề ở đây là lắng nghe và đặt những câu hỏi sắc bén, từ đó làm sáng tỏ điểm yếu của vấn đề. 
+
+Việc bác bỏ ý kiến mentee là một sai lầm lớn của rất nhiều mentor, nó không những có thể bỏ qua những ý kiến hay của mentee mà còn làm cho các mentee cảm thấy tự ti hoặc không được đánh giá đúng. Việc mentor lắng nghe ý kiến của mentee mình sẽ giúp mentee cảm nhận được giá trị của bản thân từ đó đem lại kết quả tốt trong công việc.
+
+---
+
+Một nhân việc có hiệu suất công việc cao là một điều quan trọng nhưng cá nhân đó có thể gây ảnh hưởng tích cực lên người khác (mentor - mentee) cũng là điều quan trọng không kém nếu xét theo năng lực của mỗi người. Điều này luôn đúng ở mọi công ty, nhất là những công ty có quy mô vừa và nhỏ (những startup hoặc những công ty đang build team). Với mình, một cá nhân thực sự tốt sẽ gây được ảnh hưởng tích cực đến các cá nhân khác chứ không chỉ dừng lại ở việc người đó có kĩ năng cứng hay kĩ năng mềm mạnh như thế nào.
+
+ Qua bài viết này, mình hi vọng sẽ giúp cho các bạn đang là mentor có thêm cái nhìn có giá trị nào đó trong công việc, từ đó giúp các mentee của mình chóng "lớn" hơn trong công việc. 
