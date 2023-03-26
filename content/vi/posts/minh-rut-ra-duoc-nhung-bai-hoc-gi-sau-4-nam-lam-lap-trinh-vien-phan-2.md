@@ -8,9 +8,6 @@ tags:
 - programming
 - experience
 - software development
-categories:
-- Self_experience
-- Self experience
 description: "Đây là bài viết cuối cùng trong loạt bài mình chia sẻ những kinh nghiệm của bản thân trong quá trình mình trở thành một lập trình viên như bây giờ.
 Trong bài viết này, mình không chỉ nếu ra những sai lầm mà còn chia sẻ những khó khăn, cách mình cải thiện bản thân trên quãng đường 4 năm đó."
 ---

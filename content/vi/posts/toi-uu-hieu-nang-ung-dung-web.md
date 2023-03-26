@@ -7,9 +7,6 @@ tags:
 - web
 - reactjs
 - optimization
-categories:
-- web_development
-- Web development
 description: "Chúng ta sử dụng ứng dụng web hằng ngày và thấy rằng có những trang web thì giật lag trong khi những trang khác lại mượt mà hay có những trang thì load chậm, tốn bộ nhớ trong khi lại có những trạng lại load siêu nhanh?.
 Trong bài viết này, mình sẽ chia sẻ cách mình tối ưu ứng dụng web mà cụ thể là một ứng dụng ReactJS."
 ---

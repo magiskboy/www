@@ -4,9 +4,6 @@ date: 2022-03-13T17:26:00+07:00
 published: true
 tags:
 - python
-categories:
-- Python
-- Javascript
 author: "Nguyễn Khắc Thành"
 description: "Trong cộng đồng các ngôn ngữ thông dịch, có lẽ đa phần chúng ta sẽ nhớ đến ngay 3 cái tên là Python, Javascript và Ruby. Đặc điểm chung của 3 ngôn ngữ này là dễ học, thời gian phát triển ứng dụng nhanh chóng và tất cả chúng nó đều được viết bằng C. Nhưng trong bài viết này, mình sẽ chỉ đem ra bàn cân để so sánh Python và Javascript, Ruby thì mình chưa từng làm bao giờ nên sẽ không có gì để nói."
 ---

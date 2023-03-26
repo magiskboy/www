@@ -7,10 +7,6 @@ tags:
 - web
 - flask
 - local thread
-categories:
-- Python
-- web_development
-- Web development
 author: "Nguyễn Khắc Thành"
 description: "Trong Flask có một khái niệm rất quan trọng và nó đã làm nên thương hiệu của riêng mình giữa các web framework của Python - Context"
 ---

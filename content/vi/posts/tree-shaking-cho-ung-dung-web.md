@@ -6,10 +6,6 @@ published: true
 tags:
 - Web
 - Optimization
-categories:
-- web_development
-- Javascript
-- Next.JS
 description: "Tree-shaking là một phương pháp phổ biến để tối ưu ứng dụng web. Mục đích của phương pháp này là loại bỏ các deadcode ra khỏi ứng dụng web, giúp ứng dụng của bạn có thể download và chạy dưới trình duyệt được nhanh và mượt mà hơn. Bài viết này sẽ không đi sâu vào chi tiết kĩ thuật mà chỉ trình bày những ý chính, giúp mọi người có một cheatsheet căn bản trước khi thực hiện eliminate deadcode. Còn nếu bạn muốn có cái nhìn chi tiết hơn, bạn có thể đọc [bài viết trước](tree-shaking.md) của mình nhé."
 ---
 

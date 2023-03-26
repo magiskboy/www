@@ -6,10 +6,6 @@ published: false
 tags:
 - nextjs
 - web-development
-categories:
-- Javascript
-- web_development
-- Web development
 description: "Nếu bạn chỉ phát triển một website trên một codebase thì mọi chuyện thật đơn giản với đa số các web framework nhưng sẽ thế nào nếu bạn muốn phát triển cả một hệ thống các website chỉ với một codebase, cụ thể là trong NextJS. Đây là bài toán mình đã gặp phải trong công ty và đây là bài chia sẻ về hướng giải quyết của mình với vấn đề multi-tenant trong NextJS."
 ---
 

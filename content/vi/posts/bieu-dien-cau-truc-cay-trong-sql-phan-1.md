@@ -6,8 +6,6 @@ tags:
 - programming
 - database
 - tree
-categories:
-- Database
 description: "Cây là một cấu trúc dữ liệu phổ biến và có ứng dụng rất nhiều để việc giải quyết các vấn đề trong máy tính. Để biểu diễn và cài đặt cây trong bộ nhớ trong khá đơn giản. Vậy việc biểu diễn cây trong cơ sở dữ liệu như thế nào, có khác biệt gì so với khi cài đặt trong bộ nhớ trong, chúng ta cùng tìm hiểu nhé."
 ---
 

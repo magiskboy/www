@@ -6,10 +6,6 @@ tags:
 - python
 - web
 - flask
-categories:
-- Python
-- web_development
-- Web development
 author: "Nguyễn Khắc Thành"
 description: "Python là một ngôn ngữ rất đẹp, một đứa trẻ cũng có thể làm quen với lập trình bằng Python. Và chẳng có gì lạ khi có những lớp học lập trình cho trẻ con được mở ra và ngôn ngữ mà họ chọn lại là Python."
 ---
