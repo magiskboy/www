@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
+const { i18n } = require('./next-i18next.config')
+
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  i18n,
   async redirects() {
     return [
       {
@@ -51,10 +55,6 @@ const nextConfig = {
     domains: ["miro.medium.com", "meme-arsenal.com", "web-dev.imgix.net"],
   },
   pageExtensions: ["mdx", "md", "tsx", "ts"],
-  i18n: {
-    locales: ['vi'],
-    defaultLocale: 'vi',
-  },
 };
 
 module.exports = nextConfig;

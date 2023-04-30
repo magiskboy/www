@@ -9,6 +9,7 @@ import {
   Layout,
 } from "components";
 import { getPosts, getPaginations } from "tools/post-tool";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const Homepage: NextPage<Props> = ({ paths, pagination }) => {
   const nextGenerator = useCallback<PaginationProps["nextGenerator"]>(
@@ -42,13 +43,23 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async ({locale}) => {
   const {
     publicRuntimeConfig: { pagination: paginationConfig },
   } = getConfig();
   const pageId = 1;
   const allPosts = await getPosts();
-  const pages = await getPaginations(allPosts, paginationConfig.perPage);
+  const pagePosts = locale === "en" ? allPosts.en : allPosts.vi;
+  const pages = await getPaginations(pagePosts, paginationConfig.perPage);
+  if (pages.length == 0) {
+    return {
+      props: {
+        paths: [],
+        pagination: {hasNext: false, hasPrevious: false, current: 0},
+        ...(await serverSideTranslations(locale || 'vi')),
+      }
+    }
+  }
   const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,
@@ -61,6 +72,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     props: {
       paths,
       pagination,
+      ...(await serverSideTranslations(locale || 'vi')),
     },
   };
 };

@@ -6,6 +6,7 @@ import fm from "front-matter";
 import { MDXRemote } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { Meta, components, Layout } from "components";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const About: NextPage<Props> = ({ source, meta }) => {
   return (
@@ -18,8 +19,9 @@ const About: NextPage<Props> = ({ source, meta }) => {
 
 export default About;
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const mdFile = path.join(".", "contents", "about.mdx");
+export const getStaticProps: GetStaticProps<Props> = async ({ locale }) => {
+  locale = locale || 'vi';
+  const mdFile = path.join(".", "contents", locale, "about.mdx");
   const data = await fs.readFile(mdFile);
   const { attributes: meta, body } = fm<Meta>(data.toString());
   const mdxSource = await serialize(body);
@@ -27,6 +29,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     props: {
       source: mdxSource,
       meta,
+      ...(await serverSideTranslations(locale))
     },
   };
 };

@@ -4,6 +4,7 @@ import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Link from "next/link";
 import { Comment, Image, Table, Meta, Post as PostWrapper, Caution } from "components";
 import { getPosts } from "tools/post-tool";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 const components = { Image, Table, Link, Caution };
 
@@ -23,8 +24,10 @@ const Post: NextPage<PageProps> = ({ source, meta, mdxDescription }) => {
 export default Post;
 
 export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
+  const locale = context.locale || 'vi';
   const slug = (context.params?.slug as string) || "";
-  const post = (await getPosts()).find((post) => post.slug === slug);
+  const allPosts = await getPosts();
+  const post = (locale === 'en' ? allPosts.en : allPosts.vi).find((post) => post.slug === slug);
   if (!post) throw new Error(`${slug} not found`);
   return {
     props: {
@@ -34,14 +37,26 @@ export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
         date: (post.meta.date as Date).toUTCString(),
       },
       mdxDescription: post.mdxDescription,
+      ...(await serverSideTranslations(locale)),
     },
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = (await getPosts()).map((post) => ({
-    params: { slug: post.slug },
-  }));
+  const allPosts = await getPosts();
+  const paths = [];
+  for (const post of allPosts.vi) {
+    paths.push({
+      params: { slug: post.slug },
+      locale: "vi",
+    })
+  }
+  for (const post of allPosts.en) {
+    paths.push({
+      params: { slug: post.slug },
+      locale: "en",
+    })
+  }
   return {
     paths,
     fallback: false,

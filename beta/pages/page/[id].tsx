@@ -9,6 +9,7 @@ import {
   Layout,
 } from "components";
 import { getPosts, getPaginations } from "tools/post-tool";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 const Page: NextPage<Props> = ({ paths, pagination }) => {
   const nextGenerator = useCallback<PaginationProps["nextGenerator"]>(
@@ -42,18 +43,33 @@ const Page: NextPage<Props> = ({ paths, pagination }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   const {
     publicRuntimeConfig: { pagination: paginationConfig },
   } = getConfig();
   const allPosts = await getPosts();
-  const paginations = await getPaginations(allPosts, paginationConfig.perPage);
   const paths = [];
+
+  // for vi
+  let posts = allPosts.vi;
+  let paginations = await getPaginations(posts, paginationConfig.perPage);
   for (let i = 1; i <= paginations.length; ++i) {
     paths.push({
       params: { id: i.toString() },
+      locale: "vi",
     });
   }
+
+  // for en
+  posts = allPosts.en;
+  paginations = await getPaginations(posts, paginationConfig.perPage);
+  for (let i = 1; i <= paginations.length; ++i) {
+    paths.push({
+      params: { id: i.toString() },
+      locale: "en",
+    });
+  }
+
   return {
     paths,
     fallback: false,
@@ -66,7 +82,8 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
   } = getConfig();
   const pageId = parseInt(context.params!.id as string);
   const allPosts = await getPosts();
-  const pages = await getPaginations(allPosts, paginationConfig.perPage);
+  const pposts = context.locale === "en" ? allPosts.en : allPosts.vi;
+  const pages = await getPaginations(pposts, paginationConfig.perPage);
   const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,
@@ -79,6 +96,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
     props: {
       paths,
       pagination,
+      ...(await serverSideTranslations(context.locale || 'vi')),
     },
   };
 };

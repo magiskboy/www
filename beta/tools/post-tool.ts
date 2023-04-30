@@ -14,14 +14,20 @@ const SERIALIZE_OPTS = {
   remarkPlugins: [remarkMath],
 };
 
-const POST_DIR = path.join(".", "contents", "posts");
-console.log(process.cwd());
+export async function getPosts(): Promise<{ vi: Post[], en: Post[] }> {
+  const [viPosts, enPosts] = await Promise.all([_getPosts("vi"), _getPosts("en")]);
+  return {
+    vi: viPosts,
+    en: enPosts,
+  }
+}
 
-export async function getPosts(): Promise<Post[]> {
-  const filenames = await fs.readdir(POST_DIR);
+export async function _getPosts(locale: string = 'vi'): Promise<Post[]> {
+  const post_dir = path.join(".", "contents", locale, "posts");
+  const filenames = await fs.readdir(post_dir);
   const posts = await Promise.all(
     filenames
-      .map((filename) => path.join(POST_DIR, filename))
+      .map((filename) => path.join(post_dir, filename))
       .map(async (filename, index): Promise<Post> => {
         const slug = getSlugByMdx(filenames[index]);
         const fileContent = (await fs.readFile(filename)).toString();
@@ -76,14 +82,14 @@ export async function getPaginations(
 
 export async function getCollection(
   name: keyof Post["meta"],
-  perPage = 5
+  perPage = 5,
+  locale: string = 'vi',
 ): Promise<Collection[]> {
-  const allPosts = (await getPosts()).filter((post) =>
-    Object.hasOwn(post.meta, name)
-  );
+  const allPosts = await getPosts();
+  const posts = (locale === 'en' ? allPosts.en : allPosts.vi).filter(post => Object.hasOwn(post.meta, name));
 
   const grouped: Record<string, Post[]> = {};
-  for (const post of allPosts) {
+  for (const post of posts) {
     const labels = post.meta[name] as string[];
     for (const label of labels) {
       if (!Object.hasOwn(grouped, label)) {

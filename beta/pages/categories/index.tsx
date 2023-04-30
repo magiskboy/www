@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Layout } from "components";
 import { getCollection } from "tools/post-tool";
 import React from "react";
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 const CategoryIndex: NextPage<Props> = ({ paths }) => {
   return (
@@ -18,7 +19,7 @@ const CategoryIndex: NextPage<Props> = ({ paths }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async ({locale}) => {
   const {
     publicRuntimeConfig: {
       pagination: { perPage },
@@ -31,6 +32,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
         label: collection.label,
         slug: collection.slug,
       })),
+      ...(await serverSideTranslations(locale || 'vi'))
     },
   };
 };

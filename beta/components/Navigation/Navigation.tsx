@@ -2,12 +2,16 @@ import React, { HTMLAttributes } from "react";
 import Link from "next/link";
 import style from "./Navigation.module.scss";
 import classnames from "classnames";
+import { useTranslation } from 'next-i18next'
+import { LangSwitcher } from '../LangSwitcher';
+
 
 export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
   navs,
   socials,
   ...rest
 }) => {
+  const { t } = useTranslation()
   return (
     <div
       className={classnames({
@@ -17,9 +21,7 @@ export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
       {...rest}
     >
       <div className={style.top}>
-        <Link href="/" className="brand">
-          Nguyễn Khắc Thành
-        </Link>
+        <LangSwitcher />
         <div className={style.social}>
           {socials.map((item) => (
             <a
@@ -27,7 +29,7 @@ export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
               target="_blank"
               style={{ margin: "0 .5rem" }}
               rel="noreferrer"
-              key={item.link}
+              key={t(item.link)}
             >
               {item.title}
             </a>
@@ -37,7 +39,7 @@ export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
       <div className={style.bottom}>
         {navs.map((item) => (
           <Link href={item.link} key={item.link}>
-            {item.title}
+            {t(item.title)}
           </Link>
         ))}
       </div>
