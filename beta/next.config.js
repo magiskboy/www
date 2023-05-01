@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
-const { i18n } = require('./next-i18next.config')
+const { i18n } = require('./next-i18next.config');
+const redirects = require("./legacy-page-redirect");
 
 
 const nextConfig = {
@@ -12,7 +13,8 @@ const nextConfig = {
         source: '/posts',
         destination: '/',
         permanent: true,
-      }
+      },
+      ...redirects,
     ]
   },
   publicRuntimeConfig: {
@@ -39,7 +41,7 @@ const nextConfig = {
       },
       {
         title: "Bản thân",
-        link: "/about",
+        link: "https://docs.google.com/document/d/1LsWN6eFli6Jic1oKZ_xce6qUKRFRKpdW/edit?usp=sharing&ouid=108176893074599585656&rtpof=true&sd=true",
       },
       {
         title: "Danh mục",

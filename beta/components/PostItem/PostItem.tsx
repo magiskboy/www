@@ -4,6 +4,7 @@ import { MDXRemote } from "next-mdx-remote";
 import type { Meta } from "../Post";
 import { DateTime } from "../DateTime";
 import style from "./PostItem.module.scss";
+import { useRouter } from 'next/router';
 
 export const PostItem: React.FC<PostItemProps> = ({
   title,
@@ -12,6 +13,7 @@ export const PostItem: React.FC<PostItemProps> = ({
   description,
   tags,
 }) => {
+  const router = useRouter();
   return (
     <div
       className={classnames({
@@ -25,6 +27,7 @@ export const PostItem: React.FC<PostItemProps> = ({
       <DateTime
         className={style.date}
         value={typeof date === "string" ? new Date(date) : date}
+        locale={router.locale}
       />
       {description && (
         <div className={style.description}>

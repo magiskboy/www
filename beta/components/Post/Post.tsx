@@ -12,7 +12,6 @@ export const Post: React.FC<PostProps> = ({
   mdxDescription,
 }) => {
   const router = useRouter();
-  const { asPath } = router;
   return (
     <>
       <NextSeo title={meta.title} description={meta.description} />
@@ -24,6 +23,7 @@ export const Post: React.FC<PostProps> = ({
             value={
               typeof meta.date === "string" ? new Date(meta.date) : meta.date
             }
+            locale={router.locale}
             style={{
               color: "gray",
               fontSize: "0.9rem",
