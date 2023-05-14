@@ -1,9 +1,0 @@
-{{ $data := $.Site.Data.quotes }}
-{{ $page := $.Get "page" }}
-
-{{ range index $data $page }}
-<div class="quote">
-  <p class="quoteContent">{{ .content }}</p>
-  <span class="authorOrTitle">{{ .from }}</span>
-</div>
-{{ end }}
