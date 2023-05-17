@@ -49,6 +49,10 @@ export async function _getPosts(locale: string = 'vi'): Promise<Post[]> {
   return posts
     .filter((post) => post.meta.published)
     .sort((a, b) => {
+      const scoreA = a.meta.score || 0;
+      const scoreB = b.meta.score || 0;
+      if (scoreA < scoreB) return 1;
+      if (scoreA > scoreB) return -1;
       const t1 = (a.meta.date as Date).getTime();
       const t2 = (b.meta.date as Date).getTime();
       if (t1 < t2) return 1;

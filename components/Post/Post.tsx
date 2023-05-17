@@ -51,4 +51,5 @@ export interface Meta {
   categories?: string[];
   description?: string;
   published?: boolean;
+  score?: number;
 }
