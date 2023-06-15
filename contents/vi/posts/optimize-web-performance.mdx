@@ -1,0 +1,361 @@
+---
+title: "Optimize web performance"
+date: 2023-06-15T20:07:00+07:00
+published: true
+tags:
+- Web
+- Optimization
+categories:
+- Web development
+- Javascript
+description: ""
+---
+
+# Trang web được load và hiển thị như thế nào?
+
+1. Browser load HTML file (block)
+2. Parsing HTML  (non block)
+3. Load các tài nguyên khác như JS, CSS, ảnh, font,.... (non block)
+4. Render (loop) 
+    - Calculate style, layout và painting các element (block)
+    - Thực thi codeJS (block)
+
+<Image 
+  src="/images/optimize-web-perf.webp"
+  width={900}
+  height={200}
+  title=""
+/>
+
+Người dùng cảm nhận một trang web nhanh nếu tất cả các quá trình trên nhanh nhất có thể. __Hiệu năng của các quá trình trước ảnh hưởng trực tiếp tới toàn bộ quá trình sau__.
+
+# Web performance
+
+Để đánh giá hiệu năng của một trang web, Google đưa ra 6 chỉ số ảnh hưởng đến hiệu năng và trải nghiệm người dùng (user centric metrics)
+
+- Largest Contentful Paint 
+- First Contentful Paint
+- Cumulative Layout Shift 
+- Total Blocking TIme
+- Time To Interactive
+- Speed Index
+
+6 chỉ số này là kết quả của các quá trình load và render page ở phần trên, nên để optimize, ta phải nắm được chi tiết các một trang web được render như thế nào.
+
+## Largest Contentful Paint
+
+Thời gian mà phần tử lớn nhất trên màn hình được hiển thị. Thời gian này càng ngắn, người dùng sẽ cảm thấy trang web dường như khá nhanh mặc dù các nội dùng khác có thể chưa đựọc render.
+
+Ví dụ: thời gian banner hiển thị được lấy làm điểm LCP cho trang homepage của phongvu.vn
+
+<Image 
+  src="/images/optimize-web-perf-2.png"
+  width={900}
+/>
+
+Một số lưu ý:
+- với các phần tử LCP, nên được load nhanh nhất khi có thể
+- LCP thường là các phần từ __img__ hoặc các phần tử __p__
+- LCP nên được bố cục một cách rõ ràng trên trang web tại thời điểm load, tránh các phần tử nhỏ, làm cho việc khó các định LCP
+
+## First Contentful Paint
+
+Thời gian để browser có thể render nội dung ra màn hình, FCP luôn là thời điểm trước FCP nên nếu FCP nhỏ thì LCP sẽ nhỏ theo. FCP ảnh hưởng bởi các blocking resource như CSS, font nên việc tối ưu CSS và load font sẽ làm giảm FCP.
+
+## Cumulative Layout Shift 
+
+CLS là tình trạng các phần tử trong màn hình thay đổi vị trí và kích thước trong thời gian tải trang. Nếu CLS cao sẽ dẫn tới trải nghiệm không tốt về UI như ví dụ sau
+
+<center>
+<video width="640" height="480" controls>
+  <source src="https://storage.googleapis.com/web-dev-assets/layout-instability-api/layout-instability2.webm" type="video/ebm" />
+  Your browser does not support the video tag.
+</video>
+</center>
+
+## Total blocking time
+
+Thông số ảnh hưởng do CPU phải thực thi các tác vụ trên main thread quá dài như:
+- JS parsing
+- HTML parsing
+- calculate style
+- layout
+- JS executing
+
+Nếu thời gian này cao có thể gây ra một số vấn đề sau:
+- giảm frame rate, mỗi frame nên được update và render trong 16.6ms để đảm bảo 60fps
+- thời gian user có thể tương tác được với web dài sẽ mang lại trải nghiệm không tốt 
+
+Một số cách để làm giảm thời gian này:
+- giảm code JS browser phải thực thi khi load trang
+- tránh việc style lại các element như insert thẻ style, thay đổi các attribute liên quan đến vị trí, kích thước của các element ([recalculate style](https://web.dev/reduce-the-scope-and-complexity-of-style-calculations/), [layout thrashing](https://web.dev/avoid-large-complex-layouts-and-layout-thrashing/))
+
+## Time To Interactive
+
+Thời gian người dùng có thể tương tác được với trang web, thời gian này càng ngắn, người dùng sẽ cảm giác trang web đang chạy nhanh. Thông số này bị ảnh hưởng bởi việc CPU bị các tác vụ khác chiếm quá nhiều nên để tối ưu chỉ số này cần giảm các tác vụ dùng CPU đến mức tối thiểu. Các tác vụ đó đã được nói đến ở phần Total blocking time.
+
+
+## Speed Index
+
+Thời gian hiển để hiển thị nội dung trang web. Cũng như các phần khác, thời gian này bị ảnh hưởng bởi CPU bị chiếm do các tác vụ khác hoặc do các block resource như font, css. Để giảm thời gian này, cần giảm thời gian CPU bị chiếm cũng như load các block resource nên được load nhanh nhất có thể.
+
+
+## Cheetsheet
+
+### Cumulative Layout Shift	
+- Ý nghĩa: 
+  - Mức độ các phần tử thay đổi kích thước và vị trí khi load trang
+- Yếu tố ảnh hưởng:
+  - thời gian load các resource chậm như font
+  - các phần tử chưa được render không được xác đinh 1 placeholder cụ thể 
+- Phương pháp tối ưu:
+  - xác định trước 1 placeholder cụ thể cho các phần tử, đặc biệt là img.  Với img, nên set thuộc tính width, height rõ ràng.
+  - trong react, với các component SSR, nên khởi tạo useState với server data nếu state đó tham gia vào quá trình render. Ví dụ thay vì list = useState([]) thì list = useState(serverList)  
+  - SSR
+
+### First Contentful Paint	
+- Ý nghĩa:
+  - Thời gian để browser băt đầu painting lên màn hình	
+- Yếu tố ảnh hưởng:
+  - blocking resource như css, font
+- Phương pháp tối ưu:
+  - tối ưư việc load các blocking resource
+  - SSR các phần từ được hiển thị trong viewport trong loading time 
+
+
+### Largest Contentful Paint
+- Ý nghĩa: 
+  - Thời gian hiển thị phần tử lớn nhất trên viewport trong loading time, __thường là các phần từ img hoặc các text element như p__
+- Yếu tốt ảnh hưởng:
+  - với các text element: thời gian load font
+  - với các img element: thời gian load image
+- Phương pháp tối ưu:
+  - tối thiểu hóa việc load font, không nên load font dư thừa
+  - với image, nên preload một số ảnh đóng vai trò là lcp
+  - không thực hiện việc hiển thị LCP element bằng code JS hay CSS (background-image), sử dụng thẻ img
+  - nên server side rendering (SSR) với các LCP element
+  - các component LCP không nên lazy render 
+
+
+### Speed Index	
+- Ý nghĩa: 
+  - Thời gian trang web có thể hiển thị nội dung	
+- Yếu tố ảnh hưởng:
+  - blocking resource
+  - main thread blocking time
+- Phương pháp tối ưu:
+  - giảm thời gian xử lí các yếu tố ảnh hưởng theo các phương thức ở trên
+
+
+### Time to interactive	
+- Ý nghĩa:
+  - Thời gian người dùng có thể tương tác được với trang web	
+- Yếu tố ảnh hưởng:
+  - main thread blocking time
+- Phương pháp tối ưu:
+  - giảm thời gian main thread bị block bằng các phương pháp ở trên
+  - không nên lạm dụng idle time (sử dụng requestIdleCallback quá nhiều), thời gian idle cũng là khoảng thời gian browser chờ để xử lí user input
+
+### Total blocking time	
+- Ý nghĩa:
+  - Thời gian main thread bị block 	
+- Yếu tố ảnh hưởng: 
+  - JS parsing
+  - HTML parsing
+  - calculate style
+  - layout
+  - JS executing
+- Phương pháp tối ưu:
+  - treeshaking: [https://web.dev/reduce-javascript-payloads-with-tree-shaking](https://web.dev/reduce-javascript-payloads-with-tree-shaking)
+  - giảm lượng HTML trả về do SSR
+  - tránh việc load quá nhiều style hoặc lazy load style - recalculate style
+  - tránh việc truy cập/chỉnh sửa các thuộc tính về vị trí và kích thước của các phần tử - layout thrashing 
+
+## Một số vấn đề cần lưu ý
+
+### Treeshaking
+
+Tree shaking là phương pháp loại bỏ các deadcode ra khỏi bundle, làm giảm kích thước file JS trả về client. Phương pháp này được hỗ trợ bởi các bunudler như webpack, esbuild, rollup,...
+
+Một số chú ý về tree shaking:
+
+- tree shaking chỉ thực hiện ở application, không thực hiện ở library
+- để giúp các bundler có thể tree shake, nên consider set trường sideEffects trong package.json với giá trị phù hợp 
+- chỉ nên tách function ra shared package nếu chúng được sử dụng ít nhất 2 lần trở lên
+- tránh việc __import * from__ ... để bundler có thể tree shake
+- tree shaking chỉ thực hiện được trong ESM, các bundler không hỗ trợ tree shaking trên CommonJS, do đó, hạn chế tối đa sử dụng CommonJS cho các ứng dụng trên browser
+- với các ứng dụng hybrid như NextJS, code trên server rất dễ lẫn với code trên client, do đó cần lưu ý và sử dụng các bundle anaylzer như [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) để theo dõi
+- các resource nhưng image nên được tách ra file và sử dụng CDN để serve, tránh việc bundle cả ảnh vào trong JS bundle
+
+Đọc thêm: [https://blog.theodo.com/2021/04/library-tree-shaking](https://blog.theodo.com/2021/04/library-tree-shaking)
+
+### Lazy import, lazy load
+
+lazy import được sử dụng để giảm bundle size. Thay vì bundle code của tất cả tính năng, chúng ta chỉ nên import code của những tính năng cần thiết.
+
+Ví dụ: code cho popup thông báo lỗi chỉ được load về khi popup cần hiện lên khi có lỗi xảy ra. Tại thời điểm load trang, phần code đó không được bundle vào JS, giúp thời gian load giảm.
+
+Một số lưu ý:
+- không lazy load những đoạn code làm ảnh hưởng đến LCP, CLS
+- lazy import không làm ảnh hưởng tới code trên server
+- tránh lạm dụng lazy import không cần thiết, điều này có thể tạo ra những file JS quá nhỏ, giảm khả năng nén của web server, ảnh hưởng tới hiệu năng chung  
+- sử dụng lazy loading của HTML như img
+
+### Lazy hydrate
+
+Lazy hydrate tránh việc code được thực thi không cần thiết.
+
+Ví dụ: chỉ render các component trong viewport (nhất là tại loading time) sẽ làm giảm thời gian CPU bị blocking. Kết hợp với IntersectionObserver, chúng chỉ nên được render khi ở trong viewport.
+
+Do việc detect một component có ở trong viewport hay không do JS thực thi nên những phần từ LCP cũng không nên được render bằng cách lazy hydrate này.
+
+### Time to first byte
+
+Tuy không phải là 1 user centric metric nhưng TTFB lại rất quan trọng trong web performance do nó ảnh hưởng tới tất cả các chỉ số web performance. Trong tất cả các TTFB của các resource, TTFB của file HTML là quan trong nhất vì nó là entrypoint của 1 webpage. Tối ưu chỉ số này sẽ làm tăng điểm số chung đáng kể.
+
+Để improve chỉ số này, có 1 vài phương pháp như:
+- caching
+- giảm thời gian SSR bằng cách loại bỏ các component không cần thiết
+
+### Optimize bandwidth
+
+Tại thời điểm loading, giảm bandwidth giúp các resource quan trọng được load nhanh hơn. trang web sẽ được hiển thị lên màn hình nhanh nhất có thể.
+
+Lưu ý:
+- tránh load các thirdparty không quan trọng tại thời điểm này như tracking hay các script phục vụ marketing
+- tránh preload quá nhiều resource
+- chỉ nên đặc các resource quan trọng, cần load nhanh nhất có thể trong thẻ head của html, chuyển các script không quan trọng xuống cuối thẻ body
+- Ưu tiên xử lí HTML tĩnh trước các resource như JS hay các image chưa được hiển thị trên trang web
+
+# Chuyện gì đã xảy ra trước ECOM-338?
+
+Note: ECOM-338 là Epic tối ưu web performance cho phongvu.vn
+
+Điểm tổng quan do [google pagespeed](https://pagespeed.web.dev/) khá thấp trên cả desktop và mobile. 
+
+Sử dụng lighthouse hoặc google pagespeed, chúng ta có được các đầu mối để có thể investigate nguyên nhân và cách tối ưu.
+
+Trước ECOM-338, có một số vấn đề sau:
+- Thời gian CPU bị block quá lớn: ảnh hưởng đến trực tiếp đến hiệu năng quả trang web __(Smoothness)__
+- Cumulative Layout Shift cao: các phần từ trên màn hình thay đổi vị trí và kích thước liên tục dẫn tới trải nghiệm về UI không tốt __(Visual stability)__
+- Time To Interactive cao: làm tăng thời gian người dùng có thể tương tác được với trang web __(Runtime responsiveness)__
+- Trên mobile, các chỉ số như Largest Contentful Paint và First Contentful Paint cao: làm giảm khả năng trải nghiệm của người dùng __(Meaningful)__
+
+<div style={{ "display": "flex", "flexDirection": "row" }}>
+<Image
+  src="/images/optimize-web-perf-3.png"
+  title="Desktop"
+/>
+
+<Image
+  src="/images/optimize-web-perf-4.png"
+  title="Mobile"
+/>
+</div>
+
+# Làm thế nào để tìm ra nguyên nhân?
+
+Có nhiều công cụ giúp tìm hiểu vấn đề và gợi ý hướng giả quyết cho các vấn đề về hiệu năng của website.
+
+Lighthouse và [google pagespeed](https://pagespeed.web.dev)
+
+Công cụ này sẽ phân tích và đưa ra điểm số tổng quan trong trang web. Nó sẽ đo lường [6 user centric metric](https://web.dev/user-centric-performance-metrics) về hiệu năng web, đây là những đầu mối quan trọng để tiến hành tối ưu về sau. Nó cũng đưa ra một điểm số tổng quan để chúng ta có thể theo dõi tiến độ tối ưu. Ngoài ra, nó cũng đưa ra những vấn đề gặp phải và gợi ý hướng  giải quyết. Theo mình, công cụ này nên được sử dụng trước mỗi lần tối ưu và sau khi tối ưu, nó sẽ giúp theo dõi được tiến độ cũng như đưa ra hướng đi tiếp theo cần phải làm.
+
+Để sử dụng Lighthouse, mở __Chrome Dev Tools__ bằng cách nhấn Ctrl+Shift+I và chọn tab __Lighthouse__
+
+<Image
+  src="/images/optimize-web-perf-5.png"
+/>
+
+Chúng ta có thể đo lường trang web với các khía cạnh khác nhau như Hiệu năng (Performance), SEO, ... Tuy nhiên, trong bài này chỉ tập trung tới phần hiệu năng nên các khía cạnh khác sẽ được uncheck. Ngoài ra, Lighthouse có thể đo lường trên cả thiết bị desktop và mobile. Với từng thiết bị, Lighthouse sẽ thiết lập các chỉ số tương đương như throtting network thành mạng 3G cho các thiết bị mobile hay làm quá trình xử lí tác vụ chậm đi (throtting CPU).
+
+Sau khi chọn xong các tùy chỉnh, click vào __Analyze page load__. Lưu ý, trong quá trình Lighthouse đang phân tích, tránh thực hiện các tác vụ khác để làm giảm sai sót trong quá trình phân tích. 
+
+Từ lighthouse, chúng ta có thể nhận thấy một vài vấn đề trong project shop-front như sau:
+- Lượng code JS được bundle vào output dư thừa
+- Thời gian thực thi code JS quá dài, chiếm nhiều CPU làm giảm khả năng render trang web 
+- Lựa chọ thư viện chưa hợp lí dẫn tới hiệu năng giảm trên các thiết bị mobile
+- Không tuân thủ các best practice về web performance
+- Thời gian phản hồi của server không cao làm ảnh hưởng toàn bộ các chỉ số khác trong đánh giá
+
+<Image 
+  src="/images/optimize-web-perf-6.png"
+/>
+
+## Performance insight
+
+Để mở công cụ này, vào __Chrome Dev Tools > Performance Insight__
+
+<Image 
+  src="/images/optimize-web-perf-7.png"
+  title="Performance Insight"
+/>
+
+Công cụ này giúp chúng ta cái nhìn chi tiết hơn về trang web theo thời gian. Nó sẽ cho ta biết các vấn đề, user centric metric xảy ra như thế nào theo thời gian, từ đó giúp ta dễ dàng biết được nên tối ưu ở đâu, cho chỉ số nào.
+
+<Image 
+  src="/images/optimize-web-perf-8.png"
+/>
+
+Nếu như __Lighthouse__ cho chúng ta biết được các vấn đề là gì, chỉ số cao hay thấp thì __Performance Insight__ cho chúng ta biết được chúng có quan hệ như thế nào. Khi chúng ta có nhận thức chỗ cần tối ưu, bước tiếp theo là tối ưu như thế nào? Công cụ tiếp theo sẽ cho ta biết điều đó.
+
+## Performance
+
+Để sử dụng công cụ này, mở __Chrome Dev Tools > Performance__
+
+<Image 
+  src="/images/optimize-web-perf-9.png"
+  title="Performance in Google Chrome"
+/>
+
+Có 4 phần chúng ta cần lưu ý:
+1. Biểu đồ này cho chúng ta cái nhìn tổng quan về khối lượng công việc mà browser phải làm khi load trang web. Các màu trong biểu đồ ứng với các loại công việc (chi tiết ở phần 4).
+2. Khối này cho chúng ta biết chi tiết resource và thứ tự được tải về khi load trang (Network)
+3. Chi tiết các function/task đươc thực thi trong main thread, chúng cho ta biết thứ tự thực thi và quan hệ giữa chúng.
+4. Giống khối 3 nhưng các thông tin đó được hiển thị theo các cách khác nhau như Summary, Bottom-Up, Call Tree, Event Log
+
+## Webpack bundle analyzer 
+
+Bundle có thể được phân tích bằng [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer), với công cụ này, một số issue có thể được phát hiện như:
+- code server được bundle lẫn với client
+- duplicate module 
+- bundle bị thừa hoặc các thư viện đang sử dụng commonjs → không thể tree shaking
+
+<Image 
+  src="/images/optimize-web-perf-10.gif"
+/>
+
+
+# Kết quả sau khi optimize
+
+Điểm số đã đạt được khá cao khi đo trên mobile là 60 và desktop là 80-90
+
+Tuy nhiên còn một vấn đề khó và ảnh hưởng rất lớn đến kết quả đó là script do người quản lí website nhúng vào. Đó là những đoạn mã có thể phá bỏ mọi kết quả tối ưu mà mình đã không lường trước do thiếu kinh nghiệm trong quá trình tìm hiểu
+
+Google Tag Manager (GTM) cho phép nhúng các đoạn mã JS, CSS, HTML vào trang web một cách linh động.
+
+__Điểm số cho phiên bản desktop__
+<div style={{ "display": "flex", "flexDirection": "row" }}>
+<Image
+  src="/images/optimize-web-perf-11.png"
+  title="Không nhúng GTM"
+/>
+<Image
+  src="/images/optimize-web-perf-12.png"
+  title="Nhúng GTM"
+/>
+</div>
+
+__Điểm số cho phiên bản mobile__
+<div style={{ "display": "flex", "flexDirection": "row" }}>
+<Image
+  src="/images/optimize-web-perf-13.png"
+  title="Không nhúng GTM"
+/>
+<Image
+  src="/images/optimize-web-perf-14.png"
+  title="Nhúng GTM"
+/>
+</div>
+
+Ngoài ra, điểm số còn phụ thuộc khá nhiều vào những yếu tố bên ngoài như thời gian trả kết quả của API, network người dùng, cấu hình máy tính,...
