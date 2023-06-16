@@ -72,9 +72,7 @@ That is an amazing combination of what FastAPI has given us. But not everyone us
 
 FastAPI supports both sync and async function when declaring an endpoint. So how do you use them right? When do you use sync, and when do you use async?
 
-Đi từ gốc rễ, mình sẽ chỉ cho các bạn thấy một nghịch lí trong Python. Hãy đọc kĩ gist này của mình [gist](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479)
-
-Let's read my gist [gist](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479) and keep in mind: sync functions handle IO-bound nicely if you run it in the multi-thread environment.
+Let's read my [gist](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479) and keep in mind: sync functions handle IO-bound nicely if you run it in the multi-thread environment.
 
 In FastAPI, if an endpoint is a sync function, it is going to be run on a separate thread but if an endpoint is an async function, it is going to be scheduled and run on the event loop of the main thread.
 
