@@ -1,0 +1,120 @@
+---
+title: "Why FastAPI fast?"
+date: 2023-06-16T20:07:00+07:00
+published: true
+tags:
+- Web
+- Python
+categories:
+- Web development
+- Python
+description: "Recently, there has been a web framework become popular in the Python community - FastAPI. In this post, I show you how FastAPI is good and why you decided on FastAPI for development APIs"
+---
+
+> FastAPI stands on the shoulders of giants:
+> - Starlette for the web parts.
+> - Pydantic for the data parts.
+
+
+The according FastAPI creator, [FastAPI](https://fastapi.tiangolo.com) is built on two good libraries: [Starlette](https://www.starlette.io) and [Pydantic](https://docs.pydantic.dev/latest).
+
+Starlette is a web toolkit to develop web APIs. If [Flask](https://flask.palletsprojects.com/en/2.3.x) is built on [Werkzeug](https://werkzeug.palletsprojects.com/en/2.3.x/) with [WSGI](https://peps.python.org/pep-3333/) as web server interface, then FastAPI is built on Starlette with [ASGI](https://asgi.readthedocs.io/en/latest/).
+
+
+Pydantic is a library to serialize/deserialize/validate data.
+
+That is according to the creator of FastAPI so this is an analysis of me.
+
+> FastAPI framework, high performance, easy to learn, fast to code, ready for production. 
+
+It's the slogan on FastAPI's homepage.
+
+So what's mean "fast"?. "fast" about what?
+
+In my opinion, FastAPI can handle the request quickly (high performance) and the development of products with FastAPI is rapid.
+
+## FastAPI robust the product development
+
+That's right completely!
+
+FastAPI implements a Dependency Injection system (look like [NestJS](https://nestjs.com)), it simple and robust coding.
+
+FastAPI makes use of [type hint](https://peps.python.org/pep-0484) in Python for many purposes. We can declare headers, query string, parameters URL, and body of endpoint via type hint. This not only declares the structure of the request/response but also allows some IDE features to work nicely such as auto-completion, and type-checking. Thus it reduces errors in the runtime.
+
+Besides, type declaration makes FastAPI can generate API documentation automatically, so the development process is clear and comfortable. We have not written API documentation during coding, and do not consider that documentation and code are mismatched.
+
+Moreover, FastAPI integrated more features in the type declaration such as security schemes, and complex validation rules of the request/response,...
+
+I think FastAPI is an amazing combination between Flask and the new features of Python 3.7+.
+
+
+## FastAPI handles requests rapidly, high performance
+
+This is right relatively (not absolute)
+
+The time of the request handling depends on many things such as database design, an algorithm of a handler, system design, and how framework use of,...
+
+Nevertheless, FastAPI provides many options for developers can optimize the application better than others. So what's that?
+
+FastAPI is a top of Starlette, which is implemented with ASGI, which means that supports handling the request asynchronously in the single thread of the webserver. One of the popular web servers is [Uvicorn](https://www.uvicorn.org), which is used by me frequently. Uvicorn receives and processes the request asynchronously (like NodeJS), moreover, uvicorn can replace the default event loop of Python with [libuv](https://libuv.org) - an event loop library, which is used by NodeJS.
+
+The seconds, uvicorn can integrate with [http-parser](https://github.com/nodejs/http-parser) - a library for parsing HTTP messages, which is also used and maintained by NodeJS. So handling requests/responses at the low level is so good.
+
+Processing HTTP messages has been done. Next, the high-level of FastAPI uses Pydantic for converting raw data to Python objects and more. FastAPI uses Pydantic for validating, serialization/deserialization of data of the request/response.
+
+Validating, serialization/deserialization is a costly process so [Pydantic core](https://github.com/pydantic/pydantic-core) is built with Rust - a static type language. At least, implementation in Rust is better than any dynamic language for performance because of CPU-bound.
+
+Mostly, low-level libraries or high-performance tasks recommend using static type languages like C, Rust, and Java because they do not need to take care type of data in the runtime, so it's rapid,...
+
+That is an amazing combination of what FastAPI has given us. But not everyone uses FastAPI right!!!
+
+## Using async/sync function right
+
+FastAPI supports both sync and async function when declaring an endpoint. So how do you use them right? When do you use sync, and when do you use async?
+
+Đi từ gốc rễ, mình sẽ chỉ cho các bạn thấy một nghịch lí trong Python. Hãy đọc kĩ gist này của mình [gist](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479)
+
+Let's read my gist [gist](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479) and keep in mind: sync functions handle IO-bound nicely if you run it in the multi-thread environment.
+
+In FastAPI, if an endpoint is a sync function, it is going to be run on a separate thread but if an endpoint is an async function, it is going to be scheduled and run on the event loop of the main thread.
+
+So what happened when executing the under code?
+
+```python
+import sleep
+
+app = FastAPI()
+
+@app.get("/")
+async def index():
+    time.sleep(1)
+    return Response("Hello world")
+```
+
+Because the endpoint is an async function thus it is going to be scheduled in the event loop of the main thread. But it contains a sync function is time.sleep so time.sleep is going to block the main thread. All requests that come to the main thread will be blocked until this request ended, it's downgrade performance.
+
+
+Let's convert to the sync function:
+
+```python
+import sleep
+
+app = FastAPI()
+
+@app.get("/")
+def index():
+    time.sleep(1)
+    return Response("Hello world")
+```
+
+In this way, the endpoint is going to be executing in a separate thread and does not block the main thread so the main thread can handle incoming requests.
+
+This problem also discuss [here](https://github.com/tiangolo/fastapi/discussions/7095)
+
+## Recap
+
+FastAPI is fast about both product development and high performance if used right
+
+For gaining it, FastAPI must be run on an ASGI server like uvicorn - which can use both libuv and http-parser for HTTP message processing performance. Furthermore, Pydantic is used by FastAPI as a serialization/deserialization/validator for request/response, which is high-performance for serializing/deserializing/validating data.
+
+Finally, let's use FastAPI right, this makes use of the advantages of FastAPI. In my opinion, FastAPI is an impressive framework, we should thank [@tiangolo](https://github.com/tiangolo) for creating it.
