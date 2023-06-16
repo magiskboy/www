@@ -1,0 +1,123 @@
+---
+title: "Tại sao FastAPI lại nhanh?"
+date: 2023-06-16T20:07:00+07:00
+published: true
+tags:
+- Web
+- Python
+categories:
+- Web development
+- Python
+description: "Gần đây, có một web framework đang nổi lên trong cộng đồng Python - FastAPI. Trong bài viết này, mình sẽ đi phân tích tại sao framework này lại \"fast\""
+---
+
+> FastAPI stands on the shoulders of giants:
+> - Starlette for the web parts.
+> - Pydantic for the data parts.
+
+
+Theo lời tác giả, [FastAPI](https://fastapi.tiangolo.com) được xây dựng trên 2 thư viện vô cùng tốt là [Starlette](https://www.starlette.io) và [Pydantic](https://docs.pydantic.dev/latest).
+
+Starlette là một web toolkit để phát triển web trong Python. Nếu như [Flask](https://flask.palletsprojects.com/en/2.3.x) được xây dựng trên [Werkzeug](https://werkzeug.palletsprojects.com/en/2.3.x/) với interface [WSGI](https://peps.python.org/pep-3333/) thì FastAPI được xây dựng từ Starlette trên giao diện [ASGI](https://asgi.readthedocs.io/en/latest/).
+
+Pydantic là một thư viện cho data validator và data serialize/deserialize.
+
+Đó là theo lời tác giả, còn đây là phân tích của bản thân mình.
+
+> FastAPI framework, high performance, easy to learn, fast to code, ready for production. 
+
+Đó là tiêu đề trên trang chủ của FastAPI.
+
+Vậy "fast" ở đây là "fast" về cái gì?
+
+Theo mình, FastAPI có thể xử lí request nhanh (hiệu năng cao) và quá trình phát triển sản phẩm bằng FastAPI nhanh chóng.
+
+## FastAPI giúp quá trình phát triển sản phẩm nhanh chóng
+
+Điều này là đúng tuyệt đối. 
+
+FastAPI được tích hợp một hệ thống Dependency Injection (tương tự [NestJS](https://nestjs.com)) giúp đơn giản hóa công việc phát triển.
+
+FastAPI sử dụng [type hint](https://peps.python.org/pep-0484) của Python với nhiều mục đích. Chúng ta có thể định nghĩa headers, query string, param url, body của endpoint của API bằng type hint. Điều này vừa giúp bạn định nghĩa và validate được request, response của API, vừa giúp các IDE có thể trợ giúp trong quá trình phát triển như auto-completion, type checking, từ đó làm giảm lỗi tiềm ẩn trong runtime.
+
+Bên cạnh đó, việc định nghĩa type kiểu này giúp FastAPI có thể tự generate API doc, từ đó quá trình phát triển sẽ rõ ràng và thuận tiện hơn. Việc tích hợp API không còn là nỗi ám ảnh của developer. Chúng ta sẽ không phải vừa code vừa viết API doc bằng yaml, không lo sai lệch giữa API doc và response thực tế trả về của service.
+
+Ngoài ra, FastAPI có tích hợp nhiều chức năng trong việc định nghĩa type như cơ chế bảo mật của API, rule validate schema phức tạp của request, response,...
+
+Nói chung, FastAPI là sự kết hợp tuyệt vời giữa Flask và những tính năng mới mà Python 3.7+ đem lại.
+
+
+## FastAPI có thể xử lí request nhanh, hiệu năng cao
+
+Điều này là đúng tương đối (không phải tuyệt đối).
+
+Xử lí request nhanh chóng phụ thuộc vào rất nhiều yếu tố như thiết kế dữ liệu, thuật toán xử lí, thiết kế hệ thống, dùng framework đúng cách,...
+
+Tuy nhiên, FastAPI cho phép các nhà phát triển có nhiều cơ hội để tối ưu ứng dụng của mình hơn các framework khác. Vậy đó là gì?
+
+FastAPI xử dụng chuẩn ASGI cho web server interface, nghĩa là nó hỗ trợ xử lí request bất đồng bộ trong 1 thread của webserver. Một trong những ASGI nổi tiếng là [uvicorn](https://www.uvicorn.org). Uvicorn xử lí request bất đồng bộ (giống như NodeJS), hơn nữa, uvicorn có thể thay thế bộ event loop mặc định của Python bằng [libuv](https://libuv.org) - một thư viện event loop được NodeJS sử dụng.
+
+Thứ hai, uvicorn có thể sử dụng thư viện [http-parser](https://github.com/nodejs/http-parser) để parsing các HTTP message, bộ parser này cũng được sử dụng bởi NodeJS luôn. Do đó, việc handle request/response ở low-level của FastAPI được uvicorn xử lí cực kì tốt.
+
+Quá trình xử lí HTTP message đã xong, lên đến tầng cao hơn của FastAPI lại được hỗ trợ bởi Pydantic, toàn bộ quá trình validate và parse raw data từ request sẽ do Pydantic đảm nhận.
+
+Với các HTTP message(request/response) có body là JSON sẽ được Pydantic serialize/deserialize và validate, nếu quá trình này xử lí không tốt có thể làm giảm hiệu năng xử lí request.
+
+Nhưng Pydantic có [core](https://github.com/pydantic/pydantic-core) được xây dựng từ Rust, do đó việc handle những công việc liên quan đến CPU-bound như serialize/deserialize hay validate sẽ có hiệu năng tốt nhất có thể, và tất nhiên sẽ tốt hơn những thư viện được viết từ Python.
+
+Với những ngôn ngữ kiểu tĩnh như Rust hay C, hiệu năng nó đem lại là cực kì lớn khi so với những ngôn ngữ kiểu động như Python hay Javascript, điều này là dễ hiểu khi những công việc đòi hỏi hiệu năng cao hay low-level lại được viết bằng những ngôn ngữ kiểu tĩnh.
+
+Đó là một sự kết hợp hoàn hảo mà FastAPI đã đem lại cho chúng ta, tuy nhiên không phải ai cũng sử dụng nó đúng cách!!!
+
+## Xử dụng async/sync một cách hợp lí
+
+FastAPI hỗ trợ cả sync/async function khi định nghĩa endpoint. Vậy dùng nó như thế nào cho đúng? Khi nào chọn sync, khi nào chọn async.
+
+Đi từ gốc rễ, mình sẽ chỉ cho các bạn thấy một nghịch lí trong Python. Hãy đọc kĩ gist này của mình [https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479)
+
+Từ đó suy ra, các hàm sync xử lí các tác vụ IO-bound vẫn có thể được handle tốt nếu dùng multi-thread, hãy nhớ điều này.
+
+Trong FastAPI có một logic như sau: nếu endpoint là một hàm sync, nó sẽ fork 1 thread đễ xử lí hàm đó một các async. Nếu endpoint là một hàm async, nó sẽ được chạy trong event loop của main thread.
+
+Vậy đoạn code sau có vấn đề gì?
+
+```python
+import sleep
+
+app = FastAPI()
+
+@app.get("/")
+async def index():
+    time.sleep(1)
+    return Response("Hello world")
+```
+
+Với cách sử dụng ở trên, endpoint này là một hàm async do đó nó sẽ được xử lí trong event loop của main-thread. Nhưng bên trong nó lại có một hàm sync nên hàm này sẽ block tất cả các request đến endpoint được xử lí ở main-thread, dẫn tới giảm khả năng xử lí request của ứng dụng.
+
+Hãy dùng nó như sau:
+
+```python
+import sleep
+
+app = FastAPI()
+
+@app.get("/")
+def index():
+    time.sleep(1)
+    return Response("Hello world")
+```
+
+Bằng cách này, endpoint sẽ được chạy trong một thread khác và không làm ảnh hưởng tới main-thread, giúp main-thread có thể tiếp nhận thêm request mà không bị block.
+
+Chi tiết hơn các bạn có thể xem ở đây: [https://github.com/tiangolo/fastapi/discussions/7095](https://github.com/tiangolo/fastapi/discussions/7095)
+
+
+## Tóm lại
+
+FastAPI nhanh cả về mặt phát triển sản phẩm và hiệu năng nếu dùng đúng cách.
+
+Để đạt được hiện năng tốt như vậy, FastAPI được phát triển trên interface gọi là ASGI, interface này cho phép xử lí request tốt hơn WSGI. Uvicorn là một trong những web server implement theo ASGI có thể tích hợp được 2 thư viện tốt từ NodeJS là libuv và http-parser cho xử lí HTTP message. 
+
+Ngoài ra, FastAPI xử dụng Pydantic cho serialize/deserialize/validate data - được viết bằng Rust nên hiệu năng đem lại cũng cực kì tốt.
+
+Cuối cùng, hãy dùng FastAPI đúng cách để tận dụng được tối đa những gì nó đem lại. Với quan điểm của mình, FastAPI là một framework ấn tượng, xứng đáng là người kế nhiệm của Flask khi Python đang dần trở nên tốt hơn cả về syntax, hiệu năng và design.
