@@ -18,7 +18,7 @@ export const Post: React.FC<PostProps> = ({
 
       <div className={style.root}>
         <div className={style.heading}>
-          <h1>{meta.title}</h1>
+          <h1 style={{ textAlign: "left" }}>{meta.title}</h1>
           <DateTime
             value={
               typeof meta.date === "string" ? new Date(meta.date) : meta.date

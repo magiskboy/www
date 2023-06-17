@@ -49,6 +49,7 @@ h4,h5,h6,b,strong {
 
 a {
   text-decoration: none;
+  overflow-wrap: break-word;
 
   &:hover {
     color: var(--link-state-color);

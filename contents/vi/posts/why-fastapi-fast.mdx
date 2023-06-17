@@ -73,7 +73,7 @@ Với những ngôn ngữ kiểu tĩnh như Rust hay C, hiệu năng nó đem l�
 
 FastAPI hỗ trợ cả sync/async function khi định nghĩa endpoint. Vậy dùng nó như thế nào cho đúng? Khi nào chọn sync, khi nào chọn async.
 
-Đi từ gốc rễ, mình sẽ chỉ cho các bạn thấy một nghịch lí trong Python. Hãy đọc kĩ gist này của mình [gist](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479)
+Đi từ gốc rễ, mình sẽ chỉ cho các bạn thấy một nghịch lí trong Python. Hãy đọc kĩ gist này của mình [https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479)
 
 Từ đó suy ra, các hàm sync xử lí các tác vụ IO-bound vẫn có thể được handle tốt nếu dùng multi-thread, hãy nhớ điều này.
 
@@ -109,7 +109,7 @@ def index():
 
 Bằng cách này, endpoint sẽ được chạy trong một thread khác và không làm ảnh hưởng tới main-thread, giúp main-thread có thể tiếp nhận thêm request mà không bị block.
 
-Chi tiết hơn các bạn có thể xem ở đây: [discussion](https://github.com/tiangolo/fastapi/discussions/7095)
+Chi tiết hơn các bạn có thể xem ở đây: [https://github.com/tiangolo/fastapi/discussions/7095](https://github.com/tiangolo/fastapi/discussions/7095)
 
 
 ## Tóm lại
