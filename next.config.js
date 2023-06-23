@@ -50,7 +50,7 @@ const nextConfig = {
     ],
     title: "Nguyễn Khắc Thành",
     pagination: {
-      perPage: 5,
+      perPage: 10,
     },
   },
   images: {
