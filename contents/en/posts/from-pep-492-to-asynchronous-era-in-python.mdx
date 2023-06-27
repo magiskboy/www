@@ -1,19 +1,19 @@
 ---
-title: "Từ PEP 492 tới kỉ nguyên asynchronous trong Python"
+title: "From PEP 492 to the era of asynchrony"
 date: 2023-06-27T21:11:00+07:00
-published: false
+published: true
 tags:
 - python
 categories:
 - Python
-description: "Bất đồng bộ có thể được triển khai trong rất nhiều ngôn ngữ lập trình, kể cả Python. Tuy nhiên, bất đồng bộ trong Python thuở sơ khai chưa được sử dụng rộng rãi như Javascript hay C# bởi các thực hiện khó khăn. Trong bài viết này, mình sẽ giới thiệu về kỉ nguyên của lập trình bất động bộ trong Python và sự lớn mạnh của nó ở thời điểm hiện tại."
+description: "Asynchrony can be implemented in many programming languages, including Python. However, asynchrony in early Python was not as widely used as Javascript or C# because of its difficult implementation. In this article, I will introduce the history of asynchronous programming in Python and its growth at the present time."
 ---
 
-## 1. Bất đồng bộ
+## 1. Asynchronous
 
-Khi người ta giải quyết ["c10k problem"](http://www.kegel.com/c10k.html) và sau đó là sự ra đời của Nginx, lập trình bất đồng bộ được quan tâm hơn và ngày càng được cải thiện để dễ dàng cài đặt hơn so với phiên bản gốc của nó.
+When people solved the ["c10k problem"](http://www.kegel.com/c10k.html) and then the advent of Nginx, asynchronous programming was more interested and improved to make it easier to install than its original version.
 
-Ở phiên bản gốc, bạn phải biết những khái niệm như nonblocking socket, multiplexer, selector, ... của OS đễ có thể triển khai một ứng dụng xử lí bất đồng bộ các network operator thì giờ đây chuyện đó "dễ như trở bàn tay". 
+In the original version, you must know concepts such as non-blocking socket, multiplexer, selector, ... of the OS to be able to implement an asynchronous processing application:
 
 ```c 
 if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -52,13 +52,13 @@ fcntl(new_fd, F_SETFL, O_NONBLOCK); /* Change the socket into non-blocking state
                 ...
 ```
 
-Cú pháp async/await được [giới thiệu lần đầu bởi C#](https://en.wikipedia.org/wiki/Async/await) và sau đó được nhiều ngôn ngữ lập trình khác triển khai như Javascript, Python, Java, C++, Rust, Swift,...
+Now, using asynchronous in Python to be a peace of cake because of the syntactic improvement. The `async/await` syntax was [first introduced by C#](https://en.wikipedia.org/wiki/Async/await) and then implemented by many other programming languages like Javascript, Python, Java, C++, Rust, Swift,...
 
-"Kĩ thuật lập trình" bất đồng bộ chuyển sang "cú pháp của ngôn ngữ lập trình".
+Asynchronous "programmable technique" switches to "the syntence of a programming language".
 
-## 2. Bất đồng bộ trong Python trước PEP 492
+## 2. Asynchrony before PEP 492
 
-Xử lí bất đồng bộ trong Python là hoàn toàn có thể do Python hỗ trợ các API nonblocking socket của OS như selector, multiplexing,... Tuy nhiên, sử dụng các API này để triển khai một ứng dụng bất đồng bộ khá khó khăn.
+Asynchronous in Python is completely possible because Python supports non-blocking socket APIs of OS such as selector, multiplexing,... However, using these APIs to deploy an asynchronous application is quite difficult.
 
 ```python 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -78,26 +78,29 @@ while True:
                 threading.Thread(target=handle_client, args=(connection, client_address)).start()
 ```
 
-Do đó, những lập trình viên trong cộng đồng đã kết hợp những API đó với Coroutine đển thực hiện việc triển khai bất đồng bộ.
+As a result, programmers have combined those APIs with coroutine to perform asynchronous implementations.
 
-Coroutine là một khái niệm trong rất nhiều ngôn ngữ lập trình và lần đầu được giới thiệu trong Python với [PEP 342](https://peps.python.org/pep-0342/) do Guido van Rossum và Phillip J. Eby đề xuất vào năm 2005 trong phiên bản Python 2.5.
+Coroutine is a common concept in many programming languages and was first introduced in Python with [PEP 342](https://peps.python.org/pep-0342/) by Guido van Rossum and Phillip J. Eby proposed in 2005, in Python version 2.5.
 
-Để hiểu rõ hơn việc sử dụng coroutine để triển khai lập trình bất đồng bộ như thế nào, các bạn có thể đọc 2 bài viết này của mình để chi tiết hơn:
+If you want to better understand how to use coroutine to implement asynchronous programming, you can read your 2 articles below for more detail:
 
-- [Bất đồng bộ trong Python - Coroutine | Phần 1](/posts/asynchronous-in-python-part-1)
-- [Bất đồng bọ trong Python - Event loop | Phần 2](/posts/bat-dong-bo-trong-pythonphan-2-event-loop)
+- [Asynchronous in Python - Coroutine | Part 1](/en/posts/asynchronous-in-python-part-1)
+- [Asynchronous in Python - Event loop | Part 2](/en/posts/asynchronous-in-python-part-2)
 
-Một trong những framework nổi tiếng triển khai xử lí bất đồng bộ là [Tornado](https://en.wikipedia.org/wiki/Tornado_(web_server)). 
-Tornado là một networking framework triển khai bất đồng bộ trên coroutine cho những mục đích:
+One of the famous frameworks that implements asynchronous is [Tornado](https://en.wikipedia.org/wiki/Tornado_(web_server)). 
+
+Tornado is a networking framework that implements asynchronous on coroutine for the following purposes:
+
 - TCP/UDP server
 - HTTP server và HTTP client
 - Mail server 
 
-## 3. Sự ra đời của PEP 492 và kỉ nguyên async/await
+## 3. The birth of PEP 492 and the async/await era
 
-Vào năm 2015, PEP 492 ra đời do Yury Selivanov đề xuất. Với việc sử dụng coroutine để thực hiện cú pháp của async/await, Python đã có thể thực hiện các toán tử bất đồng bộ trở nên dễ dàng hơn rất nhiều cho lập trình viên.
+In 2015, PEP 492 was born proposed by Yury Selivanov. By using coroutine to implement the syntax of async/await, Python has been able to make asynchronous operators much easier for programmers.
 
-Thay vì phải làm việc với các low-level API, làm việc với coroutine thuần túy, giờ đây, chúng ta chỉ cần biết đến 2 keyword vô cùng phổ biến trong các ngôn ngữ lập trình: `async/await`.
+Instead of having to work with low-level APIs, working with pure coroutine, now, we only need to know two extremely popular keywords: `async/await`
+
 
 ```python 
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -112,25 +115,24 @@ while True:
     loop.create_task(handle_client(client))
 ```
 
-Tác giả cũng nêu rõ lí do khi thiết kế cú pháp `async/await` như sau:
+Author also said reasons of the `async/await` syntactic in his proposal:
 > The growth of Internet and general connectivity has triggered the proportionate need for responsive and scalable code. This proposal aims to answer that need by making writing explicitly asynchronous, concurrent Python code easier and more Pythonic.
 
-Như đã nói ở trên, bản thân `async/await` chỉ là cú pháp với mục đích làm cho code trở nên dễ đọc. Những gì thực sự được xử lí đằng sau nó là coroutine nên không sai khi nói rằng, asynchronous của Python được hiện thực hóa bởi coroutine.
+As mentioned above, `async/await` itself is just a syntax designed to make the code more readable. What is actually processed behind it is the coroutine, so it is not wrong to say that Python's asynchronous functionality is implemented by coroutines.
 
+## 4. ASGI and the rise of asynchronous webservers
 
-## 4. ASGI và sự trỗi dậy của webserver bất đồng bộ
+Before ASGI was born, WSGI was the popular standard for web applications to communicate with webservers. This standard was introduced by [PEP 333](https://peps.python.org/pep-0333/) in late 2003. It focuses on developing an interface based on the synchronous API of the network: blocking. Therefore, to implement scale performance, multi-thread is used in combination, similar to the case of Apache HTTP Server.
 
-Trước khi ASGI được sinh ra, WSGI là tiêu chuẩn phổ biến để ứng dụng web giao tiếp với webserver. Tiêu chuẩn này được giới thiệu bởi [PEP 333](https://peps.python.org/pep-0333/) vào cuối năm 2003. Nó tập trung phát triển giao diện dựa trên API đồng bộ của network: blocking. Do đó, để thực hiện scale hiệu năng, multi-thread được sử dụng kết hợp tương tự như trường hợp của Apache HTTP Server.
+We have webservers implementing this standard such as [Gunicorn](https://gunicorn.org), [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) or Nginx with the support of [ngx_http_uwsgi_module module](https://nginx.org/en/docs/http/ngx_http_uwsgi_module.html).
 
-Chúng ta có các webserver triển khai tiêu chuẩn này như [Gunicorn](https://gunicorn.org), [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) hay Nginx với sự hỗ trợ của module [ngx_http_uwsgi_module](https://nginx.org/en/docs/http/ngx_http_uwsgi_module.html).
+Some web frameworks implement this standard such as [Django](https://www.djangoproject.com), [Flask](https://flask.palletsprojects.com), [Bottle](https://bottlepy.org/docs/dev/),...
 
-Một số web framework triển khai tiêu chuẩn này như [Django](https://www.djangoproject.com), [Flask](https://flask.palletsprojects.com), [Bottle](https://bottlepy.org/docs/dev/),...
+In September - 2018, version 1.0 of ASGI was released, opening a new era of web development. With the birth of ASGI, a series of asynchronous support libraries and frameworks were born such as uvicorn, hypercorn, django v3, fastapi, starlette, quart, sanic,...
 
-Vào tháng 9 - 2018, phiên bản 1.0 của ASGI ra đời, mở đầu cho 1 kỉ nguyên web development của Python. Với việc ASGI ra đời, một loạt các thư viện và framework hỗ trợ bất đồng bộ ra đời như uvicorn, hypercorn, django v3, fastapi, starlette, quart, sanic,...
+People gradually know and use asynchronous frameworks more thanks to the support of these web frameworks.
 
-Mọi người dần biết tới và sử dụng các framework bất đồng bộ nhiều hơn nhờ sự hỗ trợ của các web framework này.
-
-Với database, chúng ta có: 
+With database, we have:
 - [asyncpg](https://github.com/MagicStack/asyncpg)
 - [databases](https://github.com/encode/databases)
 - [sqlmodel](https://github.com/tiangolo/sqlmodel)
@@ -138,28 +140,29 @@ Với database, chúng ta có:
 - [aiopg](https://github.com/aio-libs/aiopg)
 - ...
 
-Với http client, ta có thể sử dụng [httpx](https://github.com/encode/httpx), nó hoàn toàn tương thích với requests.
+With http client, we can use [httpx](https://github.com/encode/httpx), it has a completely similar interface to [requests](https://requests.readthedocs.io/en/latest/).
 
-Với web framework, chúng ta có:
+For web framework, we have:
 - [FastAPI](https://github.com/tiangolo/fastapi)
 - [Sanic](https://github.com/sanic-org/sanic)
 - [Quart](https://github.com/pallets/quart)
 - [Starlette](https://github.com/encode/starlette),...
 - ...
 
-Với web server có: 
+For web server, there are:
 - [unicorn](https://github.com/encode/uvicorn)
 - [hypercorn](https://github.com/pgjones/hypercorn)
 - ...
 
-Còn rất nhiều thư viện khác đã hỗ trợ bất đồng bộ mà ta có thể sử dụng.
+There are many other libraries that support asynchrony that we can use.
 
-Hiện tại trên Github, một số group đáng quan tâm vền trending này có thể kể đến như:
+Currently on Github, some groups worth paying attention to this trending can be mentioned such as:
+
 - [MagicStack](https://github.com/MagicStack)
 - [Encode](https://github.com/encode)
 - [aio-libs](https://github.com/aio-libs)
 
-Một vài cá nhân đáng chú ý như:
+Some notable individuals such as:
 
 - [@samuelcolvin](https://github.com/samuelcolvin) - tác giả của Pydantic
 - [@tiangolo](https://github.com/tiangolo) - tác giả của FastAPI và sqlmodel
@@ -168,16 +171,15 @@ Một vài cá nhân đáng chú ý như:
 - [@Yury Selivanov](https://github.com/1st1) - tác giả của PEP 492
 
 
-## 5. Tóm lại
+## 5. Recap
 
-Python thật sự đang có sự thay đổi khá nhiều về mảng web development nói chung và stack xử lí bất đồng bộ - scalable application nói chung.
-Hãy cùng điểm qua một vài cột mốc trước khi kết thúc bài viết
+Python is really changing a lot in web development in general and the stack handles asynchronous - scalable application in general. Let's take a look at a few milestones before ending the article
 
-- 1991: Python được tạo ra và hỗ trợ low-level API cho non-blocking
-- 2003: WSGI ra đời - đánh dấu cho kỉ nguyên web development trên Python
-- 2005: PEP 342 giới thiệu về Coroutine
-- 2015: PEP 492 giới thiệu cú pháp `async/await`
-- 2018: ASGI ra đời, đánh dấu kỉ nguyên bùng nổ của các framework bất đồng bộ
+- 1991: Python was created and supports low-level APIs for non-blocking
+- 2003: WSGI was born - open the era of web development in Python
+- 2005: PEP 342 introduces coroutine
+- 2015: PEP 492 introduces syntaxasync/await
+- 2018: ASGI was born, marking the explosive era of asynchronous frameworks
 
 
-Mình hi vọng qua bài viết này, các bạn có thể nắm rõ hơn lịch sử phát triển của hệ sinh thái bất động bộ Python nói chung và sự phát triển cũng như những trending trong phát triển web nói riêng của Python.
+I hope that through this article, you can better understand the development history of the Python real estate ecosystem in general and the development and trends in web development in particular of Python.
