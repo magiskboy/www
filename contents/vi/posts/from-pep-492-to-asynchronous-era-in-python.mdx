@@ -1,19 +1,19 @@
 ---
-title: "Từ PEP 492 tới kỉ nguyên asynchronous trong Python"
+title: "Từ PEP 492 tới kỉ nguyên bất đồng bộ"
 date: 2023-06-27T21:11:00+07:00
 published: true
 tags:
 - python
 categories:
 - Python
-description: "Bất đồng bộ có thể được triển khai trong rất nhiều ngôn ngữ lập trình, kể cả Python. Tuy nhiên, bất đồng bộ trong Python thuở sơ khai chưa được sử dụng rộng rãi như Javascript hay C# bởi các thực hiện khó khăn. Trong bài viết này, mình sẽ giới thiệu về kỉ nguyên của lập trình bất động bộ trong Python và sự lớn mạnh của nó ở thời điểm hiện tại."
+description: "Bất đồng bộ có thể được triển khai trong rất nhiều ngôn ngữ lập trình, kể cả Python. Tuy nhiên, bất đồng bộ trong Python thuở sơ khai chưa được sử dụng rộng rãi như Javascript hay C# bởi cách thực hiện khó khăn. Trong bài viết này, mình sẽ giới thiệu về lịch sử của lập trình bất đồng bộ trong Python và sự lớn mạnh của nó ở thời điểm hiện tại."
 ---
 
 ## 1. Bất đồng bộ
 
 Khi người ta giải quyết ["c10k problem"](http://www.kegel.com/c10k.html) và sau đó là sự ra đời của Nginx, lập trình bất đồng bộ được quan tâm hơn và ngày càng được cải thiện để dễ dàng cài đặt hơn so với phiên bản gốc của nó.
 
-Ở phiên bản gốc, bạn phải biết những khái niệm như nonblocking socket, multiplexer, selector, ... của OS đễ có thể triển khai một ứng dụng xử lí bất đồng bộ các network operator thì giờ đây chuyện đó "dễ như trở bàn tay". 
+Ở phiên bản gốc, bạn phải biết những khái niệm như non-blocking socket, multiplexer, selector, ... của OS để có thể triển khai một ứng dụng xử lí bất đồng bộ:
 
 ```c 
 if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -51,14 +51,14 @@ fcntl(new_fd, F_SETFL, O_NONBLOCK); /* Change the socket into non-blocking state
        			if (i = sockfd){
                 ...
 ```
-
+Giờ đây, chuyện đó "dễ như trở bàn tay" nhờ sự cải tiến vượt trội về mặt cú pháp.
 Cú pháp async/await được [giới thiệu lần đầu bởi C#](https://en.wikipedia.org/wiki/Async/await) và sau đó được nhiều ngôn ngữ lập trình khác triển khai như Javascript, Python, Java, C++, Rust, Swift,...
 
 "Kĩ thuật lập trình" bất đồng bộ chuyển sang "cú pháp của ngôn ngữ lập trình".
 
 ## 2. Bất đồng bộ trong Python trước PEP 492
 
-Xử lí bất đồng bộ trong Python là hoàn toàn có thể do Python hỗ trợ các API nonblocking socket của OS như selector, multiplexing,... Tuy nhiên, sử dụng các API này để triển khai một ứng dụng bất đồng bộ khá khó khăn.
+Xử lí bất đồng bộ trong Python là hoàn toàn có thể do Python hỗ trợ các API non-blocking socket của OS như selector, multiplexing,... Tuy nhiên, sử dụng các API này để triển khai một ứng dụng bất đồng bộ khá khó khăn.
 
 ```python 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -78,11 +78,11 @@ while True:
                 threading.Thread(target=handle_client, args=(connection, client_address)).start()
 ```
 
-Do đó, những lập trình viên trong cộng đồng đã kết hợp những API đó với Coroutine đển thực hiện việc triển khai bất đồng bộ.
+Do đó, những lập trình viên trong cộng đồng đã kết hợp những API đó với coroutine để thực hiện việc triển khai bất đồng bộ.
 
-Coroutine là một khái niệm trong rất nhiều ngôn ngữ lập trình và lần đầu được giới thiệu trong Python với [PEP 342](https://peps.python.org/pep-0342/) do Guido van Rossum và Phillip J. Eby đề xuất vào năm 2005 trong phiên bản Python 2.5.
+Coroutine là một khái niệm phổ biến trong rất nhiều ngôn ngữ lập trình và lần đầu được giới thiệu trong Python với [PEP 342](https://peps.python.org/pep-0342/) do Guido van Rossum và Phillip J. Eby đề xuất vào năm 2005 trong phiên bản Python 2.5.
 
-Để hiểu rõ hơn việc sử dụng coroutine để triển khai lập trình bất đồng bộ như thế nào, các bạn có thể đọc 2 bài viết này của mình để chi tiết hơn:
+Nếu muốn hiểu rõ hơn việc sử dụng coroutine để triển khai lập trình bất đồng bộ như thế nào, các bạn có thể đọc 2 bài viết dưới đây của mình để biết chi tiết hơn:
 
 - [Bất đồng bộ trong Python - Coroutine | Phần 1](/posts/asynchronous-in-python-part-1)
 - [Bất đồng bọ trong Python - Event loop | Phần 2](/posts/bat-dong-bo-trong-pythonphan-2-event-loop)
@@ -120,13 +120,13 @@ Như đã nói ở trên, bản thân `async/await` chỉ là cú pháp với m�
 
 ## 4. ASGI và sự trỗi dậy của webserver bất đồng bộ
 
-Trước khi ASGI được sinh ra, WSGI là tiêu chuẩn phổ biến để ứng dụng web giao tiếp với webserver. Tiêu chuẩn này được giới thiệu bởi [PEP 333](https://peps.python.org/pep-0333/) vào cuối năm 2003. Nó tập trung phát triển giao diện dựa trên API đồng bộ của network: blocking. Do đó, để thực hiện scale hiệu năng, multi-thread được sử dụng kết hợp tương tự như trường hợp của Apache HTTP Server.
+Trước khi ASGI được sinh ra, WSGI là tiêu chuẩn phổ biến để ứng dụng web giao tiếp với webserver. Tiêu chuẩn này được giới thiệu bởi [PEP 333](https://peps.python.org/pep-0333/) vào cuối năm 2003. Nó tập trung phát triển giao diện dựa trên API đồng bộ của network: blocking. Do đó, để thực hiện scale hiệu năng, multi-thread được sử dụng kết hợp, tương tự như trường hợp của Apache HTTP Server.
 
 Chúng ta có các webserver triển khai tiêu chuẩn này như [Gunicorn](https://gunicorn.org), [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) hay Nginx với sự hỗ trợ của module [ngx_http_uwsgi_module](https://nginx.org/en/docs/http/ngx_http_uwsgi_module.html).
 
 Một số web framework triển khai tiêu chuẩn này như [Django](https://www.djangoproject.com), [Flask](https://flask.palletsprojects.com), [Bottle](https://bottlepy.org/docs/dev/),...
 
-Vào tháng 9 - 2018, phiên bản 1.0 của ASGI ra đời, mở đầu cho 1 kỉ nguyên web development của Python. Với việc ASGI ra đời, một loạt các thư viện và framework hỗ trợ bất đồng bộ ra đời như uvicorn, hypercorn, django v3, fastapi, starlette, quart, sanic,...
+Vào tháng 9 - 2018, phiên bản 1.0 của ASGI ra đời, mở đầu cho một kỉ nguyên mới của web development. Với việc ASGI ra đời, một loạt các thư viện và framework hỗ trợ bất đồng bộ ra đời như uvicorn, hypercorn, django v3, fastapi, starlette, quart, sanic,...
 
 Mọi người dần biết tới và sử dụng các framework bất đồng bộ nhiều hơn nhờ sự hỗ trợ của các web framework này.
 
@@ -138,7 +138,7 @@ Với database, chúng ta có:
 - [aiopg](https://github.com/aio-libs/aiopg)
 - ...
 
-Với http client, ta có thể sử dụng [httpx](https://github.com/encode/httpx), nó hoàn toàn tương thích với requests.
+Với http client, ta có thể sử dụng [httpx](https://github.com/encode/httpx), nó có giao diện hoàn toàn giống với [requests](https://requests.readthedocs.io/en/latest/).
 
 Với web framework, chúng ta có:
 - [FastAPI](https://github.com/tiangolo/fastapi)
@@ -175,7 +175,7 @@ Hãy cùng điểm qua một vài cột mốc trước khi kết thúc bài vi�
 
 - 1991: Python được tạo ra và hỗ trợ low-level API cho non-blocking
 - 2003: WSGI ra đời - đánh dấu cho kỉ nguyên web development trên Python
-- 2005: PEP 342 giới thiệu về Coroutine
+- 2005: PEP 342 giới thiệu về coroutine
 - 2015: PEP 492 giới thiệu cú pháp `async/await`
 - 2018: ASGI ra đời, đánh dấu kỉ nguyên bùng nổ của các framework bất đồng bộ
 
