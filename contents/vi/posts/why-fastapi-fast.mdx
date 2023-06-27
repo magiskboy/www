@@ -78,6 +78,7 @@ FastAPI hỗ trợ cả sync/async function khi định nghĩa endpoint. Vậy d
 Từ đó suy ra, các hàm sync xử lí các tác vụ IO-bound vẫn có thể được handle tốt nếu dùng multi-thread, hãy nhớ điều này.
 
 Trong FastAPI có một logic như sau: nếu endpoint là một hàm sync, nó sẽ fork 1 thread đễ xử lí hàm đó một các async. Nếu endpoint là một hàm async, nó sẽ được chạy trong event loop của main thread.
+[Chi tiết](https://github.com/encode/starlette/blob/0.28.0/starlette/routing.py#L67)
 
 Vậy đoạn code sau có vấn đề gì?
 

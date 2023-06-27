@@ -75,6 +75,7 @@ FastAPI supports both sync and async function when declaring an endpoint. So how
 Let's read my [https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479](https://gist.github.com/magiskboy/1b7a49b3f195c819829eb303e7ee1479) and keep in mind: sync functions handle IO-bound nicely if you run it in the multi-thread environment.
 
 In FastAPI, if an endpoint is a sync function, it is going to be run on a separate thread but if an endpoint is an async function, it is going to be scheduled and run on the event loop of the main thread.
+[For detail](https://github.com/encode/starlette/blob/0.28.0/starlette/routing.py#L67)
 
 So what happened when executing the under code?
 
