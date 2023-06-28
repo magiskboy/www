@@ -11,7 +11,7 @@ description: "Asynchrony can be implemented in many programming languages, inclu
 
 ## 1. Asynchronous
 
-When people solved the ["c10k problem"](http://www.kegel.com/c10k.html) and then the advent of Nginx, asynchronous programming was more interested and improved to make it easier to install than its original version.
+When people solved the ["c10k problem"](http://www.kegel.com/c10k.html) and then the advent of Nginx, asynchronous programming was more interesting and improved to make it easier to install than its original version.
 
 In the original version, you must know concepts such as non-blocking socket, multiplexer, selector, ... of the OS to be able to implement an asynchronous processing application:
 
@@ -52,13 +52,13 @@ fcntl(new_fd, F_SETFL, O_NONBLOCK); /* Change the socket into non-blocking state
                 ...
 ```
 
-Now, using asynchronous in Python to be a peace of cake because of the syntactic improvement. The `async/await` syntax was [first introduced by C#](https://en.wikipedia.org/wiki/Async/await) and then implemented by many other programming languages like Javascript, Python, Java, C++, Rust, Swift,...
+Now, using asynchronous in Python is a peace of cake because of the syntactic improvement. The `async/await` syntax was [first introduced by C#](https://en.wikipedia.org/wiki/Async/await) and then implemented by many other programming languages like Javascript, Python, Java, C++, Rust, Swift,...
 
 Asynchronous "programmable technique" switches to "the syntence of a programming language".
 
 ## 2. Asynchrony before PEP 492
 
-Asynchronous in Python is completely possible because Python supports non-blocking socket APIs of OS such as selector, multiplexing,... However, using these APIs to deploy an asynchronous application is quite difficult.
+Asynchronous in Python is completely possible because Python supports non-blocking socket APIs of OS such as selector, and multiplexing,... However, using these APIs to deploy an asynchronous application is quite difficult.
 
 ```python 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -78,16 +78,16 @@ while True:
                 threading.Thread(target=handle_client, args=(connection, client_address)).start()
 ```
 
-As a result, programmers have combined those APIs with coroutine to perform asynchronous implementations.
+As a result, programmers have combined those APIs with coroutines to perform asynchronous implementations.
 
 Coroutine is a common concept in many programming languages and was first introduced in Python with [PEP 342](https://peps.python.org/pep-0342/) by Guido van Rossum and Phillip J. Eby proposed in 2005, in Python version 2.5.
 
-If you want to better understand how to use coroutine to implement asynchronous programming, you can read your 2 articles below for more detail:
+If you want to better understand how to use a coroutine to implement asynchronous programming, you can read your 2 articles below for more detail:
 
 - [Asynchronous in Python - Coroutine | Part 1](/en/posts/asynchronous-in-python-part-1)
 - [Asynchronous in Python - Event loop | Part 2](/en/posts/asynchronous-in-python-part-2)
 
-One of the famous frameworks that implements asynchronous is [Tornado](https://en.wikipedia.org/wiki/Tornado_(web_server)). 
+One of the famous frameworks that implement asynchronous is [Tornado](https://en.wikipedia.org/wiki/Tornado_(web_server)). 
 
 Tornado is a networking framework that implements asynchronous on coroutine for the following purposes:
 
@@ -97,9 +97,9 @@ Tornado is a networking framework that implements asynchronous on coroutine for 
 
 ## 3. The birth of PEP 492 and the async/await era
 
-In 2015, PEP 492 was born proposed by Yury Selivanov. By using coroutine to implement the syntax of async/await, Python has been able to make asynchronous operators much easier for programmers.
+In 2015, PEP 492 was born and proposed by Yury Selivanov. By using coroutine to implement the syntax of async/await, Python has been able to make asynchronous operators much easier for programmers.
 
-Instead of having to work with low-level APIs, working with pure coroutine, now, we only need to know two extremely popular keywords: `async/await`
+Instead of having to work with low-level APIs, working with a pure coroutine, now, we only need to know two extremely popular keywords: `async/await`
 
 
 ```python 
@@ -115,24 +115,24 @@ while True:
     loop.create_task(handle_client(client))
 ```
 
-Author also said reasons of the `async/await` syntactic in his proposal:
-> The growth of Internet and general connectivity has triggered the proportionate need for responsive and scalable code. This proposal aims to answer that need by making writing explicitly asynchronous, concurrent Python code easier and more Pythonic.
+The author also said reasons for the `async/await` syntactic in his proposal:
+> The growth of the Internet and general connectivity has triggered the proportionate need for responsive and scalable code. This proposal aims to answer that need by making writing explicitly asynchronous, concurrent Python code easier and more Pythonic.
 
 As mentioned above, `async/await` itself is just a syntax designed to make the code more readable. What is actually processed behind it is the coroutine, so it is not wrong to say that Python's asynchronous functionality is implemented by coroutines.
 
-## 4. ASGI and the rise of asynchronous webservers
+## 4. ASGI and the rise of asynchronous web servers
 
-Before ASGI was born, WSGI was the popular standard for web applications to communicate with webservers. This standard was introduced by [PEP 333](https://peps.python.org/pep-0333/) in late 2003. It focuses on developing an interface based on the synchronous API of the network: blocking. Therefore, to implement scale performance, multi-thread is used in combination, similar to the case of Apache HTTP Server.
+Before ASGI was born, WSGI was the popular standard for web applications to communicate with web servers. This standard was introduced by [PEP 333](https://peps.python.org/pep-0333/) in late 2003. It focuses on developing an interface based on the synchronous API of the network: blocking. Therefore, to implement scale performance, multi-thread is used in combination, similar to the case of Apache HTTP Server.
 
-We have webservers implementing this standard such as [Gunicorn](https://gunicorn.org), [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) or Nginx with the support of [ngx_http_uwsgi_module module](https://nginx.org/en/docs/http/ngx_http_uwsgi_module.html).
+We have web servers implementing this standard such as [Gunicorn](https://gunicorn.org), [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) or Nginx with the support of [ngx_http_uwsgi_module module](https://nginx.org/en/docs/http/ngx_http_uwsgi_module.html).
 
 Some web frameworks implement this standard such as [Django](https://www.djangoproject.com), [Flask](https://flask.palletsprojects.com), [Bottle](https://bottlepy.org/docs/dev/),...
 
-In September - 2018, version 1.0 of ASGI was released, opening a new era of web development. With the birth of ASGI, a series of asynchronous support libraries and frameworks were born such as uvicorn, hypercorn, django v3, fastapi, starlette, quart, sanic,...
+In September - 2018, version 1.0 of ASGI was released, opening a new era of web development. With the birth of ASGI, a series of asynchronous support libraries and frameworks were born such as Uvicorn, Hypercorn, Django v3, Fastapi, Starlette, Quart, Sanic,...
 
 People gradually know and use asynchronous frameworks more thanks to the support of these web frameworks.
 
-With database, we have:
+With the database, we have:
 - [asyncpg](https://github.com/MagicStack/asyncpg)
 - [databases](https://github.com/encode/databases)
 - [sqlmodel](https://github.com/tiangolo/sqlmodel)
@@ -140,23 +140,23 @@ With database, we have:
 - [aiopg](https://github.com/aio-libs/aiopg)
 - ...
 
-With http client, we can use [httpx](https://github.com/encode/httpx), it has a completely similar interface to [requests](https://requests.readthedocs.io/en/latest/).
+With the HTTP client, we can use [httpx](https://github.com/encode/httpx), it has a completely similar interface to [requests](https://requests.readthedocs.io/en/latest/).
 
-For web framework, we have:
+For a web framework, we have:
 - [FastAPI](https://github.com/tiangolo/fastapi)
 - [Sanic](https://github.com/sanic-org/sanic)
 - [Quart](https://github.com/pallets/quart)
 - [Starlette](https://github.com/encode/starlette),...
 - ...
 
-For web server, there are:
+For web servers, there are:
 - [unicorn](https://github.com/encode/uvicorn)
 - [hypercorn](https://github.com/pgjones/hypercorn)
 - ...
 
 There are many other libraries that support asynchrony that we can use.
 
-Currently on Github, some groups worth paying attention to this trending can be mentioned such as:
+Currently, on Github, some groups worth paying attention to this trending can be mentioned such as:
 
 - [MagicStack](https://github.com/MagicStack)
 - [Encode](https://github.com/encode)
@@ -173,12 +173,12 @@ Some notable individuals such as:
 
 ## 5. Recap
 
-Python is really changing a lot in web development in general and the stack handles asynchronous - scalable application in general. Let's take a look at a few milestones before ending the article
+Python is really changing a lot in web development in general and the stack handles asynchronous - scalable applications in general. Let's take a look at a few milestones before ending the article
 
 - 1991: Python was created and supports low-level APIs for non-blocking
-- 2003: WSGI was born - open the era of web development in Python
+- 2003: WSGI was born - opening the era of web development in Python
 - 2005: PEP 342 introduces coroutine
-- 2015: PEP 492 introduces syntaxasync/await
+- 2015: PEP 492 introduces syntax async/await
 - 2018: ASGI was born, marking the explosive era of asynchronous frameworks
 
 
