@@ -9,5 +9,5 @@ export const LangSwitcher: React.FC = () => {
     const { pathname, asPath, query } = router
     const nextLocale = router.locale === "en" ? "vi" : "en";
 
-    return <Link href={{pathname, query}} locale={nextLocale}>{nextLocale === "en" ? t("Tiếng Anh") : t("Tiếng Việt")}</Link>
+    return <Link href={{pathname, query}} locale={nextLocale}>{nextLocale === "en" ? t("en") : t("vi")}</Link>
 };
