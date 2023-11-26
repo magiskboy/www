@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { useTheme } from 'next-themes';
 import { useTranslation } from 'next-i18next';
 
@@ -6,7 +6,7 @@ export const ThemeSwitcher: React.FC = () => {
   const { setTheme, theme, themes } = useTheme();
   const { t } = useTranslation();
 
-  const handler = (e) => {
+  const handler: ChangeEventHandler<HTMLSelectElement> = (e) => {
     setTheme(e.target.value);
   };
 
