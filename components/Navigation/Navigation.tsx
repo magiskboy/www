@@ -4,6 +4,7 @@ import style from "./Navigation.module.scss";
 import classnames from "classnames";
 import { useTranslation } from 'next-i18next'
 import { LangSwitcher } from '../LangSwitcher';
+import { ThemeSwitcher } from '../ThemeSwitcher';
 
 
 export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
@@ -21,7 +22,10 @@ export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
       {...rest}
     >
       <div className={style.top}>
-        <LangSwitcher />
+        <div>
+          <LangSwitcher />
+          <ThemeSwitcher />
+        </div>
         <div className={style.social}>
           {socials.map((item) => (
             <a

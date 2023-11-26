@@ -5,5 +5,10 @@
     "Tiếp": "Next",
     "Trước": "Previous",
     "Tiếng Anh": "English",
-    "Tiếng Việt": "Vietnamese"
+    "Tiếng Việt": "Vietnamese",
+    "Ngôn ngữ": "Language",
+    "Chế độ xem": "View mode",
+    "light": "Light",
+    "dark": "Dark",
+    "papyrus": "Papyrus"
 }

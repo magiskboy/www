@@ -19,7 +19,6 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     utterancRepo: "magiskboy/www",
-    theme: "light",
     socials: [
       {
         title: "Github",

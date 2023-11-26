@@ -8,7 +8,7 @@ import { NextSeo } from "next-seo";
 import getConfig from "next/config";
 import * as ga from "../ga";
 import { appWithTranslation } from 'next-i18next'
-
+import { ThemeProvider } from 'next-themes';
 
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -28,9 +28,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <NextSeo title={title} description={title} />
-      <Navigation socials={socials} navs={navs} />
-      <Component {...pageProps} />
-      <Footer />
+      <ThemeProvider defaultTheme="light" themes={["light", "dark", "papyrus"]}>
+        <Navigation socials={socials} navs={navs} />
+        <Component {...pageProps} />
+        <Footer />
+      </ThemeProvider>
       {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS && (
         <>
           <Script

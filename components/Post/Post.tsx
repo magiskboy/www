@@ -24,11 +24,6 @@ export const Post: React.FC<PostProps> = ({
               typeof meta.date === "string" ? new Date(meta.date) : meta.date
             }
             locale={router.locale}
-            style={{
-              color: "gray",
-              fontSize: "0.9rem",
-              fontStyle: "italic",
-            }}
           />
           <MDXRemote {...mdxDescription} />
         </div>

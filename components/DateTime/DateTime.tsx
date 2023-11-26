@@ -1,4 +1,5 @@
 import React, { HTMLAttributes, useMemo } from "react";
+import style from './DateTime.module.scss';
 
 export const DateTime: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({
   value,
@@ -28,7 +29,7 @@ export const DateTime: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({
   }, [value, locale]);
 
   return (
-    <span className="date-time" {...rest}>
+    <span className={style.root} {...rest}>
       {dateString}
     </span>
   );

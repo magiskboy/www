@@ -1,12 +1,15 @@
 import React, { useCallback } from "react";
 import getConfig from "next/config";
+import { useTheme } from 'next-themes';
 
 export const Comment: React.FC = () => {
+  const { theme } = useTheme();
+
   const renderUtternce = useCallback((commentWrapperEl: HTMLDivElement) => {
     const { publicRuntimeConfig } = getConfig();
-    const { utterancRepo, theme } = publicRuntimeConfig;
+    const { utterancRepo } = publicRuntimeConfig;
     const commentsTheme =
-      theme && theme === "dark" ? "github-dark" : "github-light";
+      theme && theme === "light" ? "github-light" : "github-dark";
 
     const commentScript = document.createElement("script");
     commentScript.async = true;
@@ -19,13 +22,16 @@ export const Comment: React.FC = () => {
     commentScript.setAttribute("crossorigin", "anonymous");
 
     commentWrapperEl.appendChild(commentScript);
-  }, []);
+  }, [theme]);
 
   return (
     <div
       ref={(commentWrapperEl) => {
         if (!commentWrapperEl) return;
-        if (commentWrapperEl.children.length) return;
+
+        if (commentWrapperEl.childElementCount > 0) {
+          return;
+        }
         renderUtternce(commentWrapperEl);
       }}
     ></div>
