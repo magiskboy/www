@@ -2,14 +2,20 @@ import React, { useCallback } from "react";
 import getConfig from "next/config";
 import { useTheme } from 'next-themes';
 
+const theme2commentTheme: Record<string, string> = {
+  "light": "github-light",
+  "dark": "github-dark",
+  "papyrus": "gruvbox-dark",
+  "system": "github-light",
+}
+
 export const Comment: React.FC = () => {
   const { theme } = useTheme();
 
   const renderUtternce = useCallback((commentWrapperEl: HTMLDivElement) => {
     const { publicRuntimeConfig } = getConfig();
     const { utterancRepo } = publicRuntimeConfig;
-    const commentsTheme =
-      theme && theme === "light" ? "github-light" : "github-dark";
+    const commentsTheme = theme2commentTheme[theme || 'system'];
 
     const commentScript = document.createElement("script");
     commentScript.async = true;

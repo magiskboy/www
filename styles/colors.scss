@@ -1,7 +1,7 @@
 [data-theme="dark"] {
   @import './github.dark.scss';
 
-  --font-color: #eee;
+  --font-color: rgba(255, 255, 255, .8);
   --bg-color: #212121;
 
   --link-color: #D65A61;
@@ -67,26 +67,27 @@
 }
 
 [data-theme="papyrus"] {
-  @import './github.light.scss';
-  --font-color: #333;
-  --bg-color: #F3EEEA;
+  @import './gruvbox.dark.scss';
 
-  --link-color: #1d60a3;
+  --bg-color: #65451F;
+  --font-color: #EAC696;
+
+  --link-color: #C8AE7D;
   --link-state-color: #a31d1d;
   --link-state-border-color: rgba(163, 29, 29, .5);
 
-  --thead-bg-color: #B0A695;
-  --tbody-bg-color: #EBE3D5;
-  --table-border-color: #B0A695;
+  --thead-bg-color: #765827;
+  --tbody-bg-color: rgba(234, 198, 150, .3);
+  --table-border-color: rgba(255,255,255,.3);
 
-  --nav-bg-color: #EBE3D5;
+  --nav-bg-color: #765827;
   --nav-link-color: #696969;
 
   --pre-color: #333;
   --pre-bg-color: #f1f1f1;
 
-  --bq-color: #ccc;
-  --hr-color: #ccc;
+  --bq-color: #EAC696;
+  --hr-color: rgba(234, 198, 150, .3);
 
   --pagination-bg-color: #fafafa;
   --pagination-link-color: #696969;
