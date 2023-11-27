@@ -14,51 +14,56 @@ const SERIALIZE_OPTS = {
   remarkPlugins: [remarkMath],
 };
 
-export async function getPosts(): Promise<{ vi: Post[], en: Post[] }> {
-  const [viPosts, enPosts] = await Promise.all([_getPosts("vi"), _getPosts("en")]);
-  return {
-    vi: viPosts,
-    en: enPosts,
-  }
-}
+var __getPostsCached: Promise<Record<string, Post[]>> | null = null;
 
-export async function _getPosts(locale: string = 'vi'): Promise<Post[]> {
-  const post_dir = path.join(".", "contents", locale, "posts");
-  const filenames = await fs.readdir(post_dir);
-  const posts = await Promise.all(
-    filenames
-      .map((filename) => path.join(post_dir, filename))
-      .map(async (filename, index): Promise<Post> => {
-        const slug = getSlugByMdx(filenames[index]);
-        const fileContent = (await fs.readFile(filename)).toString();
-        const { attributes: meta, body } = fm<Meta>(fileContent);
-        const [mdxBody, mdxDescription] = await Promise.all([
-          serialize(body, { mdxOptions: SERIALIZE_OPTS }),
-          serialize(meta.description || "", { mdxOptions: SERIALIZE_OPTS }),
-        ]);
-        return {
-          slug,
-          meta,
-          mdxBody,
-          mdxDescription,
-          body,
-        };
-      })
-  );
+export async function getPosts(): Promise<Record<string, Post[]>> {
+  if (__getPostsCached) return __getPostsCached;
 
-  return posts
-    .filter((post) => post.meta.published)
-    .sort((a, b) => {
-      const scoreA = a.meta.score || 0;
-      const scoreB = b.meta.score || 0;
-      if (scoreA < scoreB) return 1;
-      if (scoreA > scoreB) return -1;
-      const t1 = (a.meta.date as Date).getTime();
-      const t2 = (b.meta.date as Date).getTime();
-      if (t1 < t2) return 1;
-      if (t1 > t2) return -1;
-      return 0;
-    });
+  __getPostsCached = (async function() {
+    const localeDirs = await fs.readdir(path.join('.', 'contents'));
+    const allPosts: Record<string, Post[]> = {};
+    for (const locale of localeDirs) {
+      const filenames = await fs.readdir(path.join('.', 'contents', locale, 'posts')).catch(() => []);
+      if (filenames.length === 0) continue;
+      const posts = await Promise.all(
+        filenames
+          .map((filename) => path.join('.', 'contents', locale, 'posts', filename))
+          .map(async (filename, index): Promise<Post> => {
+            const slug = getSlugByMdx(filenames[index]);
+            const fileContent = (await fs.readFile(filename)).toString();
+            const { attributes: meta, body } = fm<Meta>(fileContent);
+            const [mdxBody, mdxDescription] = await Promise.all([
+              serialize(body, { mdxOptions: SERIALIZE_OPTS }),
+              serialize(meta.description || "", { mdxOptions: SERIALIZE_OPTS }),
+            ]);
+            return {
+              slug,
+              meta,
+              mdxBody,
+              mdxDescription,
+              body,
+            };
+          })
+      );
+
+      allPosts[locale] = posts
+        .filter((post) => post.meta.published)
+        .sort((a, b) => {
+          const scoreA = a.meta.score || 0;
+          const scoreB = b.meta.score || 0;
+          if (scoreA < scoreB) return 1;
+          if (scoreA > scoreB) return -1;
+          const t1 = (a.meta.date as Date).getTime();
+          const t2 = (b.meta.date as Date).getTime();
+          if (t1 < t2) return 1;
+          if (t1 > t2) return -1;
+          return 0;
+        });
+    }
+    return allPosts;
+  })();
+
+  return __getPostsCached;
 }
 
 export async function getPaginations(

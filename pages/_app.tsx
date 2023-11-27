@@ -1,4 +1,4 @@
-import "../styles/globals.scss";
+import "styles/globals.scss";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import Script from "next/script";
@@ -6,7 +6,7 @@ import { Router } from "next/router";
 import { Footer, Navigation } from "components";
 import { NextSeo } from "next-seo";
 import getConfig from "next/config";
-import * as ga from "../ga";
+import * as ga from "ga";
 import { appWithTranslation } from 'next-i18next'
 import { ThemeProvider } from 'next-themes';
 
