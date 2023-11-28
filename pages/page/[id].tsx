@@ -52,7 +52,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 
   // for vi
   let posts = allPosts.vi;
-  let paginations = await getPaginations(posts, paginationConfig.perPage);
+  let paginations = getPaginations(posts, paginationConfig.perPage);
   for (let i = 1; i <= paginations.length; ++i) {
     paths.push({
       params: { id: i.toString() },
@@ -62,7 +62,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 
   // for en
   posts = allPosts.en;
-  paginations = await getPaginations(posts, paginationConfig.perPage);
+  paginations = getPaginations(posts, paginationConfig.perPage);
   for (let i = 1; i <= paginations.length; ++i) {
     paths.push({
       params: { id: i.toString() },
@@ -83,7 +83,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const pageId = parseInt(context.params!.id as string);
   const allPosts = await getPosts();
   const pposts = context.locale === "en" ? allPosts.en : allPosts.vi;
-  const pages = await getPaginations(pposts, paginationConfig.perPage);
+  const pages = getPaginations(pposts, paginationConfig.perPage);
   const { posts, pagination } = pages[pageId - 1];
   const paths: PostItemProps[] = posts.map((post) => ({
     ...post.meta,

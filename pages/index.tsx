@@ -10,6 +10,7 @@ import {
 } from "components";
 import { getPosts, getPaginations } from "tools/post-tool";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import chunk from 'lodash/chunk';
 
 const Homepage: NextPage<Props> = ({ paths, pagination }) => {
   const nextGenerator = useCallback<PaginationProps["nextGenerator"]>(
@@ -50,7 +51,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({locale}) => {
   const pageId = 1;
   const allPosts = await getPosts();
   const pagePosts = locale === "en" ? allPosts.en : allPosts.vi;
-  const pages = await getPaginations(pagePosts, paginationConfig.perPage);
+  const pages = getPaginations(pagePosts, paginationConfig.perPage);
   if (pages.length == 0) {
     return {
       props: {

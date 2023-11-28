@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import _ from 'lodash';
 import fm from "front-matter";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeHighlight from "rehype-highlight";
@@ -13,112 +14,6 @@ const SERIALIZE_OPTS = {
   rehypePlugins: [rehypeHighlight, rehypeKatex],
   remarkPlugins: [remarkMath],
 };
-
-var __getPostsCached: Promise<Record<string, Post[]>> | null = null;
-
-export async function getPosts(): Promise<Record<string, Post[]>> {
-  if (__getPostsCached) return __getPostsCached;
-
-  __getPostsCached = (async function() {
-    const localeDirs = await fs.readdir(path.join('.', 'contents'));
-    const allPosts: Record<string, Post[]> = {};
-    for (const locale of localeDirs) {
-      const filenames = await fs.readdir(path.join('.', 'contents', locale, 'posts')).catch(() => []);
-      if (filenames.length === 0) continue;
-      const posts = await Promise.all(
-        filenames
-          .map((filename) => path.join('.', 'contents', locale, 'posts', filename))
-          .map(async (filename, index): Promise<Post> => {
-            const slug = getSlugByMdx(filenames[index]);
-            const fileContent = (await fs.readFile(filename)).toString();
-            const { attributes: meta, body } = fm<Meta>(fileContent);
-            const [mdxBody, mdxDescription] = await Promise.all([
-              serialize(body, { mdxOptions: SERIALIZE_OPTS }),
-              serialize(meta.description || "", { mdxOptions: SERIALIZE_OPTS }),
-            ]);
-            return {
-              slug,
-              meta,
-              mdxBody,
-              mdxDescription,
-              body,
-            };
-          })
-      );
-
-      allPosts[locale] = posts
-        .filter((post) => post.meta.published)
-        .sort((a, b) => {
-          const scoreA = a.meta.score || 0;
-          const scoreB = b.meta.score || 0;
-          if (scoreA < scoreB) return 1;
-          if (scoreA > scoreB) return -1;
-          const t1 = (a.meta.date as Date).getTime();
-          const t2 = (b.meta.date as Date).getTime();
-          if (t1 < t2) return 1;
-          if (t1 > t2) return -1;
-          return 0;
-        });
-    }
-    return allPosts;
-  })();
-
-  return __getPostsCached;
-}
-
-export async function getPaginations(
-  posts: Post[],
-  perPage = 5
-): Promise<Pagination[]> {
-  const paginations: Pagination[] = [];
-  for (let i = 0; i < posts.length; i += perPage) {
-    paginations.push({
-      posts: posts.slice(i, i + perPage),
-      pagination: {
-        hasNext: true,
-        hasPrevious: true,
-        current: Math.floor(i / perPage) + 1,
-      },
-    });
-  }
-
-  if (paginations.length > 0) {
-    paginations[0].pagination.hasPrevious = false;
-    paginations[paginations.length - 1].pagination.hasNext = false;
-  }
-  return paginations;
-}
-
-export async function getCollection(
-  name: keyof Post["meta"],
-  perPage = 5,
-  locale: string = 'vi',
-): Promise<Collection[]> {
-  const allPosts = await getPosts();
-  const posts = (locale === 'en' ? allPosts.en : allPosts.vi).filter(post => Object.hasOwn(post.meta, name));
-
-  const grouped: Record<string, Post[]> = {};
-  for (const post of posts) {
-    const labels = post.meta[name] as string[];
-    for (const label of labels) {
-      if (!Object.hasOwn(grouped, label)) {
-        grouped[label] = [];
-      }
-      grouped[label].push(post);
-    }
-  }
-
-  const collections: Collection[] = [];
-  for (const [label, posts] of Object.entries(grouped)) {
-    const paginations = await getPaginations(posts, perPage);
-    collections.push({
-      label,
-      slug: slugify(label),
-      paginations,
-    });
-  }
-  return collections;
-}
 
 export interface Collection {
   label: string;
@@ -141,6 +36,73 @@ export interface Pagination {
   pagination: PaginationProps["pagination"];
 }
 
-function getSlugByMdx(filename: string): string {
-  return filename.replace(/\.mdx?$/, "");
+var __getPostsCached: Promise<Record<string, Post[]>> | null = null;
+
+async function readMDX(filename: string, fullPath: string): Promise<Post> {
+  const slug = path.parse(filename).name;
+  const fileContent = (await fs.readFile(fullPath)).toString();
+  const { attributes: meta, body } = fm<Meta>(fileContent);
+  const [mdxBody, mdxDescription] = await Promise.all([
+    serialize(body, { mdxOptions: SERIALIZE_OPTS }),
+    serialize(meta.description || "", { mdxOptions: SERIALIZE_OPTS }),
+  ]);
+  return {
+    slug,
+    meta,
+    mdxBody,
+    mdxDescription,
+    body,
+  };
+}
+
+export async function getPosts(): Promise<Record<string, Post[]>> {
+  if (__getPostsCached) return __getPostsCached;
+
+  __getPostsCached = (async function() {
+    const localeDirs = await fs.readdir(path.join('.', 'contents'));
+    const allPosts: Record<string, Post[]> = {};
+    for (const locale of localeDirs) {
+      const filenames = await fs.readdir(path.join('.', 'contents', locale, 'posts')).catch(() => []);
+      if (filenames.length === 0) continue;
+      const posts = await Promise.all(filenames.map(filename =>
+        readMDX(
+          filename,
+          path.join('.', 'contents', locale, 'posts', filename),
+        )
+      ));
+
+      allPosts[locale] = _.sortBy(_.filter(posts, ['meta.published', true]), ['meta.score', 'meta.date']);
+    }
+    return allPosts;
+  })();
+
+  return __getPostsCached;
+}
+
+export function getPaginations(posts: Post[], perPage = 5): Pagination[] {
+  const paginations: Pagination[] = _.chunk(posts, perPage).map((chunk, i)=> ({
+    posts: chunk,
+    pagination: {
+      hasNext: true,
+      hasPrevious: true,
+      current: i + 1, // count from 1
+    }
+  }));
+
+  if (paginations.length > 0) {
+    paginations[0].pagination.hasPrevious = false;
+    paginations[paginations.length - 1].pagination.hasNext = false;
+  }
+  return paginations;
+}
+
+export async function getCollection(name: keyof Post["meta"], perPage = 5, locale: string = 'vi'): Promise<Collection[]> {
+  const allPosts = await getPosts();
+  const posts = allPosts[locale].filter(post => Object.hasOwn(post.meta, name));
+  const groups = _.groupBy(posts, `meta[\'${name}\']`);
+  return Object.entries(groups).map(([label, posts]) => ({
+    label,
+    slug: slugify(label),
+    paginations: getPaginations(posts, perPage),
+  }));
 }
