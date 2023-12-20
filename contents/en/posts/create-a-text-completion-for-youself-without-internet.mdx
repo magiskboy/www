@@ -1,5 +1,5 @@
 ---
-title: "Create a chatbot for yourself without internet"
+title: "Create a text completion for yourself without internet"
 date: 2023-12-20T17:11:00+07:00
 published: true
 tags:
@@ -9,31 +9,30 @@ categories:
 description: "Since ChatGPT has become increasingly popular, chatbot is appearence everywhere in your life. In this post, I want to show you how to create a chatbot in locally with Python."
 ---
 
-Since ChatGPT has become increasingly popular, chatbot is appearence everywhere in your life. In this post, I want to show you how to create a chatbot in locally with Python.
+Since ChatGPT has become increasingly popular, the chatbot is appearing everywhere in your life. In this post, I want to show you how to create a simple text completion locally with Python.
 
-First thing you need to create a chatbot is a LLM model. So, what is the LLM model?
+The first thing you need to create a chatbot is a LLM model. So, what is the LLM model?
 
-A large language model (LLM) us a type of artificial intelligence algorithm that uses deep learning
-techniques and massively large data sets to understand, summarize, generate and predict new content.
+A large language model (LLM) is a type of artificial intelligence algorithm that uses deep learning
+techniques and massively large data sets to understand, summarize, generate, and predict new content.
 
-Basically, LLM is a brain of your chatbot. For example: ChatGPT is a LLM model and we have many LLM models such as 
-LLAMA, Mistral, Mixtral,...
+Basically, LLM is the brain of your chatbot. We have many different LLM models like LLAMA, Mistral, Mixtral..., so ChatGPT is one of them.
 
-In this post, let me show you a software that can let you touch a lot of models without deep understand their: Ollama
+In this post, let me show you a tool that can let you touch a lot of models without a deep understand of their: ollama.
 
-Ollama is a software, which let you manage, download and run many LLM models via CLI and APIs.
+Ollama lets you manage, download and run different LLM models via simple interface.
 
 **Homepage**: [ollama.ai](https://ollama.ai/)
 
 **Github**: [github.com/jmorganca/ollama](https://github.com/jmorganca/ollama)
 
-First, you can start and run ollama in docker via
+First, you can start and run ollama in Docker via
 
 ```sh
 $ docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
 
-Next, you need to download a LLM models in ollama. In this example, I want to use llama2 model for general use cases.
+Next, you need an LLM model and download it via the ollama command. In this example, I want to use the llama2 model for general use cases.
 
 ```sh
 $ docker exec -it ollama ollama pull llama2
@@ -41,10 +40,10 @@ pulling manifest
 pulling 953202b3116b...   1% ▕                ▏  37 MB/4.1 GB  7.4 MB/s    9m7s
 ```
 
-During model is downloading, you can create simple interface for your chatbot. For example, I create CLI interface in Python.
+While the model is downloading, you can create a simple interface for your chatbot. For example, I wrote a CLI interface in Python.
 
-We need to call http to ollama via APIs interface for generating text base on your input.
-Response of this is a stream of text.
+We need to call HTTP to ollama's API to generate text based on your input.
+The response to this is a stream of text.
 
 ```python
 from typing import AsyncIterator
@@ -82,7 +81,7 @@ if __name__ == '__main__':
     asyncio.run(main())
 ```
 
-And then this is a result
+Finally, this is a result
 
 <iframe 
     width="100%" 
@@ -93,3 +92,5 @@ And then this is a result
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen>
 </iframe>
+
+In next post, I want to share you how create a simple chatbot like ChatGPT locally.
