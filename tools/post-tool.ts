@@ -71,7 +71,7 @@ export async function getPosts(): Promise<Record<string, Post[]>> {
         )
       ));
 
-      allPosts[locale] = _.sortBy(_.filter(posts, ['meta.published', true]), ['meta.score', 'meta.date']);
+      allPosts[locale] = _.sortBy(_.filter(posts, ['meta.published', true]), ['meta.date']).reverse()
     }
     return allPosts;
   })();
