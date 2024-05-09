@@ -1,0 +1,183 @@
+---
+title: "Using observer pattern in web development"
+date: 2024-05-09T08:35:00+07:00
+published: true 
+tags:
+- Design pattern
+- Observer pattern
+categories:
+- Design pattern
+description: "Design patterns are among the essential skills for a programmer. Mastering the application of design patterns not only enhances their understanding of programming but also elevates their value in the industry. In this article, I'll share one of the relatively common design patterns and how to apply it in frontend web development - the __Observer pattern__."
+---
+
+The Observer pattern (sometimes referred to as the pubsub pattern) is a behavioral design pattern. According to the definition from Wikipedia:
+
+> In software design and engineering, the observer pattern is a software design pattern in which an object,
+named the subject, maintains a list of its dependents, called observers, and notifies them automatically of
+any state changes, usually by calling one of their methods.
+
+In essence, the observer pattern helps us address the issue of notifying other components about changes in a particular component. This minimizes the dependency between components in the system, making it easier to extend the system without altering much of the source code.
+
+In this article, I'll apply the observer pattern to structure a basic todo application, including functionalities such as adding tasks, updating tasks, and deleting tasks.
+
+
+## Project Structure
+
+Firstly, let's create a new project named todo-app using Vite:
+
+```bash
+$ npm create vite@latest todo-app -- --template vanilla-ts
+```
+
+After removing unnecessary files, the project structure will look like this:
+
+```
+.
+├── index.html
+├── package.json
+├── public
+│   └── vite.svg
+├── src
+│   ├── main.ts
+│   └── vite-env.d.ts
+├── tsconfig.json
+└── yarn.lock
+
+3 directories, 7 files
+```
+
+## Implementing the Observer Pattern
+
+Firstly, we'll create an Observer class to manage observers. Each observer will have an update method to receive notifications from the subject.
+Additionally, we'll create an Observable object with three methods:
+
+- **registerObserver**: Adds an observer to the listener list.
+- **unregisterObserver**: Removes an observer from the listener list.
+- **notifyObservers**: Triggers listeners when there's an update.
+
+```typescript
+class Observer {
+  update() {
+    throw new Error("Method not implemented.");
+  }
+}
+
+class Observable {
+  private observers: Observer[];
+
+  constructor() {
+    this.observers = [];
+  }
+
+  registerObserver(observer: Observer) {
+    this.observers.push(observer);
+  }
+
+  unregisterObserver(observer: Observer) {
+    this.observers = this.observers.filter((o) => o !== observer);
+  }
+
+  notifyObservers() {
+    this.observers.forEach((o) => o.update());
+  }
+}
+```
+
+## Applying the Observer Pattern to the Todo Application
+
+In the case of the todo application, the UI displayed in the browser is the __Observer__, and the data model underneath the application is the __Observable__.
+Any changes in this data model will be reflected in the UI.
+
+We'll create a __TaskModel__ inheriting from the __Observable__ class, which will contain all the logic to maintain the list of tasks for the application.
+
+```typescript
+class TaskModel extends Observable {
+  private tasks: Task[];
+
+  constructor() {
+    super();
+    this.tasks = [];
+  }
+
+  addTask(task: Omit<Task, "id">) {
+    this.tasks.push({
+      id: uuidV4(),
+      ...task,
+    });
+    this.notifyObservers();
+  }
+
+  getTasks() {
+    return this.tasks;
+  }
+
+  updateTask(task: Task) {
+    this.tasks = this.tasks.map((t) => (t.id === task.id ? task : t));
+    this.notifyObservers();
+  }
+}
+```
+
+The __TaskView__ contains logic to display data on the browser's UI. Additionally, __TaskView__ will pass events from the UI back to the data model when the user interacts with the UI.
+
+```typescript
+class TaskView extends Observer {
+  private model: TaskModel;
+  private container: HTMLUListElement;
+
+  constructor(model: TaskModel, container: HTMLUListElement) {
+    super();
+    this.model = model;
+    this.container = container;
+    this.model.registerObserver(this);
+  }
+
+  update() {
+    this.container.innerHTML = "";
+    this.model.getTasks().forEach((task) => {
+      const li = document.createElement("li");
+      li.textContent = task.name;
+      li.onclick = () => {
+        this.model.updateTask({
+          ...task,
+          completed: !task.completed,
+        });
+      };
+      task.completed && (li.style.textDecoration = "line-through");
+      this.container.appendChild(li);
+    });
+  }
+}
+```
+
+Finally, we initialize __TaskModel__ and __TaskView__ in __main.ts__, and attach them to the browser's DOM:
+
+
+```typescript
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("todo-form") as HTMLFormElement;
+  const input = document.getElementById("todo-input") as HTMLInputElement;
+  const todoContainer = document.getElementById("todo-list") as HTMLUListElement;
+
+  const model = new TaskModel();
+  const view = new TaskView(model, todoContainer);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    model.addTask({
+      name: input.value,
+      completed: false,
+    });
+    input.value = "";
+    return false;
+  });
+});
+```
+
+## Kết luận
+
+By using the observer pattern, we have successfully separated the application logic from the UI presentation, making the code more readable and maintainable.
+
+Furthermore, the observer pattern is also utilized in major frameworks such as React, Angular, and Vue to manage state and UI rendering.
+
+Link github: [todo-app](https://github.com/magiskboy/todo-observer-pattern)
