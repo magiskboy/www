@@ -29,10 +29,6 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
 
   return (
     <Layout>
-      <Adsense
-        client={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE!}
-        slot="6466279268"
-      />
       {paths.map((path) => (
         <React.Fragment key={path.slug}>
           <PostItem {...path} />
@@ -43,6 +39,10 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
         pagination={pagination}
         prevGenerator={prevGenerator}
         nextGenerator={nextGenerator}
+      />
+      <Adsense
+        client={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE!}
+        slot="6466279268"
       />
     </Layout>
   );
