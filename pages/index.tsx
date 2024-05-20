@@ -40,10 +40,6 @@ const Homepage: NextPage<Props> = ({ paths, pagination }) => {
         prevGenerator={prevGenerator}
         nextGenerator={nextGenerator}
       />
-      <Adsense
-        client={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE!}
-        slot="6466279268"
-      />
     </Layout>
   );
 };
