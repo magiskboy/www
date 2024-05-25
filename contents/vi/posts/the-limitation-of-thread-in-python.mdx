@@ -1,0 +1,166 @@
+---
+title: "Giới hạn của luồng trong Python"
+date: 2024-05-26T05:32:00+07:00
+published: true
+tags:
+- Python
+- Threading
+- Processing
+categories:
+- Python
+description: "Luồng(thread) trong Python có gì khác so với luồng trong các ngôn ngữ lập trình khác? GIL là gì? Có phải sử dụng đa luồng, đa tiến trình sẽ luôn hiệu quả hơn đơn luồng, đơn tiến trình không? Trong bài viết này, mình sẽ chia sẻ về giới hạn của luồng trong Python và đưa ra lời khuyên trong trường hợp nào thì dùng đa luồng, đa tiến trình hay chỉ cần dùng đơn luồng." 
+---
+
+# Đặc điểm
+
+### Luồng - Thread
+
+- Không thể chạy nhiều thread tại cùng 1 thời điểm
+- Khi sinh tiến trình mới, code segment và global data segment được chia sẽ giữa các luồng → không tốn thời gian như sinh tiến trình
+
+### Tiến trình - Process
+
+- Khi sinh tiến trình sẽ copy toàn bộ data và code segment sang tiến trình mới → tốn thời gian
+
+# Bài kiểm tra
+
+**Có 2 loại tác vụ trong Python:**
+
+- tương tác IO như gọi HTTP API, đọc file,… - IO bounded
+- xử lí tính toán phức tạp, sử dụng nhiều CPU - CPU bounded
+
+**Có 2 phương pháp xử lí song song trong Python:**
+
+- đa luồng
+- đa tiến trình
+
+Chúng ta sử dụng chương trình bên dưứi để kiểm tra hiệu quả của đa luồng/đơn luồng và đa tiến trình/đơn tiến trình trong 2 loại tác vụ trên.
+
+- Hàm **measure** dùng để đo thời gian thực thi của một hàm.
+- Hàm **fib** là hàm tính số Fibonacci, đại diện cho tác vụ sử dụng nhiều CPU.
+- Hàm **get_user** là hàm gọi API từ Github, đại diện cho tác vụ tương tác IO.
+
+```python
+import threading
+import multiprocessing
+import time
+import requests
+
+def measure(func):
+    def f(*args, **kwargs):
+        start = time.time()
+        ret = func(*args, **kwargs)
+        print(f"{func.__name__} takes {time.time()-start} seconds")
+        return ret
+
+    return f
+
+
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+    
+def get_user():
+    return requests.get("https://api.github.com/users/magiskboy")
+
+
+@measure
+def cpu_bounded_in_multiple_process():
+    p1 = multiprocessing.Process(target=fib, args=(40,), daemon=True)
+    p2 = multiprocessing.Process(target=fib, args=(40,), daemon=True)
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
+
+
+@measure
+def cpu_bounded_in_multiple_thread():
+    t1 = threading.Thread(target=fib, args=(40,), daemon=True)
+    t2 = threading.Thread(target=fib, args=(40,), daemon=True)
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+
+
+@measure
+def cpu_bounded_in_single_thread():
+    fib(40)
+    fib(40)
+
+
+@measure
+def io_bounded_in_single_thread(n_iters=10):
+    for i in range(n_iters):
+        get_user()
+
+
+@measure
+def io_bounded_in_multiple_threads(n_iters=10):
+    ts = []
+    for i in range(n_iters):
+        t = threading.Thread(
+            target=get_user,
+            daemon=True,
+        )
+        t.start()
+        ts.append(t)
+
+    for t in ts:
+        t.join()
+
+
+if __name__ == "__main__":
+    cpu_bounded_in_single_thread()
+    cpu_bounded_in_multiple_thread()
+    cpu_bounded_in_multiple_process()
+    io_bounded_in_single_thread()
+    io_bounded_in_multiple_threads()
+```
+
+# Quan sát
+
+- Với tác vụ có tương tác IO, đa luồng hiệu quả hơn đơn luồng.
+- Với tác vụ sử dụng nhiều CPU (thiên về tính toán), đa tiến trình hiệu quả hơn đa luồng.
+- Với tác vụ sử dụng nhiều CPU, đơn luồng hiệu quả hơn đa luồng.
+
+<Image 
+  src="/images/result-of-benchmark.png"
+  title="Kết quả sau khi chạy test trên Linux"
+  width={999}
+  height={246}
+/>
+
+# Hỏi đáp
+
+Q: Tại sao với các tác vụ tương tác IO, đa luồng lại hiệu quả hơn đơn luồng mặc dù trong Python, ta không thể chạy nhiều luồng tại một thời điểm?
+
+A: Trong tác vụ có tương tác IO không sử dụng CPU, khi 1 luồng bị lock thì luồng đó thực chất vẫn **được coi là đang chạy** vì khoảng thời gian bị lock overlap khoảng thời gian chờ kết quả từ IO. Do đó, tính song song được đảm bảo một phần.
+
+Q: Tại sao với tác vụ cần sử dụng CPU, đa tiến trình lại hiệu quả hơn đa luồng?
+
+A: Trong Python, đa luồng không thể xảy ra do chỉ có 1 luồng được chạy tại 1 thời điểm. Với đa tiến trình, có thể chạy nhiều tiến trình tại 1 thời điểm.
+
+Q: Với các tác vụ dùng nhiều CPU, đơn luồng hiệu quả hơn đa luồng?
+
+A: Trong Python, do chỉ có 1 thread được chạy tại 1 thời điểm nên dù chạy nhiều luồng thì xử lí song song vẫn không xảy ra. Thậm chí, đa luồng còn kém hiệu quả hơn trong trường hợp này do phải xử lí context switching, gây thêm chi phí.
+
+# GIL - Global Interpreter Lock
+
+GIL là một mutex lock được sử dụng để đảm bảo tại 1 thời điểm, chỉ có 1 thread được thực thi.
+
+Mutex lock này sẽ khóa toàn bộ data segment của cả tiến trình đối với các thread khác và chỉ thread đang thực thi mới có thể truy cập vào data segment_ đó.
+
+Việc chỉ sử dụng 1 mutex lock cho toàn bộ data của tiến trình có 2 lí do:
+
+- tránh xảy ra deadlock
+- giảm chi phí khi cập nhật trạng thái của các mutex lock, tránh gây ra overhead
+
+Chi tiết về GIL có thể xem thêm tại đây: [https://github.com/python/cpython/blob/main/Python/ceval_gil.c#L14](https://github.com/python/cpython/blob/main/Python/ceval_gil.c#L14)
+
+# Kết luận
+
+- Với những tác vụ cần tương tác IO nhiều, nên sử dụng đa luồng.
+- Với những tác vụ cần tính toán, sử dụng nhiều CPU, không nên sử dụng đa luồng mà nên tối ưu chương trình để xử lí đơn luồng. Ngoài ra, có thể sử dụng đa tiến trình nếu bài toán đó thực sự “nặng”.
