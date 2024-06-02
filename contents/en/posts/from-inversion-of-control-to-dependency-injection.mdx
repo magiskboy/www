@@ -1,0 +1,205 @@
+---
+title: "From Inversion of Control to Dependency Injection"
+date: 2024-06-02T21:58:00+07:00
+published: true 
+tags:
+- Design pattern
+- Inversion of Control
+- Dependency Injection
+categories:
+- Design pattern
+description: "Inversion of Control and Dependency Injection are two important concepts in object-oriented programming. It is the basic principles that help us build flexible, maintainable, and extensible applications. This article will help you understand more about Inversion of Control and Dependency Injection."
+---
+
+# Inversion of Control
+
+**Inversion of Control** means reversing control or transferring control from inside to outside a scope. Sounds confusing, right? Don't worry, we will find out together through the following example:
+
+```typescript
+
+function submitFeedback(feedback: string, onDone?: () => void) {
+  // Send feedback to server
+  onDone?.();
+}
+
+function main() {
+  const feedback = inputElement.value;
+
+  submitFeedback(feedback, () => {
+    alert('Feedback has been sent successfully');
+  });
+}
+```
+
+In the code above, the **submitFeedback** function takes two parameters: **feedback** and **onDone**. When calling the **submitFeedback** function, we pass in the feedback and a callback function **onDone** to handle after the feedback has been sent to the server.
+
+In this case, the **alert** function is defined in the **main** function and executed in the **submitFeedback** function.
+
+This means that the **submitFeedback** function does not need to know how the **onDone** function is handled, it just needs to call the **onDone** function when processing the feedback submission. This means that we transfer control of the **submitFeedback** function to the outside - the **main** function.
+
+This is an example of Inversion of Control.
+
+We will see similar cases in asynchronous systems or in event processing systems: handling DOM events, handling network-related events such as listening to events from sockets,...
+
+So why do we need to use Inversion of Control?
+
+- **Flexible**: When using Inversion of Control, we can easily change the way a function is processed without changing the content of that function.
+- **Maintainable and Extendable**: When we transfer control from inside a function to outside, we can easily change the way that function is processed without affecting other parts of the system.
+- **Testable**: When we transfer control to the outside, we can easily test the logic without having to test the entire function.
+
+With the above three benefits, they are also the three goals we need to achieve when building a software system.
+
+# Dependency Injection
+
+Dependency Injection is a design pattern that helps us manage dependencies between modules in the system. It also applies the principle of Inversion of Control to transfer control of initializing dependencies from inside the module to the outside.
+
+The following example will help us understand more about Dependency Injection:
+
+```typescript
+class Logger {
+  construction() {}
+}
+
+class Database {
+  construction() {
+    this.logger = new Logger();
+  }
+}
+
+class UserService {
+  construction() {
+    this.database = new Database();
+    this.logger = new Logger();
+  }
+}
+
+class UserService {
+  construction() {
+    this.database = new Database();
+    this.logger = new Logger();
+  }
+}
+
+class AuthService {
+  construction() {
+    this.userService = new UserService();
+    this.logger = new Logger();
+  }
+}
+
+const authService = new AuthService();
+```
+
+In the example above, we have four classes **Logger**, **Database**, **UserService**, and **AuthService**. Each class initializes its dependencies in the constructor.
+
+<Image
+  src="/images/DI.svg"
+  title="Denpendency Graph"
+/>
+
+With the above implementation, there are some disadvantages as follows:
+- **Hard to test**: When we test a class, we cannot mock the dependencies of that class. For example, when we test the **UserService** class, we cannot mock the **Database** class or the **Logger** class.
+- **Hard to extend**: When we want to change the way a dependency is initialized, we have to change where they are used even though the logic should only be in the class where the change is applied.
+- **Hard to maintain**: When we want to change a dependency, we have to change where they are used. This leads to the fact that we have to change many places in the system.
+
+We will change the above example by initializing dependencies from the outside and passing them through the constructor as follows:
+
+```typescript
+class Logger {
+  construction() {}
+}
+
+class Database {
+  construction(private logger: Logger) {}
+}
+
+class UserService {
+  construction(private database: Database, private logger: Logger) {}
+}
+
+class AuthService {
+  construction(private userService: UserService, private logger: Logger) {}
+}
+
+const database = new Database(new Logger());
+const userService = new UserService(database, new Logger());
+const authService = new AuthService(userService, new Logger());
+```
+
+So we have solved the disadvantages of initializing dependencies in the constructor. We can easily test classes without having to mock dependencies. However, the remaining disadvantages such as hard to extend and hard to maintain have not been resolved. Every time we want to change the way a dependency is initialized, we still have to change where they are used.
+
+To solve this problem, we use another design pattern called **Dependency Injection Container**. Dependency Injection Container helps manage dependencies and provide them to the classes we need.
+
+```typescript
+class Logger {
+  construction() {}
+}
+
+class Database {
+  construction(private logger: Logger) {}
+}
+
+class UserService {
+  construction(private database: Database, private logger: Logger) {}
+}
+
+class AuthService {
+  construction(private userService: UserService, private logger: Logger) {}
+}
+
+class Container {
+  private store = new Map();
+
+  private getDependenciesOf<T>(Type<T>): any[] {
+    // Get the dependencies of a class based on the constructor of that class
+    ...    
+  }
+
+  register(T: Type) {
+    this.store.set(Symbol.for(T.name), null);
+  }
+
+  resolve<T>(type: Type): T {
+    // Get the instance from the store and check if it has been initialized
+    let instance = this.store.get(Symbol.for(Type.name));
+
+    // If the instance has not been initialized, initialize it
+    if (!instance) {
+      // Get the dependencies of the class and resolve
+      const dependecyTypes = this.getDependenciesOf(T);
+      const dependencies = dependecyTypes.map(dependency => this.resolve(dependency));
+
+      // Initialize the class and save it to the store
+      instance = new T(...dependencies);
+      this.store.set(Symbol.for(key), new T(...instance));
+    }
+
+    return instance;
+  }
+}
+
+const container = new Container();
+container.register(Logger);
+container.register(Database);
+container.register(UserService);
+container.register(AuthService);
+const authService = container.resolve<AuthService>(AuthService);
+```
+
+With the above improvement, we have solved the disadvantages of initializing dependencies in the constructor. We can easily extend and maintain the system without having to change many places in the system.
+
+Other than that, by using the container, we can also manage and use dependencies more easily, each class is initialized only once and is reused in different places in the system (can be adjusted so that the class can be created new whenever needed).
+
+Besides the advantages, Dependency Injection Container also has the disadvantage of increasing the complexity of the system and making debugging more difficult because initializing dependencies is no longer in the constructor of the class.
+
+Because the declaration and use of dependencies are no longer in the constructor, developers may not pay attention to the dependency graph, leading to difficulties in controlling and managing dependencies when the system becomes complex.
+
+# Summary
+
+There are many libraries that support Dependency Injection such as **Angular**, **NestJS**, **fastapi**,... to help developers manage dependencies between modules in the system easily and effectively.
+
+Inversion of Control and Dependency Injection are two important concepts in object-oriented programming. It is the basic principles that help us build flexible, maintainable, and extensible applications. However, use them carefully and reasonably to avoid the system becoming complex and difficult to maintain.
+
+I hope this article helps you understand more about Inversion of Control and Dependency Injection. Leave a comment if you have any questions or comments about this article!
+
+Happy coding!
