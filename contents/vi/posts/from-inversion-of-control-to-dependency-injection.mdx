@@ -1,0 +1,210 @@
+---
+title: "Từ Inversion of Control đến Dependency Injection"
+date: 2024-06-02T21:58:00+07:00
+published: true 
+tags:
+- Design pattern
+- Inversion of Control
+- Dependency Injection
+categories:
+- Design pattern
+description: "Inversion of Control và Dependency Injection là hai khái niệm quan trọng trong lập trình hướng đối tượng. Nó là những nguyên lý cơ bản giúp chúng ta xây dựng các ứng dụng linh hoạt, dễ bảo trì và mở rộng. Bài viết này sẽ giúp bạn hiểu rõ hơn về Inversion of Control và Dependency Injection."
+---
+
+# Inversion of Control
+
+Để hiểu được IoC là gì, trước tiên ta hãy cắt nghĩa của từ **Inversion và Control**
+
+- **Inversion** khi dịch ra Tiếng Việt có nghĩa là đảo ngược
+- **Control** có nghĩa là quyền kiểm soát
+
+Vậy **Inversion of Control** có nghĩa là đảo ngược quyền kiểm soát hay chuyển quyền điều khiển từ bên trong ra bên ngoài một scope. Nghe có vẻ khó hiểu phải không? Đừng lo, chúng ta sẽ cùng nhau tìm hiểu qua ví dụ sau:
+```typescript
+
+function submitFeedback(feedback: string, onDone?: () => void) {
+  // Gửi feedback lên server
+
+  onDone?.();
+}
+
+function main() {
+  const feedback = inputElement.value;
+
+  submitFeedback(feedback, () => {
+    alert('Feedback đã được gửi thành công');
+  });
+}
+```
+
+Trong đoạn code trên, hàm **submitFeedback** nhận vào hai tham số là **feedback** và **onDone**. Khi gọi hàm **submitFeedback**, chúng ta truyền vào feedback và một hàm callback **onDone** để xử lý sau khi feedback đã được gửi lên server.
+
+Trong trường hợp này, hàm **alert** được định nghĩa trong hàm **main** và được thực thi trong hàm **submitFeedback**. 
+
+Điều này có nghĩa là hàm **submitFeedback** không cần biết cách thức xử lý của hàm **onDone**, mà nó chỉ cần gọi hàm **onDone** khi xử lí việc submit feedback. Điều này có nghĩa là chúng ta chuyển quyền điều khiển của hàm **submitFeedback** ra bên ngoài - tức hàm **main**.
+
+Điều này chính là một ví dụ về Inversion of Control.
+
+Chúng ta sẽ thấy những trường hợp tương tự như vậy trong các hệ thống bất đồng bộ hoặc trong các hệ thống xử lý sự kiện: xử lí các DOM event, xử lí liên quan đến network như lắng nghe các sự kiện từ socket,...
+
+Vậy tại sao chúng ta cần phải sử dụng Inversion of Control?
+
+- **Flexible - Tăng tính linh hoạt**: Khi sử dụng Inversion of Control, chúng ta có thể dễ dàng thay đổi cách thức xử lý của một hàm mà không cần phải thay đổi nội dung của hàm đó.
+- **Maintainable and Extendable - Dễ bảo trì và mở rộng**: Khi chúng ta chuyển quyền kiểm soát từ bên trong hàm ra bên ngoài, chúng ta có thể dễ dàng thay đổi cách thức xử lý của hàm đó mà không ảnh hưởng đến các phần khác trong hệ thống.
+- **Testable - Dễ kiểm thử**: Khi chúng ta chuyển quyền kiểm soát ra bên ngoài, chúng ta có thể dễ dàng kiểm thử các phần logic mà không cần phải kiểm thử toàn bộ hàm.
+
+Ba lợi ích trên cũng là ba mục tiêu mà chúng ta cần đạt được khi xây dựng một hệ thống phần mềm.
+
+# Dependency Injection
+
+Dependency Injection là một design pattern giúp chúng ta quản lý các dependency giữa các module trong hệ thống. Nó cũng áp dụng nguyên lí Inversion of Control để chuyển quyền kiểm điều khiển việc khởi tạo các dependency từ bên trong module ra bên ngoài.
+
+Ví dụ sau sẽ giúp chúng ta hiểu rõ hơn về Dependency Injection:
+
+```typescript
+class Logger {
+  construction() {}
+}
+
+class Database {
+  construction() {
+    this.logger = new Logger();
+  }
+}
+
+class UserService {
+  construction() {
+    this.database = new Database();
+    this.logger = new Logger();
+  }
+}
+
+class UserService {
+  construction() {
+    this.database = new Database();
+    this.logger = new Logger();
+  }
+}
+
+class AuthService {
+  construction() {
+    this.userService = new UserService();
+    this.logger = new Logger();
+  }
+}
+
+const authService = new AuthService();
+```
+
+Trong ví dụ trên, chúng ta có bốn class **Logger**, **Database**, **UserService** và **AuthService**. Mỗi class này đều khởi tạo các dependency của nó trong constructor.
+
+
+<Image
+  src="/images/DI.svg"
+  title="Denpendency Graph"
+/>
+
+Với cách cài đặt trên, có một số nhược điểm như sau:
+- **Khó kiểm thử**: Khi chúng ta kiểm thử một class, chúng ta không có cách nào mock các dependency của class đó. Ví dụ như khi chúng ta kiểm thử class **UserService**, chúng ta không thể mock class **Database** hoặc class **Logger**.
+- **Khó mở rộng**: Khi chúng ta muốn thay đỏi cách thức khởi tạo của một dependency, chúng ta phải thay đổi tại nơi chúng được sử dụng mặc dù logic đó chỉ nên nằm ở class, nơi mà thay đổi đó được áp dụng.
+- **Khó bảo trì**: Khi chúng ta muốn thay đổi một dependency, chúng ta phải thay đổi tại nơi chúng được sử dụng. Điều này dẫn đến việc chúng ta phải thay đổi nhiều nơi trong hệ thống.
+
+Chúng ta sẽ có 1 cải tiến cho ví dụ trên bằng cách khởi tạo các dependency từ bên ngoài và truyền vào qua constructor như sau:
+
+```typescript
+class Logger {
+  construction() {}
+}
+
+class Database {
+  construction(private logger: Logger) {}
+}
+
+class UserService {
+  construction(private database: Database, private logger: Logger) {}
+}
+
+class AuthService {
+  construction(private userService: UserService, private logger: Logger) {}
+}
+
+const database = new Database(new Logger());
+const userService = new UserService(database, new Logger());
+const authService = new AuthService(userService, new Logger());
+```
+
+Như vậy, chúng ta đã giải quyết được các nhược điểm của việc khởi tạo dependency trong constructor. Chúng ta có thể dễ dàng kiểm thử các class mà không cần phải mock các dependency. Tuy nhiên, những nhược điểm còn lại như khó mở rộng và khó bảo trì vẫn chưa được giải quyết. Mỗi khi chúng ta muốn thay đổi cách thức khởi tạo của một dependency, chúng ta vẫn phải thay đổi tại những nơi chúng được sử dụng.
+
+Để giải quyết vấn đề này, chúng ta sử dụng một design pattern khác gọi là **Dependency Injection Container**. Dependency Injection Container giúp chúng ta quản lý các dependency và cung cấp chúng cho các class mà chúng ta cần.
+
+```typescript
+class Logger {
+  construction() {}
+}
+
+class Database {
+  construction(private logger: Logger) {}
+}
+
+class UserService {
+  construction(private database: Database, private logger: Logger) {}
+}
+
+class AuthService {
+  construction(private userService: UserService, private logger: Logger) {}
+}
+
+class Container {
+  private store = new Map();
+
+  private getDependenciesOf<T>(Type<T>): any[] {
+    // Lấy ra các dependency của một class dựa vào constructor của class đó
+    ...    
+  }
+
+  register(T: Type) {
+    this.store.set(Symbol.for(T.name), null);
+  }
+
+  resolve<T>(type: Type): T {
+    // Lấy ra instance từ store và kiểm tra xem nó đã được khởi tạo chưa
+    let instance = this.store.get(Symbol.for(Type.name));
+
+    // Nếu instance chưa được khởi tạo, khởi tạo nó
+    if (!instance) {
+      // Lấy ra các dependency của class và resolve chúng
+      const dependecyTypes = this.getDependenciesOf(T);
+      const dependencies = dependecyTypes.map(dependency => this.resolve(dependency));
+
+      // Khởi tạo class và lưu vào store
+      instance = new T(...dependencies);
+      this.store.set(Symbol.for(key), new T(...instance));
+    }
+
+    // Trả về instance
+    return instance;
+  }
+}
+
+const container = new Container();
+container.register(Logger);
+container.register(Database);
+container.register(UserService);
+container.register(AuthService);
+const authService = container.resolve<AuthService>(AuthService);
+```
+
+Với cải tiến trên, chúng ta đã giải quyết được các nhược điểm của việc khởi tạo dependency trong constructor. Chúng ta cũng dễ dàng mở rộng và bảo trì hệ thống mà không cần phải thay đổi nhiều nơi trong hệ thống.
+Ngoài ra, bằng việc sử dụng container, chúng ta cũng có thể quản lý và sử dụng các dependency một cách dễ dàng hơn, mỗi một class chỉ được khỏi tạo 1 lần và được sử dụng lại ở các nơi khác nhau trong hệ thống (có thể đều chỉnh để class có thể được tạo mới mỗi lần cần thiết).
+
+Bên cạnh những ưu điểm, Dependency Injection Container cũng có nhược điểm là làm tăng độ phức tạp của hệ thống và làm cho việc debug trở nên khó khăn hơn vì việc khởi tạo các dependency không còn nằm trong constructor của class nữa.
+Do việc khai báo và sử dụng các dependency không còn nằm trong constructor nữa, nên các lập trình viên có thể sẽ không quan tâm tới dependency graph dẫn đến việc khó kiểm soát và quản lý các dependency khi hệ thống trở nên phức tạp.
+
+# Tóm lại
+
+Có rất nhiều thư viện hỗ trợ Dependency Injection như **Angular**, **NestJS**, **fastapi**,... để hỗ trợ lập trình viên quản lý các dependency giữa các module trong hệ thống một cách dễ dàng và hiệu quả.
+
+Inversion of Control và Dependency Injection là hai khái niệm quan trọng trong lập trình hướng đối tượng. Nó là những nguyên lý cơ bản giúp chúng ta xây dựng các ứng dụng linh hoạt, dễ bảo trì và mở rộng. Tuy nhiên, hãy sử dụng chúng một cách cẩn thận và hợp lý để tránh tình trạng hệ thống trở nên phức tạp và khó bảo trì.
+
+Hi vọng bài viết này giúp bạn hiểu rõ hơn về Inversion of Control và Dependency Injection. Hãy để lại comment nếu bạn có bất kỳ thắc mắc hoặc ý kiến nào về bài viết này nhé!
+
+Happy coding!
