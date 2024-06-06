@@ -55,8 +55,7 @@ Trong khoa học máy tính, chúng ta có thể phân task thành 2 loại:
 
 **Ví dụ**:
 
-- using multiprocess (native thread) for I/O bound
-- sử dụng đa tiến trình (hoặc các native thread) cho các task ràng buộc bởi I/O
+- sử dụng event loop cho các task ràng buộc bởi CPU
 
   Jason hỏi David rằng 'Bạn làm gì ngày hôm nay?' và David trả lời rằng những công việc của anh ấy đang chờ để test và anh ấy không có task nào cả do đó anh ấy sẽ quay về nhà và 😴.
 
@@ -64,9 +63,9 @@ Trong khoa học máy tính, chúng ta có thể phân task thành 2 loại:
 
   Chính xác đây là cách làm việc của event loop cho các task ràng buộc bởi I/O
 
-- sử dụng event loop cho các task ràng buộc bởi CPU
+- sử dụng đa tiến trình (hoặc các native thread) cho các task ràng buộc bởi I/O
 
-  Nhóm bạn có 5 thành viên và 5 task nhưng chỉ có David làm tất cả các task đó. Bởi vì mỗi task phải được commit vào cuối mỗi ngày nên David làm mội task trong 1 giờ và chuyển qua task khác. Do đó, cuối tuần, anh ấy kiệt sức và ốm 😷.
+  Nhóm bạn có 5 thành viên và 5 task nhưng chỉ có David làm tất cả các task đó. Bởi vì mỗi task phải được commit vào cuối mỗi ngày nên David làm 1 task trong 1 giờ và chuyển qua task khác. Do đó, cuối tuần, anh ấy kiệt sức và ốm 😷.
 
   Không, chúng ta có tận 5 thành viên, tại sao chúng ta lại đẩy hết công việc cho David? Jason có thể phân chia các task cho các thành viên khác và cuối mỗi ngày, các task vẫn được commit và David vẫn ổn cơ mà.
 
