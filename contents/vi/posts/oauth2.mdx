@@ -1,0 +1,214 @@
+---
+title: "OAuth2"
+date: 2024-10-02T20:20:00+07:00
+published: true
+score: 2
+tags:
+  - backend
+  - security
+  - authentication
+categories:
+  - Backend
+author: "Nguyễn Khắc Thành"
+description: "OAuth2 là một giao thức ủy quyền cho phép các ứng dụng có quyền truy cập hạn chế vào tài khoản người dùng trên dịch vụ HTTP. Nó cung cấp một cách an toàn để người dùng cấp quyền truy cập vào tài nguyên của họ cho các ứng dụng bên thứ ba mà không cần chia sẻ thông tin đăng nhập."
+---
+
+# Bài toán
+
+Một trong những bài toán được ứng dụng là Single Sign On cho user.
+
+Một người dùng có tài khoản trên Google bao gồm các thông tin như email, số điện thoại, profile,… 
+
+Người dùng đó muốn sử dụng những dữ liệu này để tạo tài khoản và đăng nhập được vào ứng dụng Tiktok. Do đó, Tiktok cần truy cập được vào dữ liệu của người dùng trên Google.
+
+# Giải pháp
+
+Hướng giải quyết đầu tiên là người dùng nhập thông tin đăng nhập của mình trên Google vào ứng dụng Tiktok. Sau đó, Tiktok gửi thông tin này cho Google để xác thực và lấy dữ liệu người dùng.
+
+Nhược điểm của cách làm này là Tiktok có được thông tin đăng nhập của người dùng trên Google. Do đó, tính rủi rõ rất cao đối với thông tin và tài khoản của người dùng Google.
+
+**Cải tiến:** sử dụng OAuth2 protocol để cấp phép truy cập dữ liệu của người dùng từ bên thứ 3.
+
+# Thuật ngữ
+
+- **Resource owner**: là người sở hữu tài nguyên và tài nguyên của người đó được lưu trữ và duy trì bởi một nhà cung cấp. Ví dụ: thông tin cá nhân, ảnh, email của 1 cá nhân được lưu trữ bởi Google, ta gọi tắt là RO
+- **Resource server**: là máy chủ lưu trữ tài nguyên của RO. Ví dụ: máy chủ Gmail lưu trữ email của một cá nhân, ta gọi tắt là RS
+- **Authorization server**: là máy chủ của nhà cung cấp dịch vụ, dùng để xác thực RO hoặc client, ta gọi tắt là AS
+- **Client application**: là service của bên thứ 3, không nằm trong cùng hệ thống với RS và AS. Ví dụ: ứng dụng Tiktok có thể sử dụng thông tin email, tên,… của người dùng Google, gọi tắt là CA
+- **Client ID, client secret** là cặp khóa được dùng để định danh CA trên AS. Chúng được xem như là ID và mật khẩu của ứng dụng đó và được lưu trữ - duy trì trên AS.
+
+
+## Nguyên lí
+
+OAuth2 là một giao thức cho phép RO cấp phát quyền truy cập tài nguyên cho CA từ RS.
+
+Có 3 điều chúng ta cần nhớ:
+
+- AS luôn quản lí các đối tượng đại diện cho CA và RO
+- AS luôn xác thực RO và CA trước khi cấp phát quyền truy cập
+- Đa phần, các transaction giữa 4 bên AS, CA, RO, RS là stateless ngoại trừ transaction code exchange là stateful
+
+Khi CA muốn RO cấp phát quyền truy cập, CA khởi tạo luồng OAuth2
+
+## Các quá trình xác thực
+
+Để hiểu rõ luồng hoạt động của OAuth2, chúng ta sẽ phân chia thành 3 tiến trình con:
+
+- AS xác thực RO: CA điều hướng RO tới AS để định danh RO thông qua US
+- AS xác thực CA và cấp cho CA code exchange
+- CA dùng code exchange để yêu cầu tạo access token cho AS
+
+### AS xác thực RO
+
+Khi CA muốn có quyền truy cập dữ liệu của RO, CA sẽ điều hướng RO tới AS để RO yêu cầu AS cấp phát. Mọi thông tin đăng nhập của RO sẽ được an toàn khi thực hiện ở AS. Điều này hoàn toàn giúp cho RO giữ được thông tin cá nhân mà CA không được phép truy cập
+
+### AS xác thực CA
+
+Sau khi AS xác thực được RO, AS cần xác thực CA để đảm bảo CA đã được đăng kí và được phép hoạt động trên hệ thống của AS. Sau đó, AS cấp cho CA một code exchange. Code này có mục đích là đảm bảo rằng RO đã đồng ý cho phép CA được truy cập vào dữ liệu của RO.
+
+### CA yêu cầu AS cấp access token
+
+Sau khi được xác thực bởi AS và được RO đồng ý cấp quyền, CA có thể dùng code exchange để yêu cầu AS cấp access token
+
+# Chi tiết kĩ thuật
+
+1. AS xác thực RO và CA
+    
+    CA redirect RO tới AS với những thông tin (qua query string) bao gồm những thông tin sau:
+    
+    - Client ID và client secret: định danh CA
+    - Scopes: mang thông tin về các quyền và loại dữ liệu của RO mà CA được phép truy cập
+    - Redirect URI: địa chỉ URL của CA để AS redirect tới nhằm gửi code exchange (thông qua query string)
+2. CA nhận code exchange
+    
+    Code exchange được AS gửi tới CA thông qua query string của response redirect. CA dùng code exchange này để yêu cầu AS cấp access token. 
+    
+    Code exchange đại diện cho 2 điều:
+    
+    - sự đồng ý của RO cho phép CA truy cập dữ liệu cá nhân
+    - RO và CA đều được xác thực bởi AS
+3. AS tạo access token
+    
+    Khi CA yêu cầu access token, AS cần xác thực code exchange. Nếu hợp lệ sẽ tạo access token.
+    
+    Access token đảm bảo:
+    
+    - thông tin định danh của RO
+    - có hiệu lực trong 1 khoảng thời gian
+    - chỉ có thể được tạo ra bởi CA và có thể được xác thực ở bất kì đâu
+    
+    Có nhiều phương thức để tạo access token, một trong những phương thức là sử dụng JWT và mã hóa bất đối xứng (Asymmetric)
+
+# Access token và JWT
+
+Tóm lược thì JWT là một chữ kí số, đoạn mã JWT bao gồm 3 phần:
+
+- header: mang thông tin về token đó như kiểu mã hóa của chữ kí số, id của public key, …. Chúng được mã hóa bằng base64
+- payload: mang thông tin cần truyền tải như thông tin định danh user, thông tin về người tạo token, thời hạn của token, … Tương tự header, chúng cũng được mã hóa bằng base64
+- signature: chữ kí số để đảm bảo đoạn mã là hợp lệ, không bị kẻ giả mạo tạo ra. Chúng được mã hóa bằng các phương pháp mã hóa bất đối xứng và chỉ được giải mã bằng khóa của AS
+
+Cấu trúc của JWT token như sau: [header].[payload].[signature]
+
+# Mã hóa đối xứng và bất đối xứng
+
+## Mã hóa đối xứng
+
+Mã hóa đối xứng mà trong đó người gửi và người nhận cùng chia sẻ một khóa bí mật (private key)
+
+Người gửi dùng private key để mã hóa và người nhận dùng nó để giải mã
+
+Một số đặc điểm của mã hóa đối xứng:
+
+- Chi phí tính mã hóa thấp, do đó việc mã hóa và giải mã nhanh
+- Cần một phương thức trao đổi private key cho cả hai bên
+
+Mã hóa đối xứng thường được sử dụng để mã hóa dữ liệu trong các giao thức SSL/TLS, lưu trữ database,…
+
+Một số loại mã hóa đối xứng như AES, DES, 3DES, RC4
+
+## Mã hóa bất đối xứng
+
+Mã hóa bất đối xứng gồm khóa công khai dùng để mã hóa (public key) và khóa bí mật dùng để giải mã (private key). Public key có thể được công khai với tất cả các bên trong khi private key không được chia sẻ. Chúng ta cũng có thể đảo ngược lại quá trình trên.
+
+Một số đặc điểm của mã hóa bất đối xứng:
+
+- chí phí mã hóa/giải mã lâu hơn mã hóa đối xứng
+- public key có thể chia sẽ công khai mã không sợ thông tin bị giải mã
+
+Mã hóa bất đối xứng được dùng để mã hóa thông tin trao đổi khóa của mã hóa đối xứng: quá trình handshake của SSL, chữ kí số, …
+
+## Ứng dụng vào chữ kí số trong JWT
+
+### Mã hóa
+
+Trong trường hợp tạo tạo access token, AS sử dụng mã hóa bất đối xứng để tạo một chữ kí số lên access token ở phần signature, nhằm đảm bảo access token đó được tạo ra bởi 1 nguồn đáng tin cậy, có thể xác thực ở bất kì client nào.
+
+Đầu tiên, chúng ta tạo ra cặp private key/public key
+
+```python
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+
+private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048,
+)
+
+public_key = private_key.public_key()
+
+# Serialize private key
+private_key_pem = private_key.private_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PrivateFormat.TraditionalOpenSSL,
+    encryption_algorithm=serialization.NoEncryption(),
+).decode("utf-8")
+
+# Serialize public key
+public_key_pem = public_key.public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo,
+).decode("utf-8")
+
+import jwt
+
+claim = {
+    "sub": ...,
+    "email": ...,
+    "scopes": ...,
+    "exp": datetime.utcnow() + timedelta(minutes=15),
+    "iss": ...,
+    ...
+}
+
+access_token = jwt.encode(
+	claim, 
+	key=private_key_pem,
+	algorithm="RS256"
+)
+```
+
+### Giải mã - xác thực
+
+Để xác thực được access token, chúng ta cần phải có public key tương ứng với access token. Public key này được lưu trữ trên server và đây là 1 best practice để lấy được public key
+
+- server expose 1 api để trả vể cấu trúc jwks, cấu trúc này để quản lí tập các public key, mỗi key có chứa:
+    - kid: định danh của key, kid được lưu trong header của access token nhằm tìm ra public key phù hợp với token đó
+    - pty: loại mã hóa như RSA, EC,…
+    - alg: thuật toán mã hóa: RSA256, HS256,…
+    - …
+- client giải mã header có được thông tin về kid, pty, alg, sau đó chọn key trong jwks để verify signature
+
+# Một số loại OAuth2
+
+- Authorization Code Grant: bảo mật, phù hợp với các ứng dụng web, hỗ trợ PKCE (Proof Key for Code Exchange), bài viết mô tả phương thức này.
+- Implicit Grant: phù hợp cho các ứng dụng SPA nhưng kém bảo mật.
+- Client Credentials Grant: chỉ sử dụng trong giao tiếp server - server.
+- Resource Owner Password Credentials Grant: trao đổi thông tin đăng nhập trực tiếp, do đó ít bảo mật và thường không được khuyến nghị.
+- Refresh Token Grant: sử dụng để duy trì phiên của người dùng bằng refresh token.
+
+# Thông tin tham khảo
+
+Bản implementation đơn giản của OAuth2 bằng Python và Flask:
+
+[https://github.com/magiskboy/oauth2-example](https://github.com/magiskboy/oauth2-example)
+
