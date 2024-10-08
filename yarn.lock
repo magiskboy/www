@@ -129,9 +129,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mdx-js/mdx@npm:^2.0.0":
-  version: 2.1.5
-  resolution: "@mdx-js/mdx@npm:2.1.5"
+"@mdx-js/mdx@npm:^2.2.1":
+  version: 2.3.0
+  resolution: "@mdx-js/mdx@npm:2.3.0"
   dependencies:
     "@types/estree-jsx": "npm:^1.0.0"
     "@types/mdx": "npm:^2.0.0"
@@ -150,19 +150,19 @@ __metadata:
     unist-util-stringify-position: "npm:^3.0.0"
     unist-util-visit: "npm:^4.0.0"
     vfile: "npm:^5.0.0"
-  checksum: 10c0/364f70656038ea9f9281b867ca4ce9efa7c678621f489711cc293bdd253687704b68303101c2446b1bb6296adda99ef07f601e8278410399438ac8f1dc9311aa
+  checksum: 10c0/719384d8e72abd3e83aa2fd3010394636e32cc0e5e286b6414427ef03121397586ce97ec816afcc4d2b22ba65939c3801a8198e04cf921dd597c0aa9fd75dbb4
   languageName: node
   linkType: hard
 
-"@mdx-js/react@npm:^2.0.0":
-  version: 2.1.5
-  resolution: "@mdx-js/react@npm:2.1.5"
+"@mdx-js/react@npm:^2.2.1":
+  version: 2.3.0
+  resolution: "@mdx-js/react@npm:2.3.0"
   dependencies:
     "@types/mdx": "npm:^2.0.0"
     "@types/react": "npm:>=16"
   peerDependencies:
     react: ">=16"
-  checksum: 10c0/dd054aded70f9f098f01fe3daf8234f92b36e2a7e0dca9c918c0fdddd3eac91d1e84e5faf4a227b551143a262ff610edeb2db6367e011fcbf32c265b1c31cce6
+  checksum: 10c0/6d647115703dbe258f7fe372499fa8c6fe17a053ff0f2a208111c9973a71ae738a0ed376770445d39194d217e00e1a015644b24f32c2f7cb4f57988de0649b15
   languageName: node
   linkType: hard
 
@@ -3592,18 +3592,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-mdx-remote@npm:4.1.0":
-  version: 4.1.0
-  resolution: "next-mdx-remote@npm:4.1.0"
+"next-mdx-remote@npm:^4.1.0":
+  version: 4.4.1
+  resolution: "next-mdx-remote@npm:4.4.1"
   dependencies:
-    "@mdx-js/mdx": "npm:^2.0.0"
-    "@mdx-js/react": "npm:^2.0.0"
+    "@mdx-js/mdx": "npm:^2.2.1"
+    "@mdx-js/react": "npm:^2.2.1"
     vfile: "npm:^5.3.0"
     vfile-matter: "npm:^3.0.1"
   peerDependencies:
     react: ">=16.x <=18.x"
     react-dom: ">=16.x <=18.x"
-  checksum: 10c0/7d4538ceb2fb4505c2707efc53aadc49b70fbc0516f70583f0367d3d6eca4c1311d9c4d69da679315ec68540d33b86662b1100ecb39d95e56c68d9daedc72de4
+  checksum: 10c0/d48ad271f58312d11f392b0fbd7b2dbc5990cc82fcb6d28f687875a52b28b695c0700b93f197c72910a4c73da0a1fe4867db95315bc2ee7f0fc1743279f41b80
   languageName: node
   linkType: hard
 
@@ -5311,7 +5311,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     next: "npm:^13.0.0"
     next-i18next: "npm:^13.2.2"
-    next-mdx-remote: "npm:4.1.0"
+    next-mdx-remote: "npm:^4.1.0"
     next-seo: "npm:^5.6.0"
     next-sitemap: "npm:^3.1.29"
     next-themes: "npm:^0.2.1"

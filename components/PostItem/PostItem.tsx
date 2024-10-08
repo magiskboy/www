@@ -31,7 +31,7 @@ export const PostItem: React.FC<PostItemProps> = ({
       />
       {description && (
         <div className={style.description}>
-          <MDXRemote compiledSource={description} />
+          <MDXRemote compiledSource={description} scope={""} frontmatter={{}} />
         </div>
       )}
       <ul className={style.tags}>
