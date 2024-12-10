@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import NextImage, { ImageProps as NextImageProps } from "next/image";
 import style from "./Image.module.scss";
 
@@ -15,8 +15,12 @@ export const Image: React.FC<ImageProps> = ({ title, ...rest }) => {
     }
   };
 
+  const onClick = useCallback(() => {
+    window.open(rest.src as string, '_blank');
+  }, [rest.src]);
+
   return (
-    <div className={`image ${style.root}`}>
+    <div className={`image ${style.root}`} onClick={onClick}>
       <NextImage {...rest} />
       <h5>{title}</h5>
     </div>

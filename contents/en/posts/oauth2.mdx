@@ -1,0 +1,237 @@
+---
+title: "OAuth2"
+date: 2024-12-10T07:46:00+07:00
+published: true
+categories:
+- Python
+description: "Python is a versatile language programming, easy to learn because of clean syntax. However, Python has also some secrets that not everyone know. In this post, I show you what are secrets of Python?"
+---
+
+# Problem
+
+One of the practical applications is Single Sign-On (SSO) for users.
+
+A user with a Google account has personal information such as email, phone number, profile, etc. The user wants to use this data to create an account and log in to the TikTok application. Therefore, TikTok needs access to the user’s data stored on Google.
+
+# Solution
+
+The initial solution involves the user entering their Google login credentials into the TikTok app. TikTok then sends this information to Google for authentication and retrieves the user’s data.
+
+The downside of this approach is that TikTok gains access to the user’s Google login credentials, posing a high risk to the user’s information and Google account security.
+
+**Improvement:** Using the OAuth2 protocol to grant third-party access to user data securely.
+
+# Terminology
+
+- **Resource owner (RO):** The individual owning the resource, with their data stored and managed by a provider. For example, a person’s personal information, photos, or email stored by Google.
+- **Resource server (RS):** The server hosting the RO’s data. For example, Gmail servers that store a person’s emails.
+- **Authorization server (AS):** The provider’s server that authenticates the RO or the client application.
+- **Client application (CA):** A third-party service not part of the RS or AS systems, such as TikTok using a Google user’s email and name.
+- **Client ID and client secret:** A pair of keys used to identify the CA on the AS. They function as the application’s ID and password, maintained on the AS.
+
+# OAuth2 Workflow
+
+## Principle
+
+OAuth2 is a protocol allowing the RO to grant access to their resources on the RS to a CA.
+
+Three key points to remember:
+
+- The AS manages objects representing the CA and the RO.
+- The AS authenticates both the RO and the CA before granting access.
+- Most transactions between the AS, CA, RO, and RS are stateless, except for the code exchange process, which is stateful.
+
+When a CA requests access to the RO’s resources, it initiates an OAuth2 flow.
+
+## Authentication Processes
+
+The OAuth2 workflow is divided into three sub-processes:
+
+1. **AS authenticates RO:** The CA redirects the RO to the AS, where the RO identifies themselves.
+When the CA requests access to the RO’s data, it redirects the RO to the AS. The AS ensures the RO’s credentials are securely handled and not exposed to the CA.
+2. **AS authenticates CA and issues a code exchange:** The AS ensures the CA is registered and allowed to operate.
+After authenticating the RO, the AS validates the CA to ensure it is registered and permitted to operate. The AS then issues a code exchange, representing the RO’s consent for the CA to access their data.
+3. **CA uses the code exchange to request an access token from the AS.**
+Once authenticated by the AS and granted consent by the RO, the CA uses the code exchange to request an access token from the AS.
+
+# Technical Details
+
+1. **AS authenticates RO and CA**
+    
+    The CA redirects the RO to the AS with the following information (via query string):
+    
+    **Client ID and client secret:** Identifying the CA.
+    
+    **Scopes:** Specifying the permissions and types of RO data the CA can access.
+    
+    **Redirect URI:** The CA’s URL for the AS to redirect to and send the code exchange.
+    
+
+1. **CA Receives the Code Exchange**
+    
+    The code exchange, sent by the AS via the response redirect, signifies:
+    
+    The RO’s consent for the CA to access their data.
+    
+    The successful authentication of both the RO and CA by the AS.
+    
+2. **AS Creates the Access Token**
+    
+    The AS validates the code exchange. If valid, it generates an access token.
+    
+    The access token ensures:
+    
+    Identification of the RO.
+    
+    Validity for a specified duration.
+    
+    Creation by the CA, allowing universal verification.
+    
+
+# Access Tokens and JWT
+
+A JSON Web Token (JWT) consists of three parts:
+
+1. **Header:** Contains metadata like signature type and public key ID, encoded in Base64.
+2. **Payload:** Contains information such as user identification and token expiration, also encoded in Base64.
+3. **Signature:** Ensures the token’s integrity, created with asymmetric encryption.
+
+Format: [header].[payload].[signature]
+
+# Encryption Types
+
+**Symmetric Encryption**
+
+- Uses the same private key for encryption and decryption.
+- Characteristics:
+- Fast encryption and decryption.
+- Requires secure key exchange.
+
+**Asymmetric Encryption**
+
+- Uses a public key for encryption and a private key for decryption.
+- Characteristics:
+- Slower encryption and decryption.
+- Public keys are shareable without risk of unauthorized decryption.
+
+# Practical Implementation in JWT
+
+**Token Creation**
+
+```python
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+from datetime import datetime, timedelta
+import jwt
+
+private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+public_key = private_key.public_key()
+
+private_key_pem = private_key.private_bytes(
+    serialization.Encoding.PEM,
+    serialization.PrivateFormat.TraditionalOpenSSL,
+    serialization.NoEncryption()
+).decode("utf-8")
+
+claim = {
+    "sub": "user_id",
+    "email": "user@example.com",
+    "scopes": ["read", "write"],
+    "exp": datetime.utcnow() + timedelta(minutes=15),
+    "iss": "auth_server"
+}
+
+access_token = jwt.encode(claim, private_key_pem, algorithm="RS256")
+```
+
+**Token Validation**
+
+- The AS provides public keys through a JWKS API for validation.
+- Clients decode the token header to locate the appropriate public key for verification.
+
+# OAuth2 Grant Types
+
+## Authorization Code Grant
+
+**Use Case**: For server-side web applications and secure flows.
+
+**Security**: High (recommended for most use cases).
+
+**Workflow:**
+
+1. **User Authorization**: The client redirects the user to the Authorization Server (AS) with a request to authenticate and authorize.
+2. **Authorization Code**: After the user authorizes, the AS redirects back to the client with an **authorization code**.
+3. **Token Exchange**: The client sends the authorization code to the AS in exchange for an **access token** (and optionally a refresh token).
+
+**Advantages:**
+
+•	Credentials are not exposed to the client.
+
+•	Supports **PKCE (Proof Key for Code Exchange)** to prevent code interception attacks.
+
+## Implicit Grant
+
+**Use Case**: Single-page applications (SPAs) where the client cannot securely store secrets.
+
+**Security**: Lower (not recommended for sensitive applications).
+
+**Workflow:**
+
+1. **Direct Token Issuance**: The client requests an **access token** directly from the Authorization Server, without requiring a backend server.
+2. **Access Token Delivery**: The access token is included in the URL fragment of the redirect URI.
+
+**Drawbacks:**
+
+- The access token is exposed in the browser.
+- Vulnerable to token leakage (e.g., through the browser history or intercepted URLs).
+
+## Client Credentials Grant
+
+**Use Case**: Server-to-server communication where the client is trusted (e.g., APIs communicating with each other).
+
+**Security**: High for trusted backends.
+
+**Workflow:**
+
+1. The client authenticates with the Authorization Server using its **client ID** and **client secret**.
+2. The AS issues an **access token** directly, without user involvement.
+
+**Advantages:**
+
+- Simplifies access token retrieval for server-to-server communications.
+
+## Resource Owner Password Credentials Grant
+
+**Use Case**: Legacy systems or trusted applications where the user provides their credentials directly to the client.
+
+**Security**: Very low (not recommended for modern applications).
+
+**Workflow:**
+
+1. The user provides their username and password to the client.
+2. The client sends the credentials to the Authorization Server to obtain an **access token**.
+
+**Drawbacks:**
+
+- The client has direct access to user credentials.
+- Highly vulnerable to credential theft or misuse.
+
+## Refresh Token Grant
+
+**Use Case**: Maintaining long-lived sessions.
+
+**Security**: High when combined with proper storage and security measures.
+
+**Workflow:**
+
+1. The client obtains a **refresh token** during the initial authorization flow.
+2. When the access token expires, the client uses the refresh token to request a new **access token** from the AS.
+
+**Advantages:**
+
+- Reduces the frequency of user authentication.
+- Ensures a seamless user experience.
+
+# **Reference**
+
+A simple OAuth2 implementation in Python and Flask: [https://github.com/magiskboy/oauth2-example](https://github.com/magiskboy/oauth2-example)

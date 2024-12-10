@@ -1,0 +1,125 @@
+---
+title: "Những vấn đề cần quan tâm khi bắt đầu một dự án phần mềm"
+date: 2024-11-25T22:05:00+07:00
+published: true
+score: 2
+tags:
+  - experience
+categories:
+  - Software development
+author: "Nguyễn Khắc Thành"
+description: |
+    Trong thời gian ngắn vừa rồi, mình có lead một team triển khai ứng dụng mobile cho một trường đại học của Việt Nam.
+    Tuy dự án đang ở giai đoạn MVP nhưng có khá nhiều vấn đề mình muốn chia sẽ với mọi người khi phát triển một dự án phần mềm cho doanh nghiệp.
+---
+
+
+Nói sơ qua về dự án thì đây là một dự án của một doanh nghiệp lớn ở Việt Nam. Dự án được tích hợp vào hệ thống core đã có sẵn của doanh
+nghiệp nhằm mở rộng chứ năng cho hệ thống có sẵn. Do đó, dự án sẽ có những yêu cầu khắt khe hơn so với những dự án startup hay những 
+dự án được triển khai độc lập khác.
+
+## Tối thiểu hoá workload
+
+1. Việc lựa chọn về công nghệ phụ thuộc khá nhiều vào kinh nghiệm của người leader về một stack cụ thể và nó ảnh hưởng trực tiếp đến workload mà team của
+bạn phải thực hiện để hoàn thành dự án.
+
+Trong trường hợp của mình, yêu cầu cơ bản của ứng dụng là quản lí và cung cấp thông tin cho sinh viên, giảng viên - tính năng cơ bản của một CMS. Do đó,
+mình hoàn toàn có thể sử dụng một CMS mà không phải cài đặt lại những tính năng đó từ đầu. Một số lựa chọn không tồi có thể là Wordpress, Strapi hay Django CMS.
+
+2. Khi đã lựa chọn 1 công nghệ cụ thể, bạn nên bám sát và tận dụng tối đâ những tính năng mà công nghệ đó cung cấp. Chúng ta nên tránh việc phải triển khai
+thêm tính năng nào đó vì ngoài việc workload tăng lên, sẽ có nhiều vấn đề hơn đi kèm -> quá tải công việc không cần thiết cho team.
+
+Một ví dụ trong dự án trên, mình sử dụng Django để làm API cho ứng dụng mobile và 1 web admin dành cho nhân viên của nhà trường. Tuy nhiên, mình đã viết trang admin đó
+bằng ReactJS thay vì tận dụng tính năng Admin mà Django cung cấp. Do đó, workload bị phình ra khá nhiều do mình phải viết Restful API cho cả mobile và trang admin.
+
+3. Tự động hoá những tác vụ thường xuyên phải thao tác
+
+Trong một dự án phần mềm, bạn sẽ có những tác vụ phải thực hiện đi thực hiện lại rất nhiều lần. Do đó, bạn nên tự động hoá chúng nhiều nhất có thể.
+Một số tác vụ có thể thực hiện tự động hoá mình có thể liệt kê dưới đây như:
+- têp checking, linting và formatting mỗi khi commit (autocommit)
+- CI/CD - tự động hoá build/deploy lên các môi trường
+- generate OpenAPI doc theo code
+
+Việc tự động hoá tác vụ sẽ giúp bạn có thêm thời gian cho những công việc quan trọng hơn, tránh sai sót do con người, từ đó nâng cao hiệu quả của cả team.
+
+Tóm lại, tối thiểu hoá workload sẽ giúp team có nhiều quỹ thời gian và nguồn lực, qua đó làm giảm áp lực lên các thành viên trong team cũng như có không gian
+để cải thiện chất lượng dự án hơn.
+
+
+## Quản lí source code
+
+Chúng ta nên có 1 Gitflow cho dự án của mình một cách rõ ràng
+
+<Image
+  width={1121}
+  height={218}
+  src="/images/Gitflow.png"
+/>
+
+Việc có 1 Gitflow rõ ràng giúp team làm việc với nhau hiệu quả hơn. Hơn nữa, Gitflow đơn giản sẽ giúp bạn build CI/CD pipeline tốt hơn.
+
+
+## Observability
+
+Một trong những tiêu chí để đánh giá một hệ thống là khả năng có thể quan sát được của hệ thống đó. Khả năng có thể quan sát được của hệ thống rất quan
+trọng trong quá trình triển khai và bảo trì.
+
+Từ góc nhìn hệ thống, chúng ta cần phải biết được một số thông tin như lượng request vào hệ thống, CPU, memory, số lượng connection tới database, redis là bao nhiêu...
+
+Từ góc nhìn ứng dụng, chúng ta cần phát hiện được lỗi ứng ứng dụng càng sớm càng tốt. Lỗi ứng dụng nên được gửi đến cho người chịu trách nhiệm bao gồm những
+thống tin thiết yếu như môi trường, thông tin về request, thông tin về exception, tần suất lỗi là bao nhiều,, tại thời điểm đó hệ thống như thế nào,...
+
+Để đat được những điều đó, hệ thống và ứng dụng của bạn phải monitor và logging đầy đủ. Với những dự án outsource, để tối thiểu chi phí,
+khách hàng thường có xu hướng cắt giảm phần lưu trữ cho dữ liệu monitor và logging. Do đó, chúng ta nên tìm cách để thực hiện chúng nhiều nhất có thể.
+
+Trong dự án của mình, lỗi ứng dụng sẽ được gửi về channel Teams hoặc Slack của team. Thông tin nhạy cảm hơn có thể được gửi qua email của PIC dự án.
+
+Vấn đề về observability sẽ có xung đột trực tiếp đến vấn đề tiếp theo mình sẽ chia sẽ dưới đây: bảo mật. Do đó, các bạn sẽ cần linh hoạt trong việc "Làm thế nào để quan sát bên trong ứng dụng?".
+
+
+## Bảo mật và dữ liệu người dùng
+
+Một trong những vấn đề mà đa số các dự án thường bỏ qua đó là bảo mật hệ thống và dữ liệu người dùng. Việc đánh giá bảo mật có thể được thực hiện bởi một bên thứ 3, tuy nhiên, development team
+cũng nên chủ động đánh giá bảo mật cho ứng dụng của mình để giảm thiểu các lỗ hổng ít nhất có thể.
+
+1. Bảo mật hệ thống
+
+Chúng ta có thể kê một số vùng cần đánh giá bảo mật như sau:
+- cơ sở hạ tầng mà ứng dụng chạy trên đó: máy ảo, mất vật lí, cloud, Kubernetes,...
+- các dịch vụ đi kèm như File storage, database,....
+- webserver
+
+Trong dự án của mình, ứng dụng (backend API) được triển khai trên Kubernetes của Azure. Do đó, ứng dụng cần phải thực hiện:
+- bật tính năng WAF (web application firewal) giúp ngăn chặn các kiểu tấn công phổ biến như SQL Injection, XSS,...
+- rà soát vulnerability cho container image, source code,... Bạn có thể dùng [Trivy](https://trivy.dev/v0.57/) để tự thực hiện.
+- không cho phép thực thi lệnh từ trong container,...
+- ...
+
+2. Bảo mật dữ liệu người dùng
+
+Đây có lẽ là phần khó nhất vì tuỳ thuộc vào tính năng mà chúng ta có nên thắt chặt quyền truy cập dữ liệu hay không. Một số lưu ý có thể bạn sẽ 
+cần phải cân nhắc:
+- role-base access
+- truy cập dữ liệu chéo nhau giữa các user
+- token để truy xuất dữ liệu có live time như thế nào, rotation policy ra sao
+- nếu có upload file, thì kích thước file là bao nhiêu? định dạng được upload là gì?
+- với những POST API, có cần recaptcha hay không,
+- ...
+
+
+## Clean Code
+
+Clean code là một trong những vấn đề khó của phát triến ứng dụng. Tuy nhiên, với một ứng dụng không quá phức tạp thì clean code chỉ là một vài quy tăc đơn giản
+mà bạn phải tuân thủ chặt chẽ trong quá trình phát triền.
+
+Dưới đây là một số lưu ý của mình khi mình sử dụng Django để phát triển dự án trên
+
+- không hardcode, centralize những gía trị vào configuration của ứng dụng
+- cấu trúc ứng dụng rõ ràng, có thể chia 3-layer theo chiều dọc và module hoá theo từng tính năng
+- tránh nested code nhiều nhất có thể
+- xem xét sử dụng một số pattern phổ biến như Service Container, Observer pattern, Template pattern,...
+
+
+## Những vấn đề về release new version
+
+

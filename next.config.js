@@ -40,7 +40,7 @@ const nextConfig = {
       },
       {
         title: "Bản thân",
-        link: "https://docs.google.com/document/d/1LsWN6eFli6Jic1oKZ_xce6qUKRFRKpdW/edit?usp=sharing&ouid=108176893074599585656&rtpof=true&sd=true",
+        link: "https://spiffy-leopard-f44.notion.site/Nguyen-Khac-Thanh-14eb56848bed8024b9e6eb998a655fe8?pvs=74",
       },
       {
         title: "Danh mục",

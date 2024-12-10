@@ -42,7 +42,7 @@ export const Navigation: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
       </div>
       <div className={style.bottom}>
         {navs.map((item) => (
-          <Link href={item.link} key={item.link}>
+          <Link href={item.link} key={item.link} target="_blank">
             {t(item.title)}
           </Link>
         ))}
