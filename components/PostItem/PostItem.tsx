@@ -5,6 +5,7 @@ import type { Meta } from "../Post";
 import { DateTime } from "../DateTime";
 import style from "./PostItem.module.scss";
 import { useRouter } from 'next/router';
+import slugify from "slugify";
 
 export const PostItem: React.FC<PostItemProps> = ({
   title,
@@ -54,5 +55,5 @@ function genPostLink(slug: string): string {
 }
 
 function genTagLink(tag: string): string {
-  return `/tags/${encodeURIComponent(tag)}`;
+  return `/tags/${slugify(tag)}`;
 }

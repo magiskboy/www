@@ -64,7 +64,7 @@ export async function getPosts(): Promise<Record<string, Post[]>> {
     for (const locale of localeDirs) {
       const filenames = await fs.readdir(path.join('.', 'contents', locale, 'posts')).catch(() => []);
       if (filenames.length === 0) continue;
-      const posts = await Promise.all(filenames.map(filename =>
+      let posts = await Promise.all(filenames.map(filename =>
         readMDX(
           filename,
           path.join('.', 'contents', locale, 'posts', filename),
@@ -99,8 +99,17 @@ export function getPaginations(posts: Post[], perPage = 5): Pagination[] {
 export async function getCollection(name: keyof Post["meta"], perPage = 5, locale: string = 'vi'): Promise<Collection[]> {
   const allPosts = await getPosts();
   const posts = allPosts[locale].filter(post => Object.hasOwn(post.meta, name));
-  const groups = _.groupBy(posts, `meta[\'${name}\']`);
-  return Object.entries(groups).map(([label, posts]) => ({
+  const groups = new Map<string, Post[]>();
+  for (const post of posts) {
+    if (!post.meta.tags) continue;
+
+    for (const tag of post.meta.tags) {
+      const group = groups.get(tag) ?? [];
+      groups.set(tag, [...group, post]);
+    }
+  }
+
+  return Array.from(groups.entries()).map(([label, posts]) => ({
     label,
     slug: slugify(label),
     paginations: getPaginations(posts, perPage),

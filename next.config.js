@@ -23,6 +23,14 @@ const nextConfig = {
             key: "X-Frame-Options",
             value: "DENY",
           },
+          {
+            key: 'Permission-Policy',
+            value: 'interest-cohort=()'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
         ],
       },
     ]
