@@ -1,0 +1,223 @@
+---
+title: 'Xây dựng hệ thống monitor đơn giản trong Kubernetes'
+date: 2025-02-18T09:37:00+07:00
+published: true
+tags:
+  - kubernetes
+  - system
+  - monitoring
+  - devops
+  - helm
+  - grafana
+  - loki
+  - prometheus
+categories:
+  - Kubernetes
+  - DevOps
+description: |
+  Một trong những thành phần quan trọng của một hệ thống là khả năng có thể quan sát và theo dõi trạng thái của một hệ thống.
+
+  Một hệ thống có thể quan sát sẽ gúp cho team vận hành dễ dàng quản lí, bảo trì và nâng cấp hệ thống.
+
+  Trong bài viết này, mình sẽ chia sẽ các xây dựng thành phần observability cho hệ thống Kubernetes một cách đơn giản nhất.
+
+  Bạn có thể sử dụng repository của mình để chạy thử dưới local để theo có động lực tìm hiểu thêm về chủ đè này.
+---
+
+## Chuẩn bị
+
+Bạn nên có một chút hiểu biết những thứ sau trước khi đọc bài viết này
+
+- có hiểu biết cơ bản về Kubernetes
+- đã từng sử dụng helm, kubectl
+- có kiến thức cơ bản về lập trình và quá trình vận hành ứng dụng
+
+Repo: [demo-k8s-obs-module](https://github.com/magiskboy/demo-k8s-obs-modules)
+
+## Dựng Kubernetes cluster trên local
+
+Tạo một cluster có cấu hình như sau:
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+name: obs-module
+
+networking:
+  ipFamily: ipv4
+
+  apiServerAddress: 127.0.0.1
+  apiServerPort: 6969
+
+  podSubnet: "10.244.0.0/16"
+  serviceSubnet: "10.96.0.0/12"
+
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+  - role: worker
+```
+
+Để chạy Kubernetes dưới local, các bạn cần cài đặt Docker và Kind (Kubernetes in Docker). Sau đó các bạn tạo cluster bằng câu lệnh sau:
+
+```sh
+kind create cluster —name obs-module —config ./kind-config.yaml
+```
+
+Trong ví dụ này, mình tạo 1 cluster với 1 node control-plane và 3 node workers.
+
+## Triển khai ứng dụng
+
+Tiếp theo, chúng ta sẽ triển khai ứng dụng lên cluster Kubernetes, ở đây mình sử dụng 1 ứng dụng demo microservice của Google: [microservice-demo](https://github.com/GoogleCloudPlatform/microservices-demo).
+
+Các bạn có thể cài đặt ứng dụng này trên cluster bằng command sau
+
+```sh
+helmfile apply -f app-onlineboutique/helmfile.yaml
+```
+
+Bạn có thể forward frontend service về local để chạy thử như sau
+
+```sh
+kubectl port-forward svc/frontend -n onlineboutique 8080
+```
+
+Bạn truy cập vào đường dẫn: [http://localhost:8080](http://localhost:8080) và thấy như hình:
+
+## Hiểu về dữ liệu monitoring
+
+Để monitor được ứng dụng hiệu quả, chúng ta cần phải thu thập những loại dữ liệu cần thiết và hiển thị chúng một cách trực quan.
+
+Có 3 loại dữ liệu monitor:
+- metric
+- log
+- trace
+
+### 1. Metric
+
+Dữ liệu metric là những thông số của ứng dụng lượng CPU, memory ứng dụng sử dụng. Có bao nhiêu byte dữ liệu được gửi và nhận bởi ứng dụng thông qua network hay dữ liệu được ứng dụng đọc từ đĩa ra sao.
+
+Dạng dữ liệu này được tổ chức như sau:
+
+```
+container_memory_usage{app = payment, namespace = ecommerce, time = 01:00 17/02/2025} 2048
+container_memory_usage{app = payment, namespace = ecommerce, time = 01:05 17/02/2025} 1024
+container_memory_usage{app = payment, namespace = ecommerce, time = 01:10 17/02/2025} 4096
+```
+
+Nhìn vào ví dụ trên, ta có thể thấy tên metric là container_memory_usage, các dữ liệu được đánh tag bằng label và có giá trị là các số.
+Những dữ liệu này được tổ chức theo dạng timeseries, chi tiết về kiểu dữ liệu timeseries này các bạn có thể tìm hiểu trong bài viết này
+
+### 2. Log
+
+Log là kiểu dữ liệu text được log ra bởi ứng dụng thông qua __stdout__ và __stderr__.
+
+Có lẽ đây là dạng dữ liệu mà đa số các bạn lập trình viên cảm thấy quen thuộc nhất vì nó xuất hiện từ những ngày đầu chúng ta bước chân vào ngành lập trình.
+
+Tương tự như metric, log được tổ chức thành các timeseries những giá trị của log là text thay vì số như metric
+
+### 3. Trace
+
+Trace là kiểu dữ liệu thể hiện đường đi của 1 request trong hệ thống, đặc biệt là trong hệ thống có nhiều thành phần tương tác với nhau như mô hình microservice. Ví dụ khi user thực hiện mua hàng, action đó của người dùng sẽ đi qua các service như product catalog —> cart service —> checkout service —> payment service…
+
+Dữ liệu trace này được tổ chứ theo dạng cây với mỗi node là các service mà action đó được xử lí.
+
+Như vậy chúng ta đã đi sơ qua về các kiểu dữ liệu monitor, tiếp theo chúng ta đến phần triển khai các ứng dụng monitor trong hệ thống Kubernetes một cách thực tế.
+
+
+## Triển khai
+
+### 1. Triển khai hệ thống thu thập metric
+
+Để thu thập được dữ liệu metric từ các container/pod trong K8s, chúng ta sẽ chạy 1 tiến trình trên các node của cluster để collect thông tin về metric và gửi về nơi xử lí dữ liệu tập trung, ở đây mình dùng node-exporter
+
+node-exporter sẽ thu thập dữ liệu trong node chạy các container này expose chúng qua 1 api mà node-exporter cung cấp tại endpoint /metrics. Data sau đó được collect bởi 1 tiến khác gọi là prometheus. Prometheus sẽ liên tục gọi vào node-exporter để lấy dữ liệu, quá trình này được gọi là scrape.
+Dữ liệu sau đó được xử lí và đẩy vào storage tập trung, ở đây mình chọn là Cortex.
+Ngoài nhiệm vụ lưu trữ dữ liệu, Cortex còn có trách nhiệm query dữ liệu nhanh chóng cho frontend và đẩy dữ liệu lên S3 storage để lưu trữ dài hạn.
+
+<Image src="/images/obs_metric_arch.png" title="Mô hình thu thập metric cho Kubernetes node" />
+
+Bạn có thể chạy lệnh sau để set up một storage bằng minio
+
+```sh
+helmfile apply -l name=minio
+```
+
+Sau đó bạn forward port từ service minio về, login tạo access key và bucket cortext. Sau khi có bucket và access key cho cortex, bạn điền vào trong file values.yaml và chạy command sau để khỏi tạo cortex, prometheus và node-exporter
+
+```sh
+helmfile apply -l layer=metric
+```
+
+
+### 2. Triển khai hệ thống thu thập log
+
+Tương tự như metric, chúng ta sẽ chạy 1 tiến trình trên các node để thu thập log và gửi về nơi xử lí trung tâm. Collector mình chọn làm promtail, sau khi thu thập, promtail gửi log về loki - là 1 tool xử lí, lưu trữ và query log data.
+
+<Image src="/images/obs_log_arch.png" title="Mô hình thu thập log data cho Kubernetes node" />
+
+Loki cũng sử dụng S3 làm storage dài hạn. Do đó, để kết nối Loki và MinIO, bạn cần tạo 1 access key và 3 bucket: loki-chunks, loki-admin và loki-ruler, sau đó điền access key vào file values.yaml. Cuối cùng chạy command
+
+helmfile apply -l layer=log
+
+### 3. Triển khai hệ thống thu thập trace data
+
+Trace data được lưu trữ theo dạng key-value. Trong demo này, mình sử dụng cassandra để lưu trữ. Một tiến trình của Jaeger được dùng để tiếp nhận data từ application
+được gọi là jaeger-collector
+
+<Image src="/images/obs_trace_arch.png" title="Mô hình thu thập trace data của Jaeger" />
+
+
+### 4. Khởi tạo dashboard
+
+Cuối cùng, chúng ta deploy grafana dashboard để visualize những dữ liệu monitor ở trên
+
+```sh
+helmfile apply -l layer=dashboard
+```
+
+Đây là cấu hình datasource trên grafana dashboard
+
+```yaml
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Cortex
+      type: prometheus
+      url: http://cortex-nginx.obs-metric.svc.cluster.local/api/prom
+    - name: Loki
+      type: loki
+      url: http://loki-read-headless.obs-log.svc.cluster.local:3100
+    - name: Jaeger
+      type: jaeger
+      url: http://jaegertracing-query.obs-tracing.svc.cluster.local
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-kube-prometheus-prometheus.obs-metric.svc.cluster.local:9090
+```
+
+Đây là kết quả sau khi set up thành công
+
+<Image src="/images/obs-1.png" title="Thông tin của service cart trong 1h gần nhất" />
+<Image src="/images/obs-2.png" title="Thông tin của 1 node trong 24h gần nhất" />
+<Image src="/images/obs-3.png" title="Trace của 1 request tới frontend service" />
+<Image src="/images/obs-4.png" title="Trace data được hiển thị cho biết đường đi của 1 request qua các service" />
+
+## Cải tiến
+
+Dưới đây là kiến trúc tống quan của hệ thống trong demo này
+
+<Image src="/images/obs-module-k8s.png" title="Kiến trúc tổng quan của obs module" />
+
+Sau đây sẽ là một số cải tiến có thể làm với demo này:
+
+* Thiết lập mTLS bằng Linkerd
+* Cải tiến và HA hệ thống log với Fluent Bit + Kafka + Logstash + Clickhouse
+* Thu thập, phân tích Kubernetes events để cải tiến hệ thống K8s
+* Sử dụng Kafka để HA quá trình collect trace data
+* Thiết lập hệ thống alert
+
+Trong bài viết tới, chúng ta sẽ cùng đi sâu hơi vào cách triển khai hệ thống thu thập metric một cách hiệu quả và có độ HA cao
