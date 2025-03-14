@@ -23,6 +23,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
           rel="stylesheet" 
         />
+        <link rel="icon" type="image/png" href="/favicon.svg" />
       </Head>
       <body>
         <Main />
