@@ -67,8 +67,8 @@ const nextConfig = {
         link: "/",
       },
       {
-        title: "Bản thân",
-        link: "https://spiffy-leopard-f44.notion.site/Nguyen-Khac-Thanh-14eb56848bed8024b9e6eb998a655fe8?pvs=74",
+        title: "CV",
+        link: "https://cv.nkthanh.dev",
       },
       {
         title: "Danh mục",
