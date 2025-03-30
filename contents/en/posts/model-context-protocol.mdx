@@ -1,0 +1,116 @@
+---
+title: Introduction to Model Context Protocol
+date: 2025-03-30T21:10:00+07:00
+published: true
+tags:
+- ai
+- llm
+categories:
+- AI
+description: |
+    Nowadays, AI is widely applied in various fields, especially in daily tasks for office workers and programmers. While AI excels at analyzing and understanding data, it still faces limitations in storing information, retrieving external data, and interacting with the surrounding environment.
+
+    In this article, I will introduce a method that helps AI models expand their data access capabilities and interact more flexibly with system entities.
+---
+
+## The Problem
+
+Modern AI models are highly efficient at analyzing information, but they cannot update themselves with new knowledge. This is because information constantly changes, and sometimes, AI lacks the permission or ability to access the required data. In reality, humans also face similar limitations in accessing and processing information.
+
+For example, an AI cannot read your personal emails, nor does it know the latest controversies surrounding the streamer ViruSs, simply because this information emerged after the AI model was trained.
+
+Another limitation is the ability to interact with the environment. For instance, AI cannot automatically send messages or play a song on YouTube from your computer without external tools.
+
+In short, think of AI as a human brain—it has strong analytical capabilities but also has constraints. It cannot know everything, nor can it access or manipulate everything on its own without __supporting tools__.
+
+## The Solution
+
+The AI community has been developing a tool, a protocol that enables AI models to communicate and utilize __supporting tools__ for searching, expanding knowledge, and interacting more effectively with the surrounding environment.
+
+Let’s draw a parallel to humans: the protocol that allows us to expand our knowledge and access information is language. Language acts as a natural protocol, enabling the human brain to reason, analyze, and acquire new knowledge without memorizing everything.
+
+Similarly, AI models also need a language to interact with __supporting tools__. This protocol is called __Model Context Protocol__ (MCP), which allows AI to connect with programmed tools and extend its capabilities beyond its initial dataset.
+
+## How Does Model Context Protocol Work?
+
+I won’t go into a rigid or overly detailed explanation, as you can find all the necessary information on the official Model Context Protocol website here: [https://modelcontextprotocol.io](https://modelcontextprotocol.io).
+
+Take a look at the diagram below:
+
+<Image 
+    src="/images/mcp-1.png"
+/>
+
+Notes: The MCP host can be AI applications like Claude Desktop or Cursor AI Editor.
+
+The MCP server is a system that extends AI models' knowledge and interaction capabilities by providing specialized tools.
+
+For example:
+- MCP server for Emails offers functions such as:
+    - Retrieving a list of emails based on keywords or time ranges.
+    - Fetching the content of an email based on email_id.
+- MCP server for Social Networks supports:
+    - Fetching new feeds.
+    - Retrieving details of a post by post_id.
+- MCP server for MacOS allows:
+    - Sending a message with specified content to a particular recipient.
+    - Creating a new note with custom content.
+
+With these MCP servers, AI can expand its abilities and perform tasks beyond its built-in data.
+
+Each MCP server describes the functions it provides so that AI models can use them. When a user queries the AI model, the model will automatically determine:
+- Whether it needs to use an MCP function.
+- If so, which function is most appropriate.
+- How to use that function to fulfill the user's request.
+
+This process enables AI to not only analyze information but also understand when and how to extend its capabilities through supporting tools.
+
+### Example:
+
+Suppose I ask an AI model: “Calculate the total amount transacted through Vietcombank this month.” The AI would process the request as follows:
+
+1️⃣ Based on the user’s query and descriptions of the MCP functions, the AI determines that it needs to use the email retrieval function.  
+2️⃣ The AI extracts the time range __"this month"__ and filters emails from Vietcombank to call the appropriate function.  
+3️⃣ The AI receives a list of transaction-related emails from Vietcombank.  
+4️⃣ The AI sequentially calls a function to fetch the details of each email, analyzes them, and extracts the transaction amounts.  
+5️⃣ Finally, the AI sums up the amounts and returns the total to the user.  
+
+Thanks to this mechanism, AI does not just respond based on pre-existing data but also learns to search, retrieve, and process information from external sources, providing more accurate and real-world answers. 🚀
+
+## Technical Description
+
+At its core, MCP servers are just regular processes. They communicate with the MCP host through one of the following two methods:
+
+🔹 stdin/stdout: The MCP host launches an MCP server as a child process and communicates via stdin/stdout.  
+
+🔹 SSE (Server-Sent Events): The MCP host and MCP server operate as independent processes, communicating over HTTP, similar to a traditional web backend.  
+
+These two methods provide flexibility for the MCP host in connecting with MCP servers, depending on system architecture and usage needs. 🚀  
+
+### Example:
+
+In my Claude Desktop setup, MCP is configured as follows:
+
+<Image src="/images/mcp-claude-desktop.png" />
+
+In Cursor AI Editor:
+
+<Image src="/images/mcp-cursor.png" />
+
+If you want to create your own MCP setup, check out the detailed guide here:  
+[https://modelcontextprotocol.io/introduction](https://modelcontextprotocol.io/introduction).
+
+If you want to enhance AI models’ search capabilities, refer to my article:  
+<Link href="/posts/build-a-rag-system-for-ai-agent">Build a RAG System for AI Agent</Link>.
+
+## Conclusion
+
+Model Context Protocol (MCP) is a significant step forward in extending AI models’ capabilities. Through MCP, we can:
+
+- Systematically enhance AI’s ability to retrieve and process information.  
+- Enable AI to interact with external systems in a secure and controlled manner.  
+- Establish a standardized approach to developing AI applications.  
+
+With the rapid advancement of AI technology, MCP is gradually becoming a crucial standard for building intelligent and flexible AI applications. I hope this article has given you an overview of MCP and how you can apply it to your projects.
+
+See you in the next article! 🚀
