@@ -56,15 +56,15 @@ Thông tin và các cài đặt mình sẽ để ở đây
 
 ### 1. Ingest dữ liệu
 
-Trong bài viết này, bộ thông tin của mình là toàn bộ email của mình, mình sẽ ingest email và đẩy vào trong RediSearch.
+Trong bài viết này, bộ thông tin là toàn bộ email của mình, được ingest và đẩy vào trong RediSearch.
 
-Một một email sau khi được tải về từ Gmail sẽ được vector hoá bằng thuận toán embedding, vấn đề này mình sẽ đi sâu hơn ở các bài viết sau.
+Một email sau khi tải về từ Gmail sẽ được vector hoá bằng thuật toán embedding, vấn đề này mình sẽ đi sâu hơn ở các bài viết sau.
 
 Tại thời điểm này, các bạn chỉ cần hiểu chúng ra phải chuyển hoá dữ liệu "variable length" thành dạng dữ liệu "fixed length", và dạng dữ liệu "fixed length" đó là một vector 384 chiều.
 
 Với dạng dữ liệu đó, chúng ta sẽ dùng thuật toán [KNN](https://machinelearningcoban.com/2017/01/08/knn/) để tìm những dữ liệu liên quan gần nhất và trả về cho AI model.
 
-Mình sẽ sử dụng Python và những thư viện sau
+Mình sử dụng Python và những thư viện sau
 
 ```
 google-api-python-client==2.122.0
@@ -74,7 +74,7 @@ redis>=5.2.1
 sentence-transformers>=4.0.1
 ```
 
-Mình sẽ có một function để lấy crendentials từ google File credentials.json là một service account key các bạn có thể tạo trên Console của Google Cloud Platform.
+Đoạn code dưới để lấy crendentials từ google. File credentials.json là một service account key các bạn có thể tạo trên Console của Google Cloud Platform.
 
 ```python
 import os.path
@@ -186,7 +186,7 @@ def get_detail_email(service, msg_id):
     return email_data
 ```
 
-Từ những function trên, chúng ta có function sau:
+Từ những function trên, chúng ta có thể lấy emails như sau. Generator sẽ lấy tuần tự từng email
 
 ```python
 g_service = get_gmail_service()
