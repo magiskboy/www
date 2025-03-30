@@ -8,38 +8,38 @@ tags:
 - redisearch
 categories:
 - AI
-description: "Ngày nay, AI là một phần không thể thiếu trong công việc hằng ngày của dân văn phòng, đặc biệt là dân lập trình. Tuy nhiên, những model hiện tại có khá nhiều điểm hạn chế trong việc truy cập thông tin. Do đó, trong bài viết này, mình muốn giới thiệu cho mọi người một phương pháp để nâng cao khả năng tìm kiếm thông tin của AI cũng nhưng cách để AI có thể truy xuất được thông được hiệu quả hơn."
+description: "Ngày nay, AI là một phần không thể thiếu trong công việc hằng ngày của dân văn phòng, đặc biệt là dân lập trình. Tuy nhiên, những những model hiện tại có khá nhiều điểm hạn chế trong việc truy cập thông tin. Do đó, trong bài viết này, mình muốn giới thiệu cho mọi người một phương pháp để nâng cao khả năng tìm kiếm thông tin của AI cũng nhưng cách để AI có thể truy xuất thông tin hiệu quả hơn."
 ---
 
 ## Vấn đề
 
-AI hay con người đều có những đặc điểm chung, do đó, chúng ta và AI sẽ gặp phải những vấn đề tương tự trong việc tìm kiếm và xử lí thông tin. Hãy đi từ chính chúng ta, vấn đề tìm kiếm thông tin ở con người.
+AI hay con người đều có những đặc điểm chung, do đó, chúng ta và AI sẽ gặp phải những vấn đề tương tự trong việc tìm kiếm và xử lí thông tin. Hãy đi từ chính chúng ta, vấn đề tìm kiếm và xử lí thông tin ở con người.
 
-Hãy giả sử bạn là một người thông minh, có thể xử lí, phân tích thông tin rất tốt. Nhưng có một hạn chế là có những thông tin bạn chưa hề biết.
+Hãy giả sử bạn là một người thông minh, có thể xử lí và phân tích thông tin rất tốt. Nhưng có một hạn chế là có những thông tin bạn chưa hề biết.
 
 Ví dụ, tôi hỏi bạn: RAG là gì?. Nếu bạn chưa có thông tin về RAG, bộ não của bạn sẽ hoạt động như sau.
 
-1. Có thông tin về RAG chưa? Nếu chưa lên Google tìm kiếm với từ khoá là "RAG"
+1. Có thông tin về RAG chưa? Nếu chưa thì lên Google tìm kiếm với từ khoá là "RAG"
 
-2. Nhìn vào kết quả trả về, lấy n kết quả đầu tiên (match nhất) và đọc chúng
+2. Nhìn vào kết quả trả về, lấy ra n kết quả đầu tiên khớp nhất với câu hỏi và đọc chúng
 
 3. Phân tích và xử lí những kết quả đó
 
 4. Trả lời câu hỏi của tôi
 
 
-Điều này cũng đúng với AI hiện tại. AI tuy không thể biết hết, nhưng chúng có khả năng phân tích sâu các thông tin mà chúng ta đưa vào, từ đó đưa ra output.
+Điều này cũng đúng với AI hiện tại. AI tuy không thể biết hết, nhưng chúng có khả năng phân tích sâu các thông tin mà chúng ta đưa vào, từ đó đưa ra kết quả.
 
 ## Hiểu đơn giản về RAG
 
-Mục đích của RAG được là để tìm kiếm thông tin cho AI agent.
+Mục đích của RAG là tìm kiếm thông tin cho AI model.
 
-Hiểu đơn giản, trong một hệ thống RAG, chúng ra có một 2 thành phần chính:
+Hiểu đơn giản, trong một hệ thống RAG, chúng ra có 2 thành phần chính:
 
 - bộ tìm kiếm thông tin
 - bộ xử lí thông tin
 
-Bộ tìm kiếm thông tin sẽ tìm trong tập lớn dữ liệu và trả về một số lượng kết quả liên quan nhất tới câu truy vấn. Sau đó, những thông tin cùng với truy vấn sẽ được AI model phân tích, xử lí và xuất ra thông tin.
+Bộ tìm kiếm thông tin sẽ tìm trong tập lớn dữ liệu và trả về một số lượng kết quả liên quan nhất tới câu truy vấn. Sau đó, những thông tin này cùng với truy vấn sẽ được AI model phân tích, xử lí và xuất ra kết quả.
 
 
 ## Chuẩn bị
