@@ -1,5 +1,5 @@
 ---
-title: Xây dựng hệ thống RAG cho AI agent
+title: Building a RAG System for an AI Agent
 date: 2025-03-30T06:30:00+07:00
 published: true
 tags:
@@ -9,60 +9,63 @@ tags:
 categories:
 - AI
 description: |
-    Ngày nay, AI đã trở thành một công cụ không thể thiếu trong công việc hằng ngày, đặc biệt là đối với dân văn phòng và lập trình viên. Tuy nhiên, các mô hình AI hiện tại vẫn gặp nhiều hạn chế trong việc truy cập và xử lý thông tin.
+    Nowadays, AI has become an indispensable tool in daily work, especially for office workers and developers. However, current AI models still face significant limitations in accessing and processing information.
 
-    Vì vậy, trong bài viết này, mình sẽ giới thiệu một phương pháp giúp nâng cao khả năng tìm kiếm thông tin của AI cũng như cải thiện cách AI truy xuất dữ liệu một cách hiệu quả hơn.
+    Therefore, in this article, I will introduce a method to enhance AI’s information retrieval capabilities and improve the efficiency of its data access.
 ---
 
-## AI và con người: Sự tương đồng trong tìm kiếm và xử lý thông tin
+## AI and Humans: Similarities in Information Retrieval and Processing
 
-AI và con người đều có những đặc điểm chung, đặc biệt trong việc tìm kiếm và xử lý thông tin. Vì vậy, cả chúng ta và AI đều phải đối mặt với những thách thức tương tự trong quá trình này. Để hiểu rõ hơn, hãy bắt đầu từ chính con người – cách chúng ta tìm kiếm và xử lý thông tin.
+AI and humans share common traits, especially in how they search for and process information. As a result, both AI and humans face similar challenges in this process. To better understand this, let’s start by examining how humans retrieve and process information.
 
-Giả sử bạn là một người thông minh, có khả năng phân tích và xử lý thông tin tốt. Tuy nhiên, bạn không thể biết mọi thứ. Khi gặp một khái niệm mới, chẳng hạn như “RAG”, bộ não của bạn sẽ vận hành theo quy trình sau:
+Imagine you are an intelligent person with strong analytical and information-processing skills. However, you cannot know everything. When encountering a new concept, such as “RAG”, your brain follows this process:
 
-1.	Kiểm tra kiến thức hiện có: Bạn đã biết về RAG chưa? Nếu chưa, bước tiếp theo là tìm kiếm thông tin.
-2.	Tìm kiếm thông tin: Bạn lên Google và nhập từ khóa “RAG”.
-3.	Lọc và đọc thông tin: Bạn xem xét các kết quả trả về, chọn ra những nguồn phù hợp nhất và đọc chúng.
-4.	Phân tích và tổng hợp: Bạn xử lý thông tin vừa thu thập để hiểu rõ hơn về RAG.
-5.	Đưa ra câu trả lời: Dựa trên thông tin đã phân tích, bạn trả lời câu hỏi.
+1.	Check existing knowledge – Do you already know about RAG? If not, the next step is to search for information.
+2.	Search for information – You go to Google and enter the keyword “RAG”.
+3.	Filter and read information – You review the search results, select the most relevant sources, and read them.
+4.	Analyze and synthesize – You process the collected information to gain a deeper understanding of RAG.
+5.	Provide an answer – Based on your analysis, you formulate a response.
 
-Quy trình này cũng áp dụng cho AI. Mặc dù AI không thể “biết” mọi thứ, nhưng nó có khả năng tìm kiếm, phân tích và tổng hợp thông tin một cách hiệu quả dựa trên dữ liệu đầu vào.
+This process applies to AI as well. While AI does not inherently “know” everything, it can efficiently search, analyze, and synthesize information based on input data.
 
-## Hiểu đơn giản về RAG
+## Understanding RAG in Simple Terms
 
-RAG (Retrieval-Augmented Generation) là một phương pháp giúp AI tìm kiếm và sử dụng thông tin một cách hiệu quả hơn.
+RAG (Retrieval-Augmented Generation) is a method that enables AI to retrieve and utilize information more effectively.
 
-Một hệ thống RAG điển hình bao gồm hai thành phần chính:
-	•	Bộ tìm kiếm thông tin: Tìm kiếm trong kho dữ liệu lớn và trả về những kết quả liên quan nhất đến truy vấn.
-	•	Bộ xử lý thông tin: Phân tích dữ liệu tìm được cùng với truy vấn để đưa ra câu trả lời chính xác.
+A typical RAG system consists of two main components:
+	•	Information retrieval module – Searches a large database and returns the most relevant results for a given query.
+	•	Information processing module – Analyzes the retrieved data along with the query to generate an accurate response.
 
-Nhờ RAG, AI có thể khai thác thông tin từ nguồn dữ liệu bên ngoài thay vì chỉ dựa vào kiến thức có sẵn, giúp nâng cao độ chính xác và tính cập nhật của câu trả lời.
+With RAG, AI can extract information from external sources instead of relying solely on pre-trained knowledge. This enhances accuracy and relevance, ensuring AI responses remain up-to-date. 🚀
 
 
-## Chuẩn bị
+## Preparation
 
 Trong bài viết này, mình sẽ sử dụng RediSearch làm bộ tìm kiếm thông tin và mô hình Llama 3.1 thông qua Ollama.
 
 Dưới đây là thông tin và hướng dẫn cài đặt:
 
-- RediSearch [https://redis.io/docs/latest/develop/interact/search-and-query/](https://redis.io/docs/latest/develop/interact/search-and-query/)
-- Ollama [https://ollama.com](https://ollama.com)
+In this article, I will use RediSearch as the information retrieval system and the Llama 3.1 model via Ollama.
 
-## Xây dựng bộ tìm kiếm thông tin
+Below are the resources and installation guides:
+	•	RediSearch: [Official Documentation](https://redis.io/docs/latest/develop/interact/search-and-query/)
+	•	Ollama: [Official Website](https://ollama.com)
 
-### 1. Ingest dữ liệu
+## Building the Information Retrieval System
 
-Trong bài viết này, bộ dữ liệu đầu vào là toàn bộ email của mình, được đẩy vào RediSearch để phục vụ tìm kiếm.
+### 1. Ingesting Data
 
-Mỗi email sau khi tải về từ Gmail sẽ được vector hóa bằng thuật toán embedding. Mình sẽ đi sâu hơn vào quá trình này trong các bài viết sau.
+In this article, the input dataset consists of my entire email history, which will be indexed in RediSearch for retrieval.
 
-Hiện tại, bạn chỉ cần hiểu rằng dữ liệu đầu vào ban đầu có độ dài biến đổi (variable length), nhưng cần được chuyển đổi thành dạng có độ dài cố định (fixed length). Cụ thể, mình sử dụng vector có 384 chiều để biểu diễn mỗi email.
+Each email, once downloaded from Gmail, will be vectorized using an embedding algorithm. I will cover this process in more detail in future articles.
 
-Sau khi dữ liệu được vector hóa, thuật toán KNN (K-Nearest Neighbors) sẽ được sử dụng để tìm kiếm những email có nội dung liên quan nhất, giúp AI mô hình truy xuất thông tin hiệu quả.
+For now, you only need to understand that the raw input data has a variable length and needs to be converted into a fixed-length representation. Specifically, each email will be represented as a 384-dimensional vector.
 
-Công cụ và thư viện sử dụng
+Once vectorized, the K-Nearest Neighbors (KNN) algorithm will be used to find the most relevant emails, enabling the AI model to retrieve information effectively.
 
-Mình sử dụng Python cùng với các thư viện sau:
+__Tools and Libraries__
+
+I will use Python along with the following libraries:
 
 ```
 google-api-python-client==2.122.0
@@ -72,7 +75,7 @@ redis>=5.2.1
 sentence-transformers>=4.0.1
 ```
 
-Đoạn code dưới để lấy crendentials từ google. File credentials.json là một service account key các bạn có thể tạo trên Console của Google Cloud Platform.
+The following code is used to retrieve credentials from Google. The credentials.json file is a service account key, which you can generate in the Google Cloud Platform Console.
 
 ```python
 import os.path
@@ -112,7 +115,7 @@ def get_gmail_service():
     return build('gmail', 'v1', credentials=creds)
 ```
 
-Function này sẽ lấy danh sách email từ start_date đến end_date bằng Gmail query
+This function retrieves a list of emails from start_date to end_date using a Gmail query.
 
 ```python
 def get_list_emails(service, start_date=None, end_date=None):
@@ -184,7 +187,7 @@ def get_detail_email(service, msg_id):
     return email_data
 ```
 
-Từ những function trên, chúng ta có thể lấy emails như sau. Generator sẽ lấy tuần tự từng email
+From the functions above, we can retrieve emails as follows. The generator will sequentially fetch each email.
 
 ```python
 g_service = get_gmail_service()
@@ -197,9 +200,9 @@ def get_redis(db=0):
     return redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=db, decode_responses=True)
 ```
 
-Chúng ta sử dụng mô hình __all-MiniLM-L6-v2__, một mô hình đơn giản nhưng có hiệu năng cao. Vì nội dung email thường không quá dài hay phức tạp, nên mô hình này là lựa chọn phù hợp. Nó sẽ chuyển đổi văn bản thành embedding vector có 384 chiều.
+We use the __all-MiniLM-L6-v2__ model, a simple yet high-performance model. Since email content is typically neither too long nor overly complex, this model is a suitable choice. It converts text into a 384-dimensional embedding vector.
 
-Ngoài ra, bạn cũng có thể sử dụng AI model từ Ollama để thực hiện vector hóa mà không cần import thêm thư viện bên ngoài.
+Additionally, you can also use an AI model from Ollama for vectorization without needing to import external libraries.
 
 ```python
 def embed_text(text):
@@ -207,7 +210,7 @@ def embed_text(text):
     return model.encode(text).astype(np.float32).tobytes()
 ```
 
-Chúng ta lưu trữ email trong Redis dưới dạng hashmap, bao gồm các thông tin lấy từ Gmail và một trường bổ sung chứa embedding của email.
+We store emails in Redis as a hashmap, which includes information retrieved from Gmail along with an additional field containing the email embedding.
 
 ```python
 def store_in_redis(redis_client, email, embedding_vector):
@@ -226,9 +229,9 @@ def store_in_redis(redis_client, email, embedding_vector):
     }) 
 ```
 
+Now, we will set up the pipeline to ingest data.
 
-Bây giờ, chúng ta sẽ thiết lập pipeline để ingest dữ liệu.
-__embedding_vector__ chính là vector biểu diễn mà mình đã đề cập trước đó. Nó được tạo từ các thông tin quan trọng của email, bao gồm __sender__ (người gửi), __subject__ (tiêu đề) và __snippet__ (đoạn trích nội dung).
+The __embedding_vector__ is the representation vector mentioned earlier. It is generated from key email information, including the __sender__, __subject__, and __snippet__ (a content preview).
 
 ```python
 g_service = get_gmail_service()
@@ -244,9 +247,9 @@ for email in emails_generate:
     store_in_redis(redis_client, email, embedding_vector)
 ```
 
-Sau khi ingest dữ liệu thành công, bước tiếp theo là đánh index để tối ưu hiệu suất tìm kiếm trong Redis.
+After successfully ingesting the data, the next step is indexing to optimize search performance in Redis.
 
-Trong cấu hình, mình thiết lập trường embedding dưới dạng vector 384 chiều và sử dụng khoảng cách cosine để so sánh độ tương đồng giữa các vector. Bạn có thể tìm hiểu thêm về cosine similarity tại đây:
+In the configuration, I define the embedding field as a 384-dimensional vector and use cosine similarity to measure the similarity between vectors. You can learn more about cosine similarity here:
 
 [https://en.wikipedia.org/wiki/Cosine_similarity](https://en.wikipedia.org/wiki/Cosine_similarity)
 
@@ -287,9 +290,9 @@ def create_index_emails():
     r.ft(REDIS_EMAIL_INDEX).create_index(schema, definition=definition)
 ```
 
-## Tích hợp với AI model
+## Integration with the AI Model
 
-Chúng ta sẽ viết một hàm giúp mô hình AI __truy vấn dữ liệu__ trong RediSearch. Hàm này sẽ tìm và trả về __k email phù hợp nhất__ với truy vấn đầu vào.
+We will create a function that allows the AI model __to query data__ from RediSearch. This function will retrieve and return the __top-k most relevant emails__ based on the input query.
 
 ```python
 def search_redis(query, k=5):
@@ -330,11 +333,11 @@ def search_redis(query, k=5):
 ```
 
 
-Chúng ta sẽ sử dụng mô hình AI thông qua [Ollama SDK cho Python](https://github.com/ollama/ollama-python).
+We will use the AI model via the [Ollama SDK for Python](https://github.com/ollama/ollama-python).
 
-Khi nhận được truy vấn, bước đầu tiên là hỏi AI xem có cần tìm kiếm thông tin trong database trước hay không.
-	•	Nếu cần, hệ thống sẽ truy vấn dữ liệu từ database và thêm vào context để AI phân tích, từ đó đưa ra kết quả chính xác hơn.
-	•	Nếu không, truy vấn sẽ được gửi trực tiếp đến mô hình AI để xử lý ngay.
+When receiving a query, the first step is to ask the AI whether it needs to search the database first:
+	•	If needed, the system will retrieve relevant data from the database and include it in the context for the AI to analyze, improving the accuracy of the response.
+	•	If not, the query will be sent directly to the AI model for immediate processing.
 
 ```python
 try:
@@ -402,12 +405,13 @@ except KeyboardInterrupt:
 
 ## What's next?
 
-Cách tích hợp AI với vector search như trên tuy đơn giản nhưng chưa thực sự hiệu quả và khó mở rộng. Vì vậy, trong bài viết tiếp theo, mình sẽ giới thiệu một phương pháp tích hợp chuẩn hóa, đang dần trở thành tiêu chuẩn trong cộng đồng AI: Model Context Protocol (MCP).
+The integration of AI with vector search, as described above, is simple but not highly efficient and hard to scale.
 
-MCP hiện đã được áp dụng trong một số sản phẩm AI như Claude Desktop và Cursor AI Editor. Hãy cùng khám phá phương pháp này trong bài viết tiếp theo!
+Therefore, in the next article, I will introduce a standardized integration approach that is gradually becoming a norm in the AI community: Model Context Protocol (MCP).
 
-Hẹn gặp lại! 🚀
+MCP has already been adopted in AI products like Claude Desktop and Cursor AI Editor. 
+Stay tuned to explore this method in the next article! 🚀
 
 ## Đọc thêm
 
-Nếu các bạn có hứng thú với việc cài đặt một hệ thống RAG thuần tuý bằng code Python mà không sử dụng RediSearch, bạn có thể tham khảo ở đây [llama2 demo](https://github.com/magiskboy/llma2-demo)
+If you’re interested in setting up a pure RAG system using only Python code without RediSearch, you can check out this resource:[llama2 demo](https://github.com/magiskboy/llma2-demo)

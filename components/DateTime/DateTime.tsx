@@ -11,7 +11,7 @@ export const DateTime: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({
     let stringVal = "";
     if (locale === 'en') {
       const month = monthNames[rawValue.getMonth()];
-      const day = rawValue.getDay();
+      const day = rawValue.getDate();
       const year = rawValue.getFullYear();
       stringVal = `${month} ${day}, ${year}`;
     }
