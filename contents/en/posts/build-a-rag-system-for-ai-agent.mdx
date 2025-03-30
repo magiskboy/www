@@ -48,8 +48,8 @@ Dưới đây là thông tin và hướng dẫn cài đặt:
 In this article, I will use RediSearch as the information retrieval system and the Llama 3.1 model via Ollama.
 
 Below are the resources and installation guides:
-	•	RediSearch: [Official Documentation](https://redis.io/docs/latest/develop/interact/search-and-query/)
-	•	Ollama: [Official Website](https://ollama.com)
+-	RediSearch: [Official Documentation](https://redis.io/docs/latest/develop/interact/search-and-query/)
+-	Ollama: [Official Website](https://ollama.com)
 
 ## Building the Information Retrieval System
 
@@ -336,8 +336,8 @@ def search_redis(query, k=5):
 We will use the AI model via the [Ollama SDK for Python](https://github.com/ollama/ollama-python).
 
 When receiving a query, the first step is to ask the AI whether it needs to search the database first:
-	•	If needed, the system will retrieve relevant data from the database and include it in the context for the AI to analyze, improving the accuracy of the response.
-	•	If not, the query will be sent directly to the AI model for immediate processing.
+-	If needed, the system will retrieve relevant data from the database and include it in the context for the AI to analyze, improving the accuracy of the response.
+-	If not, the query will be sent directly to the AI model for immediate processing.
 
 ```python
 try:

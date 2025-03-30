@@ -33,8 +33,9 @@ Quy trình này cũng áp dụng cho AI. Mặc dù AI không thể “biết” 
 RAG (Retrieval-Augmented Generation) là một phương pháp giúp AI tìm kiếm và sử dụng thông tin một cách hiệu quả hơn.
 
 Một hệ thống RAG điển hình bao gồm hai thành phần chính:
-	•	Bộ tìm kiếm thông tin: Tìm kiếm trong kho dữ liệu lớn và trả về những kết quả liên quan nhất đến truy vấn.
-	•	Bộ xử lý thông tin: Phân tích dữ liệu tìm được cùng với truy vấn để đưa ra câu trả lời chính xác.
+
+-	Bộ tìm kiếm thông tin: Tìm kiếm trong kho dữ liệu lớn và trả về những kết quả liên quan nhất đến truy vấn.
+-	Bộ xử lý thông tin: Phân tích dữ liệu tìm được cùng với truy vấn để đưa ra câu trả lời chính xác.
 
 Nhờ RAG, AI có thể khai thác thông tin từ nguồn dữ liệu bên ngoài thay vì chỉ dựa vào kiến thức có sẵn, giúp nâng cao độ chính xác và tính cập nhật của câu trả lời.
 
@@ -333,8 +334,8 @@ def search_redis(query, k=5):
 Chúng ta sẽ sử dụng mô hình AI thông qua [Ollama SDK cho Python](https://github.com/ollama/ollama-python).
 
 Khi nhận được truy vấn, bước đầu tiên là hỏi AI xem có cần tìm kiếm thông tin trong database trước hay không.
-	•	Nếu cần, hệ thống sẽ truy vấn dữ liệu từ database và thêm vào context để AI phân tích, từ đó đưa ra kết quả chính xác hơn.
-	•	Nếu không, truy vấn sẽ được gửi trực tiếp đến mô hình AI để xử lý ngay.
+-	Nếu cần, hệ thống sẽ truy vấn dữ liệu từ database và thêm vào context để AI phân tích, từ đó đưa ra kết quả chính xác hơn.
+-	Nếu không, truy vấn sẽ được gửi trực tiếp đến mô hình AI để xử lý ngay.
 
 ```python
 try:
