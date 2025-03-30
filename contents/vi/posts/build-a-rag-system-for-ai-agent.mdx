@@ -1,0 +1,405 @@
+---
+title: Xây dựng hệ thống RAG cho AI agent
+date: 2025-03-30T06:30:00+07:00
+published: true
+tags:
+- ai
+- rag
+- redisearch
+categories:
+- AI
+description: "Ngày nay, AI là một phần không thể thiếu trong công việc hằng ngày của dân văn phòng, đặc biệt là dân lập trình. Tuy nhiên, những model hiện tại có khá nhiều điểm hạn chế trong việc truy cập thông tin. Do đó, trong bài viết này, mình muốn giới thiệu cho mọi người một phương pháp để nâng cao khả năng tìm kiếm thông tin của AI cũng nhưng cách để AI có thể truy xuất được thông được hiệu quả hơn."
+---
+
+## Vấn đề
+
+AI hay con người đều có những đặc điểm chung, do đó, chúng ta và AI sẽ gặp phải những vấn đề tương tự trong việc tìm kiếm và xử lí thông tin. Hãy đi từ chính chúng ta, vấn đề tìm kiếm thông tin ở con người.
+
+Hãy giả sử bạn là một người thông minh, có thể xử lí, phân tích thông tin rất tốt. Nhưng có một hạn chế là có những thông tin bạn chưa hề biết.
+
+Ví dụ, tôi hỏi bạn: RAG là gì?. Nếu bạn chưa có thông tin về RAG, bộ não của bạn sẽ hoạt động như sau.
+
+1. Có thông tin về RAG chưa? Nếu chưa lên Google tìm kiếm với từ khoá là "RAG"
+
+2. Nhìn vào kết quả trả về, lấy n kết quả đầu tiên (match nhất) và đọc chúng
+
+3. Phân tích và xử lí những kết quả đó
+
+4. Trả lời câu hỏi của tôi
+
+
+Điều này cũng đúng với AI hiện tại. AI tuy không thể biết hết, nhưng chúng có khả năng phân tích sâu các thông tin mà chúng ta đưa vào, từ đó đưa ra output.
+
+## Hiểu đơn giản về RAG
+
+Mục đích của RAG được là để tìm kiếm thông tin cho AI agent.
+
+Hiểu đơn giản, trong một hệ thống RAG, chúng ra có một 2 thành phần chính:
+
+- bộ tìm kiếm thông tin
+- bộ xử lí thông tin
+
+Bộ tìm kiếm thông tin sẽ tìm trong tập lớn dữ liệu và trả về một số lượng kết quả liên quan nhất tới câu truy vấn. Sau đó, những thông tin cùng với truy vấn sẽ được AI model xử lí và xuất ra thông tin.
+
+
+## Chuẩn bị
+
+Trong bài viết này, mình sẽ sử dụng RediSearch làm bộ tìm kiếm thông tin và model llama3.1 thông qua ollama.
+
+Thông tin và các cài đặt mình sẽ để ở đây
+
+- RediSearch [https://redis.io/docs/latest/develop/interact/search-and-query/](https://redis.io/docs/latest/develop/interact/search-and-query/)
+- OLLAMA [https://ollama.com](https://ollama.com)
+
+
+## Xây dựng bộ tìm kiếm thông tin
+
+### 1. Ingest dữ liệu
+
+Trong bài viết này, bộ thông tin của mình là toàn bộ email của mình, mình sẽ ingest email và đẩy vào trong RediSearch.
+
+Một một email sau khi được tải về từ Gmail sẽ được vector hoá bằng thuận toán embedding, vấn đề này mình sẽ đi sâu hơn ở các bài viết sau.
+
+Tại thời điểm này, các bạn chỉ cần hiểu chúng ra phải chuyển hoá dữ liệu "variable length" thành dạng dữ liệu "fixed length", và dạng dữ liệu "fixed length" đó là một vector 384 chiều.
+
+Với dạng dữ liệu đó, chúng ta sẽ dùng thuật toán [KNN](https://machinelearningcoban.com/2017/01/08/knn/) để tìm những dữ liệu liên quan gần nhất và trả về cho AI model.
+
+Mình sẽ sử dụng Python và những thư viện sau
+
+```
+google-api-python-client==2.122.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.0
+redis>=5.2.1
+sentence-transformers>=4.0.1
+```
+
+Mình sẽ có một function để lấy crendentials từ google File credentials.json là một service account key các bạn có thể tạo trên Console của Google Cloud Platform.
+
+```python
+import os.path
+import pickle
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+
+
+def get_gmail_service():
+    """Gets Gmail API service instance."""
+    creds = None
+    pickle_file = os.path.join(ROOT_DIR, 'etc', 'token.pickle')
+
+    # The file token.pickle stores the user's access and refresh tokens
+    if os.path.exists(pickle_file):
+        with open(pickle_file, 'rb') as token:
+            creds = pickle.load(token)
+    
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+
+        else:
+
+            flow = InstalledAppFlow.from_client_secrets_file(
+                os.path.join(ROOT_DIR, 'etc', 'credentials.json'), SCOPES)
+
+            # Default port that matches Google Cloud Console's default redirect URI
+            creds = flow.run_local_server(port=8000)
+
+        # Save the credentials for the next run
+        with open(pickle_file, 'wb') as token:
+            pickle.dump(creds, token)
+
+    return build('gmail', 'v1', credentials=creds)
+```
+
+Function này sẽ lấy danh sách email từ start_date đến end_date bằng Gmail query
+
+```python
+def get_list_emails(service, start_date=None, end_date=None):
+    # Construct date query if dates provided
+    query = ""
+    if start_date:
+        query += f"after:{start_date} "
+    if end_date:
+        query += f"before:{end_date}"
+        
+    # Get all message IDs first
+    print("Fetching email IDs...")
+    results = service.users().messages().list(userId='me', q=query).execute()
+    messages = results.get('messages', [])
+    
+    # Keep getting messages if there are more pages
+    while 'nextPageToken' in results:
+        results = service.users().messages().list(
+            userId='me',
+            q=query,
+            pageToken=results['nextPageToken']
+        ).execute()
+        messages.extend(results.get('messages', []))
+        
+    total_emails = len(messages)
+    print(f"Found {total_emails} emails")
+
+    return messages
+```
+
+
+```python
+def get_detail_email(service, msg_id):
+    message = service.users().messages().get(userId='me', id=msg_id, format='full').execute()
+
+    body = ""
+    try:
+        if 'parts' in message['payload']:
+            for part in message['payload']['parts']:
+                if part['mimeType'] == 'text/plain':  # Can also check for 'text/html'
+                    body = base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
+                    break
+        else:
+            body = base64.urlsafe_b64decode(message['payload']['body']['data']).decode('utf-8')
+    except Exception:
+        body = ""
+
+    # Extract headers
+    headers = message['payload']['headers']
+    email_data = {
+        'id': msg_id,
+        'subject': '',
+        'from': '',
+        'date': '',
+        'snippet': message['snippet'],
+        'body': body,
+    }
+
+    # Get relevant headers
+    for header in headers:
+        name = header['name'].lower()
+        if name == 'subject':
+            email_data['subject'] = header['value']
+        elif name == 'from':
+            email_data['from'] = header['value']
+        elif name == 'date':
+            email_data['date'] = header['value']
+            
+    return email_data
+```
+
+Từ những function trên, chúng ta có function sau:
+
+```python
+g_service = get_gmail_service()
+list_emails = get_list_emails(g_service, '2024/01/01', '2024/12/31')
+emails_generator = (get_detail_email(g_service, email['id']) for email in list_emails)
+```
+
+```python
+def get_redis(db=0):
+    return redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=db, decode_responses=True)
+```
+
+Chúng ta sử dụng model `all-MiniLM-L6-v2`, model này đơn giản và có hiệu năng cao (vì email của mình cũng không quá dài và phức tạp). Model này sẽ tạo ra 1 embedding vector 384 chiều.
+
+Các bạn cũng có thể sử dụng AI model bằng Ollama để thực hiện vector hoá mà không cần import thư viện.
+
+```python
+def embed_text(text):
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    return model.encode(text).astype(np.float32).tobytes()
+```
+
+Chúng ta lưu email vào redis trong 1 hashmap bao gồm các thông tin lấy về từ Gmail và có thêm trường embedding.
+
+```python
+def store_in_redis(redis_client, email, embedding_vector):
+    email_data = {
+        "id": email['id'],
+        "subject": email['subject'],
+        "sender": email['from'],
+        "date": email['date'],
+        "snippet": email['snippet'],
+        "body": email['body']
+    }
+    
+    redis_client.hset(f"{REDIS_EMAIL_PREFIX_KEY}{email['id']}", mapping={
+        **email,
+        "embedding": embedding_vector
+    }) 
+```
+
+Bây giờ chúng ta sẽ set up pipeline ingest data. `embedding_vector` chính là vector mà mình đã nói ở trên, nó đại diện cho `sender`, `subject` và `snippet` của email.
+
+
+```python
+g_service = get_gmail_service()
+redis_client = get_redis()
+
+list_emails = get_list_emails(g_service, '2024/01/01', '2024/12/31')
+emails_generator = (get_detail_email(g_service, email['id']) for email in list_emails)
+
+for email in emails_generate:
+    embed_text = f'sender:{email_data["sender"]} subject:{email_data["subject"]} snippet:{email_data["snippet"]}'
+    embedding_vector = embed_text(embed_text)
+
+    store_in_redis(redis_client, email, embedding_vector)
+```
+
+Sau khi ingest thành công, chúng ta sẽ thực hiện đánh index để tăng hiệu quả tìm kiếm thông tin trong redis.
+
+Ở đây mình set up `embedding` field là 1 vector 384 chiều và sử dụng khoảng cách cosine để so sánh với các vector khác, các bạn có thể đọc thêm ở đây 
+[https://en.wikipedia.org/wiki/Cosine_similarity](https://en.wikipedia.org/wiki/Cosine_similarity)
+
+```python
+from redis.commands.search.field import TextField, VectorField
+from redis.commands.search.indexDefinition import IndexDefinition, IndexType
+
+def create_index_emails():
+    r = utils.get_redis(0)
+    vector_dim = 384
+
+    # drop old index
+    try:
+        r.ft('email_idx').dropindex(delete_documents=False)
+    except Exception:
+        pass
+
+    schema = (
+        TextField("id"),
+        TextField("subject"),
+        TextField("sender"), 
+        TextField("date"),
+        TextField("snippet"),
+        VectorField("embedding", 
+                "FLAT", {
+                    "TYPE": "FLOAT32",
+                    "DIM": 384,
+                    "DISTANCE_METRIC": "COSINE"
+                })
+    )
+
+    definition = IndexDefinition(
+        prefix=['emails:'],
+        index_type=IndexType.HASH,
+    )
+
+    r.ft(REDIS_EMAIL_INDEX).create_index(schema, definition=definition)
+```
+
+## Tích hợp AI model
+
+Chúng ta sẽ viết 1 function giúp AI model có thể query dữ liệu trong RediSearch. Function này lấy ra `k` email được cho là match nhất với query. 
+
+```python
+def search_redis(query, k=5):
+    r = get_redis(0)
+    query_embedding = embed_text(query)
+
+    q = (
+        Query("*=>[KNN $K @embedding $BLOB AS score]")
+        .return_fields("id", "subject", "sender", "date", "snippet", "body", "score")
+        .dialect(2)
+    )
+    
+    query_params = {
+        "K": k,
+        "BLOB": query_embedding,
+    }
+
+    results = r.ft(REDIS_EMAIL_INDEX).search(q, query_params)
+    
+    if not results.docs:
+        return []
+    
+    # Format results
+    emails = []
+    for doc in results.docs:
+        email_data = {
+            'id': doc.id.replace(REDIS_EMAIL_PREFIX_KEY, ''),
+            'subject': doc.subject,
+            'sender': doc.sender,
+            'date': doc.date,
+            'snippet': doc.snippet,
+            'body': doc.body,
+            'score': doc.score
+        }
+        emails.append(email_data)
+        
+    return emails
+```
+
+
+Chúng ta sẽ sử dụng AI model thông qua [Ollama SDK của Python](https://github.com/ollama/ollama-python).
+
+Sau khi nhận query, chúng ta hỏi AI xem liệu có cần tìm kiếm thông tin trong database trước hay không, nếu có chúng ta sẽ tìm thông tin trong database và gán vào context để AI model phân tích và đưa ra kết quả. 
+Nếu không, chúng ta sẽ đưa query trực tiếp cho AI model xử lí.
+
+```python
+try:
+    query = input("Me: ")
+
+    rich_query = f'''
+    This is my query: {query}
+    You can use function search_redis to search emails in redis database performantly.
+    Do you want to use this function?
+    Must responds only with yes or no.
+    '''
+
+    response = generate(
+        model="llama3.1:8b",
+        prompt=rich_query,
+    )
+
+    print('BOT: Hmm, Should I search the database? ', response.response)
+
+    if response.response == "yes":
+        results = search_redis(query, 2)
+        context = '\n\n'.join([
+            f'''
+            Subject: {email['subject']}
+            Snippet: {email['snippet']}
+            From: {email['sender']}
+            Date: {email['date']}
+            '''
+            for email in results
+        ])
+
+        query_with_context = f'''
+        This is my query: {query}
+        This is the context: {context} 
+        Please use the results base on context
+        '''
+
+        print('AI: ', end='')
+        for chunk in generate(
+            model="llama3.1:8b",
+            prompt=query_with_context,
+            stream=True
+        ):
+            print(chunk.response, end='', flush=True)
+        print('')
+
+    else:
+        print('AI: ', end='')
+        for chunk in generate(
+            model="llama3.1:8b",
+            prompt=query,
+            stream=True
+        ):
+            if 'response' in chunk:
+                print(chunk['response'], end='', flush=True)
+        print('')
+        
+except KeyboardInterrupt:
+    exit(0)
+```
+
+## Demo
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/KSenNT42C-Q?si=PwOjFPo6Q7TWNtuX" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+
+## What's next?
+
+Việc tích hợp AI và một vector searching như trên đơn giản, chưa hiệu quả và khó mở rộng nên trong bài viết sau, mình sẽ giới thiệu một phương pháp tích hợp đơn giản và đang được cộng đồng AI chuẩn hoá dần. Đó là Model Context Protocol - MCP. Phương pháp này hiện đã được áp dụng trên một số sản phẩm AI như Claude Desktop và Cursor AI Editor.
+
+Bye!
