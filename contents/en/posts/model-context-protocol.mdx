@@ -70,10 +70,19 @@ This process enables AI to not only analyze information but also understand when
 Suppose I ask an AI model: “Calculate the total amount transacted through Vietcombank this month.” The AI would process the request as follows:
 
 1️⃣ Based on the user’s query and descriptions of the MCP functions, the AI determines that it needs to use the email retrieval function.  
+
+
 2️⃣ The AI extracts the time range __"this month"__ and filters emails from Vietcombank to call the appropriate function.  
+
+
 3️⃣ The AI receives a list of transaction-related emails from Vietcombank.  
+
+
 4️⃣ The AI sequentially calls a function to fetch the details of each email, analyzes them, and extracts the transaction amounts.  
+
+
 5️⃣ Finally, the AI sums up the amounts and returns the total to the user.  
+
 
 Thanks to this mechanism, AI does not just respond based on pre-existing data but also learns to search, retrieve, and process information from external sources, providing more accurate and real-world answers. 🚀
 
