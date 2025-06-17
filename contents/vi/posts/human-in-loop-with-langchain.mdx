@@ -61,21 +61,19 @@ Với những công cụ này, bạn đã sẵn sàng để thiết lập một 
 
 ## Thiết kế graph
 
-Ta sẽ thiết kế agent có thể sử dụng các tool để tương tác với Kubernetes cluster (qua API server). Ở đây mình sẽ sử dụng K8s MCP.
+Tiếp theo, chúng ta sẽ thiết kế một agent có khả năng sử dụng các công cụ (tools) để tương tác với Kubernetes cluster thông qua API server. Trong ví dụ này, mình sẽ sử dụng Kubernetes MCP (Model Context Protocol) để kết nối và thực thi các lệnh trên cụm K8s.
 
-Bây giờ, ta hãy thiết kế 1 graph đễ xử lí những prompt của người dùng.
+Sau khi định nghĩa được tập tool cần thiết, bước tiếp theo là xây dựng một graph – thành phần cốt lõi trong LangGraph – để xử lý các prompt đầu vào từ người dùng. Graph sẽ điều hướng các yêu cầu thông qua các node (như gọi LLM, gọi tool, hoặc chờ phản hồi từ người dùng), từ đó tạo thành một luồng tương tác có kiểm soát và linh hoạt.
 
 <Image
   src="/images/hil-tut-1.png"
 />
 
-Như các bạn có thể thấy, prompt của người dùng bắt đầu được xử lí ở node call_model, model có thể sử dụng các tool (nếu cần)
-thông qua tool_node.
+Như bạn có thể thấy, prompt từ người dùng sẽ bắt đầu được xử lý tại node call_model. Tại đây, LLM sẽ phân tích nội dung và, nếu cần thiết, lựa chọn một hoặc nhiều công cụ để hỗ trợ quá trình trả lời. Việc gọi tool được thực hiện thông qua node tool_node.
 
-Sau khi không gọi tools, message được gửi tới final node để xử lí trước khi đưa ra người dùng. Tại đây, câu văn sẽ được
-chỉnh sửa giống với giọng điệu của thanh niên Sid trong phim Kỉ băng hà.
+Sau khi hoàn tất việc sử dụng công cụ (hoặc nếu không cần dùng tool), message sẽ được chuyển tiếp đến node final. Đây là bước cuối cùng trước khi phản hồi được gửi đến người dùng. Tại node này, chúng ta có thể tinh chỉnh nội dung — ví dụ như điều chỉnh lại giọng văn cho tự nhiên hơn hoặc tạo điểm nhấn theo phong cách cụ thể. Trong ví dụ này, mình sẽ thử biến câu trả lời theo phong cách hài hước, trẻ trung giống nhân vật Sid trong phim Kỷ băng hà (Ice Age).
 
-Import các thứ cần dùng
+Tiếp theo, hãy import các thành phần cần thiết cho việc thiết kế graph và agent:
 
 ```python
 import os
@@ -95,7 +93,9 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import interrupt
 ```
 
-Đi vào code, chúng ta cần convert các MCP calling sang tool calling để có thể sử dụng được trong LangChain 
+Để sử dụng được các công cụ liên quan đến Kubernetes trong LangChain, chúng ta cần chuyển đổi các hàm thực thi theo chuẩn MCP (Model Context Protocol) sang định dạng Tool của LangChain. Điều này cho phép các agent (hoặc model) có thể gọi các hàm đó như một phần của quá trình suy luận (reasoning), thông qua cơ chế tool calling.
+
+LangChain cung cấp interface Tool để chuẩn hóa cách LLM tương tác với các hàm xử lý tùy biến. Trong khi đó, thư viện langchain-mcp-adapters hỗ trợ việc bọc (wrap) các MCP-compatible tools thành dạng Tool, giúp ta dễ dàng tích hợp vào graph.
 
 ```python
 mcp_client = MultiServerMCPClient({
@@ -108,14 +108,23 @@ mcp_client = MultiServerMCPClient({
 tools = await mcp_client.get_tools()
 ```
 
-Tiếp theo sẽ khởi tạo model và binding tool vào để model biết các sử dụng các tool
+Sau khi đã định nghĩa các tool cần thiết, bước tiếp theo là khởi tạo model và “gắn” (bind) các tool vào model. Điều này giúp model hiểu rằng nó có thể gọi các tool này trong quá trình suy luận để hỗ trợ việc tạo phản hồi phù hợp hơn với yêu cầu của người dùng.
+
+Trong LangChain, ta có thể thực hiện việc binding tool thông qua phương thức .bind_tools() trên đối tượng LLM. Cụ thể như sau:
 
 ```python
 gemini = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 model = gemini.bind_tools(tools)
 ```
 
-Tiếp theo, chúng ta sẽ định nghĩa các node như trong hình
+Tiếp theo, chúng ta sẽ định nghĩa các node trong LangGraph để xử lý luồng tương tác giữa người dùng, mô hình và các công cụ. Mỗi node đại diện cho một bước xử lý độc lập trong graph.
+
+Trong ví dụ này, graph sẽ bao gồm các node chính sau:
+	•	call_model: xử lý prompt đầu vào bằng LLM (có thể đề xuất sử dụng tool)
+	•	tool_node: thực thi tool được model chọn (nếu có)
+	•	final: xử lý kết quả cuối cùng, chỉnh sửa giọng văn (tuỳ chọn) và chuẩn bị phản hồi gửi tới người dùng
+
+Chúng ta sẽ định nghĩa các hàm tương ứng với từng node, sau đó ánh xạ (register) chúng vào graph.
 
 
 ```python
@@ -157,14 +166,11 @@ def get_chat_agent():
         return "final"
 ```
 
-Nhìn node should_continue, node này sẽ là node điều hướng, nếu model muốn gọi tool calling, nó phải được sự cho phép của người dùng. Trong LangGraph, có 1 khái niệm được gọi là interrupt (ngắt), khi gặp ngắt, graph (callee) sẽ trả quyền điều khiển (suspend flow) về cho caller (ứng dụng). Sau đó, logic cấp quyền sẽ được cài đặt ở
-caller và sẽ tiếp tục flow của graph sau. Điều này tương tự như ngắt trong nguyên lí hệ điều hành ha :D.
+Trong luồng xử lý của chúng ta, node should_continue đóng vai trò như một bộ điều hướng. Nếu mô hình quyết định gọi tool, thao tác này phải được người dùng cho phép trước khi thực thi.
 
-Khi ứng dụng ngoài tiếp tục flow (resume flow), nó sẽ truyền giá trị ở ngoài vào biến `permit`, từ đó giúp graph có thể quyết định flow sẽ làm gì tiếp theo.
+LangGraph hỗ trợ điều này thông qua cơ chế interrupt. Khi một node gọi interrupt(), graph sẽ tạm dừng (suspend) quá trình thực thi và trả quyền điều khiển về cho ứng dụng bên ngoài (caller). Ứng dụng có thể thực hiện bất kỳ logic nào cần thiết – ví dụ: hiển thị yêu cầu xác nhận cho người dùng – và sau đó gọi resume() để tiếp tục luồng từ nơi đã dừng.
 
-Các bạn lưu ý là các lệnh `return` hay `interrupt` trong các node sẽ emit 1 event nào đó ra ứng dụng bên ngoài.
-
-OK, sau khi định nghĩa xong, chúng ra sẽ ghép lại thành 1 graph hoàn chỉnh
+Cơ chế này tương tự như ngắt trong hệ điều hành: khi một tiến trình bị gián đoạn bởi sự kiện bên ngoài, CPU sẽ lưu trạng thái, xử lý sự kiện, rồi tiếp tục thực thi sau đó. Về mặt lập trình, đây là một cách gọn gàng để giữ luồng tương tác giữa người dùng và agent luôn nhất quán, đặc biệt với các tác vụ có độ rủi ro cao.
 
 ```python
 def get_chat_agent():
@@ -196,22 +202,25 @@ def get_chat_agent():
 
 ```
 
-Vậy là chúng ta đã xong phần bộ não của ứng dụng, tiếp theo đến phần giao diện (application). Chúng ta sẽ sử dụng Chainlit để thiết kế.
+Vậy là chúng ta đã hoàn thiện phần “bộ não” của ứng dụng – một LangGraph agent có thể tương tác với Kubernetes, kiểm soát luồng xử lý và hỗ trợ người dùng duyệt thủ công khi cần thiết. Bây giờ, chúng ta sẽ chuyển sang phần giao diện người dùng bằng cách sử dụng Chainlit.
 
 ## Thiết kế giao diện của ứng dụng
 
-Chainlit sẽ cung cấp các event handler cơ bản sau:
-
-- on_app_startup: được gọi khi ứng dụng bắt đầu chạy.
-- on_chat_start: được gọi khi user bắt đầu một chat thread.
-- on_message: được gọi khi user submit một message trong thread.
-
-Ngoài ra Chainlit cũng cung cấp một session của các thread, session này sẽ lưu dữ liệu của thread đó qua các lần người dùng gửi message và xử lí trong on_message.
-
-Bạn có thể truy cập để đọc và ghi tới session thông qua API `cl.user_session`. 
+Chainlit cung cấp một bộ các event handler để xử lý vòng đời của ứng dụng và từng luồng hội thoại. Một số event quan trọng gồm:
 
 
-Dưới đây là khởi tạo agent và danh sách messages khi bắt đầu một thread.
+•	on_app_startup: được gọi khi ứng dụng khởi chạy.
+	
+
+•	on_chat_start: được gọi khi người dùng bắt đầu một luồng hội thoại mới.
+
+
+•	on_message: được gọi khi người dùng gửi một message trong chat.
+
+Chainlit cũng cung cấp một đối tượng user_session cho mỗi thread, cho phép bạn lưu trữ và truy xuất dữ liệu theo session – rất tiện lợi để lưu lại trạng thái của agent, graph, hoặc các biến xử lý nội bộ giữa các lần gửi message.
+
+Bạn có thể truy cập và làm việc với session thông qua API cl.user_session.
+
 
 ```python
 @cl.on_chat_start
