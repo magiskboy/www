@@ -120,9 +120,15 @@ model = gemini.bind_tools(tools)
 Tiếp theo, chúng ta sẽ định nghĩa các node trong LangGraph để xử lý luồng tương tác giữa người dùng, mô hình và các công cụ. Mỗi node đại diện cho một bước xử lý độc lập trong graph.
 
 Trong ví dụ này, graph sẽ bao gồm các node chính sau:
-	•	call_model: xử lý prompt đầu vào bằng LLM (có thể đề xuất sử dụng tool)
-	•	tool_node: thực thi tool được model chọn (nếu có)
-	•	final: xử lý kết quả cuối cùng, chỉnh sửa giọng văn (tuỳ chọn) và chuẩn bị phản hồi gửi tới người dùng
+	
+
+•	call_model: xử lý prompt đầu vào bằng LLM (có thể đề xuất sử dụng tool)
+	
+
+•	tool_node: thực thi tool được model chọn (nếu có)
+	
+
+•	final: xử lý kết quả cuối cùng, chỉnh sửa giọng văn (tuỳ chọn) và chuẩn bị phản hồi gửi tới người dùng
 
 Chúng ta sẽ định nghĩa các hàm tương ứng với từng node, sau đó ánh xạ (register) chúng vào graph.
 
@@ -244,13 +250,14 @@ async def on_message(message: cl.Message):
     cl.user_session.set("messages", messages)
 ```
 
-Hàm on_message nhận vào tham số là message người dùng gửi.
-Đầu tiên chúng ta sẽ lấy agent đã setup và khởi tạo config của graph. Lưu ý là graph cũng có nhiều state và được phân biệt bằng thread_id trong config này.
-Điều này đảm bảo dữ liệu lịch sử chat của 2 thread sẽ không bị lẫn lộn.
+Hàm on_message nhận vào một tham số là message do người dùng gửi đến trong phiên trò chuyện hiện tại.
 
-Sau đó, chúng ta lưu lại message của người dùng và session để agent có dữ liệu lịch sử cho những lần chat tiếp theo.
+Bước đầu tiên trong xử lý là lấy lại agent đã được khởi tạo trước đó từ session (ở on_chat_start). Đồng thời, ta sẽ thiết lập config của graph, trong đó có thread_id để đảm bảo rằng mỗi luồng hội thoại (thread) sử dụng một state độc lập. Điều này giúp tránh tình trạng các luồng chat khác nhau bị trộn lẫn lịch sử xử lý hoặc trạng thái nội bộ.
 
-Bước tiếp theo, ta sẽ gửi message của người dùng với graph để xử lí
+Tiếp theo, ta lưu lại message mới của người dùng vào danh sách messages trong session để đảm bảo agent có đầy đủ lịch sử khi tiếp tục xử lý về sau.
+
+Cuối cùng, ta gọi graph.ainvoke() để truyền toàn bộ context (bao gồm các messages) vào graph và chờ kết quả trả về.
+
 
 ```python
 @cl.on_message
@@ -279,11 +286,26 @@ Giờ đi vào flow chính, hãy nhìn vào hình dưới
     src="/images/hil-flow.jpg"
 />
 
-Ta sẽ tạo 1 stream để gửi tới LLM. Sau đó chạy một vòng lặp để xử lí các event sau đó của graph. Nếu gặp một interrupt event, ta sẽ xin quyền user và gửi tạo 1 
-Command message tương ứng và gửi tới graph bằng 1 stream. Chúng ta sẽ làm như vậy cho tới khi không gặp interrupt nữa, khi đó final message chính là message 
-cuối cùng hiển thị cho user để kết thúc 1 turn chat.
+Sau khi khởi tạo stream và bắt đầu chạy graph, ta sẽ bước vào một vòng lặp để xử lý các event mà graph emit. Trong LangGraph, các node có thể emit ra event interrupt, graph bị tạm dừng xử lý để xin xác nhận từ người dùng..
 
-Hãy nhìn đoạn code bên dưới và suy nghĩ nhé.
+Chiến lược xử lý ở đây là:
+
+1.	Tạo stream đầu tiên để gửi prompt từ người dùng vào graph.
+
+2.	Lặp qua các event:
+	
+
+•	Nếu gặp interrupt: lưu lại thông tin cần xác nhận, hiển thị cho người dùng, và chờ phản hồi.
+	
+
+•	Sau khi người dùng phản hồi, tạo một stream mới với Command message để tiếp tục flow.
+	
+
+3.	Quá trình này lặp lại cho tới khi không còn interrupt.
+	
+
+4.	Khi hoàn tất, lấy final_message từ cuối graph để hiển thị cho người dùng.
+
 
 ```python
 @cl.on_message
@@ -330,7 +352,6 @@ async def on_message(message: cl.Message):
 Các bạn có thể tham khảo full source code ở đây nhé [https://github.com/magiskboy/hil-in-langgraph](https://github.com/magiskboy/hil-in-langgraph)
 
 
-Như vậy, qua bài viết này, mình đã giới thiệu cho các bạn một kĩ thuật đơn giản nhưng vô cùng quan trọng trong các ứng dụng LLM. Ngoài logic cấp quyền cho LLM,
-Human in Loop có thể được dùng để cải thiện kết quả do LLM tạo ra hoặc để debug ứng dụng hiệu quả.
+Tổng kết lại, trong bài viết này, mình đã trình bày một kỹ thuật đơn giản nhưng thiết thực cho phép con người can thiệp vào quá trình xử lý của LLM — một cách tiếp cận phù hợp với những hệ thống cần kiểm soát, xác minh hoặc xử lý các hành động nhạy cảm. Kỹ thuật Human-in-the-Loop không chỉ hữu ích trong việc kiểm soát quyền truy cập vào các hành động quan trọng mà còn giúp cải thiện chất lượng phản hồi của mô hình, hỗ trợ quá trình phát triển và gỡ lỗi hiệu quả hơn.
 
-Cảm ơn mọi người đã đọc bài viết này.
+Hy vọng bài viết này sẽ giúp bạn có thêm một góc nhìn mới khi xây dựng các ứng dụng AI có tính tương tác cao.
