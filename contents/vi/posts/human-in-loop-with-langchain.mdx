@@ -256,8 +256,6 @@ Bước đầu tiên trong xử lý là lấy lại agent đã được khởi t
 
 Tiếp theo, ta lưu lại message mới của người dùng vào danh sách messages trong session để đảm bảo agent có đầy đủ lịch sử khi tiếp tục xử lý về sau.
 
-Cuối cùng, ta gọi graph.ainvoke() để truyền toàn bộ context (bao gồm các messages) vào graph và chờ kết quả trả về.
-
 
 ```python
 @cl.on_message
