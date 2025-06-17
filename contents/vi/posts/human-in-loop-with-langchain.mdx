@@ -1,0 +1,327 @@
+---
+title: "Human in Loop với LangGraph"
+date: 2025-05-12T22:29:00+07:00
+published: true
+score: 1
+tags:
+  - ai
+  - langchain
+  - langgraph
+  - llm
+categories:
+  - AI
+author: "Nguyễn Khắc Thành"
+description: |
+    Trong thời đại mà các Large Language Models (LLM) ngày càng phổ biến, những công cụ xung quanh chúng cũng không ngừng phát triển. Mặc dù khả năng tự động hóa của LLM rất ấn tượng, nhưng không phải lúc nào chúng cũng đưa ra quyết định hoàn toàn chính xác—đặc biệt là với những tác vụ có tính chất quan trọng hoặc yêu cầu cao về độ tin cậy.
+
+    Human‑in‑the‑Loop (HITL) là kỹ thuật giúp con người có thể can thiệp vào các bước xử lý của hệ thống AI như xác nhận, chỉnh sửa hoặc cung cấp thông tin bổ sung khi cần. Với LangGraph, bạn có thể sử dụng hàm interrupt() để tạm dừng luồng thực thi tại các điểm xác định, chờ phản hồi từ người dùng trước khi tiếp tục . Sau khi nhận được input như “accept” hoặc “edit”, quá trình mới được tiếp tục bằng cách sử dụng Command(resume=…) để chuyển trạng thái trở lại  ￼.
+
+    Kỹ thuật này hiện đang được ứng dụng rộng rãi trong các hệ thống như Claude Desktop hay Cursor Editor, nhằm đảm bảo mọi nội dung hoặc thao tác trọng yếu đều có người giám sát.
+
+    Trong bài viết này, mình sẽ hướng dẫn cách triển khai Human‑in‑the‑Loop sử dụng LangGraph (cho phần logic và checkpoint) và Chainlit (xây dựng giao diện tương tác thủ công). Mục tiêu là giúp bạn thiết lập một quy trình AI có kiểm duyệt rõ ràng, hỗ trợ kiểm soát và phản hồi từ con người một cách hiệu quả.
+---
+
+## Chuẩn bị
+
+Trước khi bắt đầu, bạn cần trang bị các thư viện và hiểu rõ vai trò của từng thành phần trong dự án:
+
+
+__1. LangChain__
+
+
+Là framework mạnh mẽ để xây dựng ứng dụng sử dụng LLM. LangChain cung cấp các interface tiêu chuẩn cho RAG, Chains, Agents, Memory, và tích hợp với nhiều vector store, LLMs…  ￼ ￼
+
+
+__2. LangGraph__
+
+Thư viện mở rộng trên LangChain để xây dựng các AI agent phức tạp thông qua kiến trúc đồ thị. LangGraph hỗ trợ các luồng có trạng thái (stateful), vòng lặp, branching, và đặc biệt là stream & human‑in‑the‑loop
+
+
+__3. Chainlit__
+Thư viện Python để thiết kế giao diện chat cho LLM – hoạt động theo cơ chế event-driven và API tương đồng Discord. Với Chainlit, bạn có thể tạo UI tương tác mà không cần biết frontend  
+
+
+__4. Các thư viện hỗ trợ khác__
+
+•	langchain-google-genai: giúp tích hợp model Gemini của Google.
+	
+•	langchain-mcp-adapters: hỗ trợ Model Context Protocol (MCP) trong LangGraph.
+
+
+Một số lưu ý quan trọng
+
+
+•	LangGraph hoạt động bằng cách định nghĩa các node và edges trong graph. Mọi dữ liệu trong ứng dụng đều được điều hướng qua graph này, và graph cũng phát ra các sự kiện (LLM messages, tool output…) để kết nối với các thành phần khác
+
+
+•	Chainlit là một framework event-driven, với cách xử lý tương tự Discord API. Nếu bạn đã từng dùng API Discord, Chainlit sẽ rất dễ làm quen; nó cũng tương thích phong cách với LangGraph nhờ cách xử lý sự kiện song song.
+
+
+Với những công cụ này, bạn đã sẵn sàng để thiết lập một quy trình Human‑in‑the‑Loop hoàn chỉnh, từ phần logic phía backend đến giao diện frontend. Trước khi đi sâu vào chi tiết triển khai, hãy đảm bảo bạn đã cài đặt đầy đủ và hiểu sơ lược chức năng từng thành phần.
+
+## Thiết kế graph
+
+Ta sẽ thiết kế agent có thể sử dụng các tool để tương tác với Kubernetes cluster (qua API server). Ở đây mình sẽ sử dụng K8s MCP.
+
+Bây giờ, ta hãy thiết kế 1 graph đễ xử lí những prompt của người dùng.
+
+<Image
+  src="/images/hil-tut-1.png"
+/>
+
+Như các bạn có thể thấy, prompt của người dùng bắt đầu được xử lí ở node call_model, model có thể sử dụng các tool (nếu cần)
+thông qua tool_node.
+
+Sau khi không gọi tools, message được gửi tới final node để xử lí trước khi đưa ra người dùng. Tại đây, câu văn sẽ được
+chỉnh sửa giống với giọng điệu của thanh niên Sid trong phim Kỉ băng hà.
+
+Import các thứ cần dùng
+
+```python
+import os
+from typing import cast, Callable, List, Literal, Optional
+
+import chainlit as cl
+from langchain.schema.runnable.config import RunnableConfig
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.graph.graph import CompiledGraph
+from langgraph.types import Command
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import MessagesState
+from langgraph.prebuilt import ToolNode
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.types import interrupt
+```
+
+Đi vào code, chúng ta cần convert các MCP calling sang tool calling để có thể sử dụng được trong LangChain 
+
+```python
+mcp_client = MultiServerMCPClient({
+    "kubectl": {
+        "command": "npx",
+        "args": ["mcp-server-kubernetes"],
+        "transport": "stdio"
+    },
+})
+tools = await mcp_client.get_tools()
+```
+
+Tiếp theo sẽ khởi tạo model và binding tool vào để model biết các sử dụng các tool
+
+```python
+gemini = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+model = gemini.bind_tools(tools)
+```
+
+Tiếp theo, chúng ta sẽ định nghĩa các node như trong hình
+
+
+```python
+def get_chat_agent():
+    # khởi tạo model và tools ở trên
+    ...
+
+    def call_model(state: MessagesState):
+        nonlocal model
+        messages = state["messages"]
+        response = model.invoke(messages)
+        return {"messages": [response]}
+
+
+    def call_final_model(state: MessagesState):
+        nonlocal model
+        messages = state["messages"]
+        last_ai_message = messages[-1]
+        response = model.invoke(
+            [
+                SystemMessage("Rewrite this in the voice of Sid in Ice Age"),
+                HumanMessage(last_ai_message.content),
+            ]
+        )
+        response.id = last_ai_message.id
+        return {"messages": [response]}
+
+
+    def should_continue(state: MessagesState) -> Literal["tools", "final"]:
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            permit = interrupt(f"I need to call **{last_message.tool_calls[0]['name']}**. Are you sure you want to call a tool?")
+            if permit:
+                return "tools"
+            else:
+                return "final"
+            
+        return "final"
+```
+
+Nhìn node should_continue, node này sẽ là node điều hướng, nếu model muốn gọi tool calling, nó phải được sự cho phép của người dùng. Trong LangGraph, có 1 khái niệm được gọi là interrupt (ngắt), khi gặp ngắt, graph (callee) sẽ trả quyền điều khiển (suspend flow) về cho caller (ứng dụng). Sau đó, logic cấp quyền sẽ được cài đặt ở
+caller và sẽ tiếp tục flow của graph sau. Điều này tương tự như ngắt trong nguyên lí hệ điều hành ha :D.
+
+Khi ứng dụng ngoài tiếp tục flow (resume flow), nó sẽ truyền giá trị ở ngoài vào biến `permit`, từ đó giúp graph có thể quyết định flow sẽ làm gì tiếp theo.
+
+Các bạn lưu ý là các lệnh `return` hay `interrupt` trong các node sẽ emit 1 event nào đó ra ứng dụng bên ngoài.
+
+OK, sau khi định nghĩa xong, chúng ra sẽ ghép lại thành 1 graph hoàn chỉnh
+
+```python
+def get_chat_agent():
+    # khởi tạo model và tools ở trên
+    ...
+    # định nghĩa các node
+    ...
+
+    tool_node = ToolNode(tools=tools)
+
+    builder = StateGraph(MessagesState)
+
+    builder.add_node("call_model", call_model)
+    builder.add_node("tools", tool_node)
+    builder.add_node("final", call_final_model)
+
+    builder.add_edge(START, "call_model")
+    builder.add_conditional_edges(
+        "call_model",
+        should_continue,
+    )
+
+    builder.add_edge("tools", "call_model")
+    builder.add_edge("final", END)
+
+    graph = builder.compile(checkpointer=InMemorySaver())
+
+    return graph
+
+```
+
+Vậy là chúng ta đã xong phần bộ não của ứng dụng, tiếp theo đến phần giao diện (application). Chúng ta sẽ sử dụng Chainlit để thiết kế.
+
+## Thiết kế giao diện của ứng dụng
+
+Chainlit sẽ cung cấp các event handler cơ bản sau:
+
+- on_app_startup: được gọi khi ứng dụng bắt đầu chạy.
+- on_chat_start: được gọi khi user bắt đầu một chat thread.
+- on_message: được gọi khi user submit một message trong thread.
+
+Ngoài ra Chainlit cũng cung cấp một session của các thread, session này sẽ lưu dữ liệu của thread đó qua các lần người dùng gửi message và xử lí trong on_message.
+
+Bạn có thể truy cập để đọc và ghi tới session thông qua API `cl.user_session`. 
+
+
+Dưới đây là khởi tạo agent và danh sách messages khi bắt đầu một thread.
+
+```python
+@cl.on_chat_start
+async def on_chat_start():
+    cl.user_session.set("messages", [])
+    agent = await get_chat_agent()
+    cl.user_session.set("agent", agent)
+```
+
+Tiếp theo, chúng ta sẽ cài đặt phần xử lí messsage (on_messsage)
+
+```python
+@cl.on_message
+async def on_message(message: cl.Message):
+    agent = cast(CompiledGraph, cl.user_session.get("agent"))
+    thread_id = cl.context.session.id
+    config = RunnableConfig(configurable={"thread_id": thread_id}, callbacks=[cl.LangchainCallbackHandler()])
+
+    messages = cl.user_session.get("messages")
+    messages.append(HumanMessage(content=message.content))
+    cl.user_session.set("messages", messages)
+```
+
+Hàm on_message nhận vào tham số là message người dùng gửi.
+Đầu tiên chúng ta sẽ lấy agent đã setup và khởi tạo config của graph. Lưu ý là graph cũng có nhiều state và được phân biệt bằng thread_id trong config này.
+Điều này đảm bảo dữ liệu lịch sử chat của 2 thread sẽ không bị lẫn lộn.
+
+Sau đó, chúng ta lưu lại message của người dùng và session để agent có dữ liệu lịch sử cho những lần chat tiếp theo.
+
+Bước tiếp theo, ta sẽ gửi message của người dùng với graph để xử lí
+
+```python
+@cl.on_message
+async def on_message(message: cl.Message):
+    ...
+
+    interrupt = None
+    response = cl.Message(content="")
+
+    stream = agent.astream(
+        {"messages": messages},
+        config=config,
+        stream_mode=['messages', 'updates'],
+    )
+```
+
+Ta khởi tạo 1 stream LLM để xử lí message. Biến interrupt để lưu lại các interrupt mà trong quá trình LLM xử lí cần xin phép người dùng. Biến này sẽ mang thông tin của lời gọi `interrupt` trước đó chúng ta định nghĩa trong node.
+
+```python
+interrupt(f"I need to call **{last_message.tool_calls[0]['name']}**. Are you sure you want to call a tool?")
+```
+
+Giờ đi vào flow chính, hãy nhìn vào hình dưới
+
+<Image 
+    src="/images/hil-flow.jpg"
+/>
+
+Ta sẽ tạo 1 stream để gửi tới LLM. Sau đó chạy một vòng lặp để xử lí các event sau đó của graph. Nếu gặp một interrupt event, ta sẽ xin quyền user và gửi tạo 1 
+Command message tương ứng và gửi tới graph bằng 1 stream. Chúng ta sẽ làm như vậy cho tới khi không gặp interrupt nữa, khi đó final message chính là message 
+cuối cùng hiển thị cho user để kết thúc 1 turn chat.
+
+Hãy nhìn đoạn code bên dưới và suy nghĩ nhé.
+
+```python
+@cl.on_message
+async def on_message(message: cl.Message):
+    ...
+
+    while stream:
+        async for stream_mode, pack in stream:
+            if stream_mode == 'messages':
+                msg, metadata = pack
+                if (
+                    msg.content
+                    and not isinstance(msg, HumanMessage)
+                    and metadata["langgraph_node"] == "final"
+                ):
+                    await response.stream_token(msg.content)
+                stream = None
+
+            else:
+                if '__interrupt__' in pack:
+                    interrupt = pack['__interrupt__'][0]
+                    res = await cl.AskActionMessage(
+                        content=interrupt.value,
+                        actions=[
+                            cl.Action(name="continue", payload={"value": "continue"}, label="Continue"),
+                            cl.Action(name="cancel", payload={"value": "cancel"}, label="Cancel"),
+                        ],
+                    ).send()
+                    
+                    if res['payload']['value'] == 'continue':
+                        cmd = Command(resume=True)
+                    else:
+                        cmd = Command(update={"messages": [HumanMessage("I don't want to call a tool")]}, resume=False)
+
+                    stream = agent.astream(
+                        cmd,
+                        config=config,
+                        stream_mode=['messages', 'updates'],
+                    )
+                else:
+                    stream = None
+```
+
+Các bạn có thể tham khảo full source code ở đây nhé [https://github.com/magiskboy/hil-in-langgraph](https://github.com/magiskboy/hil-in-langgraph)
+
+
+Như vậy, qua bài viết này, mình đã giới thiệu cho các bạn một kĩ thuật đơn giản nhưng vô cùng quan trọng trong các ứng dụng LLM. Ngoài logic cấp quyền cho LLM,
+Human in Loop có thể được dùng để cải thiện kết quả do LLM tạo ra hoặc để debug ứng dụng hiệu quả.
+
+Cảm ơn mọi người đã đọc bài viết này.
