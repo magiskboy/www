@@ -13,11 +13,8 @@ categories:
 author: "Nguyễn Khắc Thành"
 description: |
     In an era where Large Language Models (LLMs) are becoming increasingly widespread, the ecosystem of tools surrounding them is also rapidly evolving. While LLMs are capable of impressive automation, they don’t always make fully accurate decisions—especially when it comes to high-stakes tasks or those requiring a high degree of reliability.
-
-		Human-in-the-Loop (HITL) is a technique that allows humans to intervene in an AI system’s processing pipeline—confirming, editing, or providing additional information when necessary. With LangGraph, you can use the interrupt() function to pause execution at predefined checkpoints and wait for human feedback before proceeding. Once input like “accept” or “edit” is received, the process can resume using Command(resume=...), transitioning the state forward.
-
+    Human-in-the-Loop (HITL) is a technique that allows humans to intervene in an AI system’s processing pipeline—confirming, editing, or providing additional information when necessary. With LangGraph, you can use the interrupt() function to pause execution at predefined checkpoints and wait for human feedback before proceeding. Once input like “accept” or “edit” is received, the process can resume using Command(resume=...), transitioning the state forward.
 		This technique is already being applied in systems like Claude Desktop and Cursor Editor, where it helps ensure that all critical actions and content are subject to human oversight.
-
 		In this article, I’ll walk you through how to implement Human-in-the-Loop using LangGraph (for logic flow and checkpoints) and Chainlit (to build a manual interaction interface). The goal is to help you establish a clear, moderated AI workflow—enabling efficient human control and feedback.
 ---
 
