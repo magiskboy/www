@@ -10,12 +10,12 @@ tags:
   - llm
 categories:
   - AI
-author: "Nguyễn Khắc Thành"
+author: "Nguyen Khac Thanh"
 description: |
     In an era where Large Language Models (LLMs) are becoming increasingly widespread, the ecosystem of tools surrounding them is also rapidly evolving. While LLMs are capable of impressive automation, they don’t always make fully accurate decisions—especially when it comes to high-stakes tasks or those requiring a high degree of reliability.
-    Human-in-the-Loop (HITL) is a technique that allows humans to intervene in an AI system’s processing pipeline—confirming, editing, or providing additional information when necessary. With LangGraph, you can use the interrupt() function to pause execution at predefined checkpoints and wait for human feedback before proceeding. Once input like “accept” or “edit” is received, the process can resume using Command(resume=...), transitioning the state forward.
+    **Human-in-the-Loop** (HITL) is a technique that allows humans to intervene in an AI system’s processing pipeline—confirming, editing, or providing additional information when necessary. With LangGraph, you can use the **interrupt()** function to pause execution at predefined checkpoints and wait for human feedback before proceeding. Once input like “accept” or “edit” is received, the process can resume using **Command(resume=...)**, transitioning the state forward.
     This technique is already being applied in systems like Claude Desktop and Cursor Editor, where it helps ensure that all critical actions and content are subject to human oversight.
-    In this article, I’ll walk you through how to implement Human-in-the-Loop using LangGraph (for logic flow and checkpoints) and Chainlit (to build a manual interaction interface). The goal is to help you establish a clear, moderated AI workflow—enabling efficient human control and feedback.
+    In this article, I’ll walk you through how to implement **Human-in-the-Loop** using LangGraph (for logic flow and checkpoints) and Chainlit (to build a manual interaction interface). The goal is to help you establish a clear, moderated AI workflow—enabling efficient human control and feedback.
 ---
 
 ## Pre-requirements
@@ -39,7 +39,7 @@ __3. Chainlit__
 A Python library for designing chat interfaces for LLMs—Chainlit operates on an event-driven architecture with an API similar to Discord. With Chainlit, you can build interactive UIs without needing any frontend knowledge.
 
 
-__4. Các thư viện hỗ trợ khác__
+__4. Other libraries__
 
 •	langchain-google-genai: enables integration with Google’s Gemini models.
 	
@@ -68,7 +68,7 @@ Now, let’s design a graph to handle user prompts.
   src="/images/hil-tut-1.png"
 />
 
-As you can see, the user prompt begins processing at the call_model node, where the model can invoke tools if needed via the tool_node.
+As you can see, the user prompt begins processing at the **call_model** node, where the model can invoke tools if needed via the **tool_node**.
 
 Once tool usage is no longer required, the message is routed to the final node for final processing before being returned to the user. At this stage, the response is rewritten in the voice and tone of Sid, the sloth character from Ice Age.
 
@@ -93,9 +93,9 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import interrupt
 ```
 
-To use Kubernetes-related tools within LangChain, we need to convert execution functions following the MCP (Model Context Protocol) standard into the Tool format used by LangChain. This enables agents (or models) to invoke those functions as part of their reasoning process via the tool calling mechanism.
+To use Kubernetes-related tools within LangChain, we need to convert execution functions following the **MCP (Model Context Protocol)** standard into the Tool format used by LangChain. This enables agents (or models) to invoke those functions as part of their reasoning process via the tool calling mechanism.
 
-LangChain provides a Tool interface to standardize how LLMs interact with custom processing functions. Meanwhile, the langchain-mcp-adapters library helps wrap MCP-compatible tools into Tool objects, making them easy to integrate into your graph.
+LangChain provides a Tool interface to standardize how LLMs interact with custom processing functions. Meanwhile, the **langchain-mcp-adapters** library helps wrap MCP-compatible tools into Tool objects, making them easy to integrate into your graph.
 
 
 ```python
@@ -111,7 +111,7 @@ tools = await mcp_client.get_tools()
 
 After defining the necessary tools, the next step is to initialize the model and bind the tools to it. This allows the model to understand that it can invoke these tools during the reasoning process to generate responses that better align with the user’s request.
 
-In LangChain, you can bind tools using the .bind_tools() method on the LLM object. Specifically, it looks like this:
+In LangChain, you can bind tools using the **.bind_tools()** method on the LLM object. Specifically, it looks like this:
 
 ```python
 gemini = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
@@ -123,13 +123,13 @@ Next, we’ll define the nodes in LangGraph to handle the interaction flow betwe
 In this example, the graph will include the following main nodes:
 	
 
-•	call_model: processes the input prompt using the LLM (may suggest using a tool)
+•	**call_model**: processes the input prompt using the LLM (may suggest using a tool)
 
 
-•	tool_node: executes the tool selected by the model (if any)
+•	**tool_node**: executes the tool selected by the model (if any)
 
 
-•	final: handles the final result, optionally refines the tone, and prepares the response to send back to the user
+•	**final**: handles the final result, optionally refines the tone, and prepares the response to send back to the user
 
 
 We will define functions corresponding to each node and then map (register) them into the graph.
@@ -176,7 +176,7 @@ def get_chat_agent():
 
 In our processing flow, the should_continue node acts as a controller. If the model decides to call a tool, that action must first be approved by the user before it is executed.
 
-LangGraph supports this through the interrupt mechanism. When a node calls interrupt(), the graph suspends its execution and hands control back to the external application (the caller). The application can then perform any necessary logic—such as showing a confirmation request to the user—and subsequently call resume() to continue the flow from where it left off.
+LangGraph supports this through the **interrupt mechanism**. When a node calls **interrupt()**, the graph suspends its execution and hands control back to the external application (the caller). The application can then perform any necessary logic—such as showing a confirmation request to the user—and subsequently call resume() to continue the flow from where it left off.
 
 This mechanism is similar to an interrupt in operating systems: when a process is interrupted by an external event, the CPU saves the current state, handles the event, and then resumes execution afterward. From a programming perspective, this is a clean way to maintain a consistent interaction flow between the user and the agent—especially for high-risk operations.
 
@@ -217,18 +217,18 @@ And with that, we’ve completed the “brain” of the application — a LangGr
 Chainlit provides a set of event handlers to manage the lifecycle of the application and each conversation thread. Some important events include:
 
 
-•	on_app_startup: called when the application starts.
+•	**on_app_startup**: called when the application starts.
 
 
-•	on_chat_start: called when the user starts a new chat thread.
+•	**on_chat_start**: called when the user starts a new chat thread.
 
 
-•	on_message: called when the user sends a message in the chat.
+•	**on_message**: called when the user sends a message in the chat.
 
 
 Chainlit also provides a user_session object for each thread, allowing you to store and retrieve data per session—very useful for maintaining the state of the agent, graph, or internal processing variables across multiple messages.
 
-You can access and work with the session via the cl.user_session API.
+You can access and work with the session via the **cl.user_session** API.
 
 ```python
 @cl.on_chat_start
@@ -238,7 +238,7 @@ async def on_chat_start():
     cl.user_session.set("agent", agent)
 ```
 
-Next, we will implement the message handling logic using the 'on_message' event.
+Next, we will implement the message handling logic using the **on_message** event.
 
 ```python
 @cl.on_message
@@ -252,9 +252,9 @@ async def on_message(message: cl.Message):
     cl.user_session.set("messages", messages)
 ```
 
-The on_message function receives a parameter that contains the message sent by the user in the current chat session.
+The **on_message** function receives a parameter that contains the message sent by the user in the current chat session.
 
-The first step in the handling process is to retrieve the previously initialized agent from the session (set up in on_chat_start). At the same time, we configure the graph, including the thread_id, to ensure that each chat thread uses an independent state. This prevents different chat threads from mixing up their processing history or internal states.
+The first step in the handling process is to retrieve the previously initialized agent from the session (set up in on_chat_start). At the same time, we configure the graph, including the **thread_id**, to ensure that each chat thread uses an independent state. This prevents different chat threads from mixing up their processing history or internal states.
 
 Next, we store the user’s new message into the messages list in the session to ensure the agent has a complete message history when continuing the processing later on.
 
