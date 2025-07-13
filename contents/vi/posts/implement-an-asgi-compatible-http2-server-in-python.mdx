@@ -26,7 +26,8 @@ Dưới đây là một số nhận xét của mình về HTTP/1.1 và HTTP/2:
 
 - HTTP/1.1 truyền gói tin ở định dạng văn bản, trong khi HTTP/2 sử dụng định dạng nhị phân.
 - HTTP/1.1 hỗ trợ pipelining để tái sử dụng kết nối, giúp giảm số lần bắt tay (handshake). Tuy nhiên, hiệu quả truyền tải không cao do phải đảm bảo thứ tự xử lý các transaction — nếu một transaction bị chậm, các transaction sau cũng phải chờ. HTTP/2 khắc phục vấn đề này bằng cách chia nhỏ mỗi transaction thành nhiều frame, bổ sung metadata và áp dụng nén dữ liệu, từ đó loại bỏ ràng buộc về thứ tự.
-- HTTP/2 sử dụng thêm metadata nên kích thước mỗi gói tin thường lớn hơn so với HTTP/1.1. Ngoài ra, HTTP/2 còn thực hiện nhiều phản hồi xác nhận (ACK) trong quá trình truyền tải để đảm bảo client và server trao đổi chính xác các gói tin thuộc từng transaction.
+- HTTP/2 sử dụng thêm metadata và được nén bằng một biến thể của thuật Huffman
+- Ngoài ra, HTTP/2 còn thực hiện nhiều phản hồi xác nhận (ACK) trong quá trình truyền tải (các sự kiện WINDOW_UPDATE vaf SETTING frame) để đảm bảo client và server trao đổi chính xác các gói tin thuộc từng transaction.
 - Về hiệu suất truyền tải, HTTP/2 vượt trội hơn HTTP/1.1. Tuy nhiên, với các ứng dụng nặng về xử lý phía server, sự khác biệt về hiệu năng giữa hai phiên bản không quá đáng kể. Do đó, HTTP/2 thường được ưu tiên trong các ứng dụng tập trung vào truyền tải dữ liệu như dịch vụ lưu trữ tệp, website tĩnh, v.v.
 
 ## Về ASGI
