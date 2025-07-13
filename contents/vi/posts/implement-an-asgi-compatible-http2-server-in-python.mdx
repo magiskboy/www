@@ -20,6 +20,8 @@ HTTP/2 là một phương thức đóng gói, truyền và nhận các gói tin 
 
 HTTP/2 ra đời nhằm khắc phục những điểm yếu trong truyền tải dữ liệu của các phiên bản trước. Trong HTTP/2, mỗi transaction được chia nhỏ thành các frame; mỗi transaction được gọi là một stream, và một stream bao gồm nhiều frame. Nhờ đó, trên một kết nối duy nhất, ta có thể truyền đồng thời nhiều frame thuộc nhiều stream khác nhau. Dữ liệu trong các frame này được biểu diễn dưới dạng nhị phân và nén bằng một biến thể của thuật toán Huffman, giúp giảm đáng kể dung lượng truyền tải.
 
+<Image src="/images/http2.webp" title="HTTP/1.1 vs HTTP/2" />
+
 Dưới đây là một số nhận xét của mình về HTTP/1.1 và HTTP/2:
 
 - HTTP/1.1 truyền gói tin ở định dạng văn bản, trong khi HTTP/2 sử dụng định dạng nhị phân.

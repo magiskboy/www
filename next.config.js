@@ -81,7 +81,7 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["miro.medium.com", "meme-arsenal.com", "web-dev.imgix.net", "user-images.githubusercontent.com"],
+    domains: ["miro.medium.com", "meme-arsenal.com", "web-dev.imgix.net", "user-images.githubusercontent.com", "raw.githubusercontent.com"],
   },
   pageExtensions: ["mdx", "md", "tsx", "ts"],
 };
