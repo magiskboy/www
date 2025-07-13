@@ -11,37 +11,47 @@ tags:
 categories:
 - Web development
 - Python
-description: "Cuối tuần vừa rồi mình có rảnh rỗi nên ngồi đọc paper của HTTP/1.1,  HTTP/2 và ASGI để cài đặt một web server trong Python. Về cơ bản là chúng hoạt động ổn ở mức cơ bản. Dưới đây là một số chia sẻ của mình về những gì mình đã học được qua việc viết một web server như thế trong Python."
+description: "Cuối tuần vừa rồi, mình có chút thời gian rảnh nên ngồi đọc các tài liệu về HTTP/1.1, HTTP/2 và ASGI, với mục tiêu cài đặt một web server bằng Python. Về cơ bản, mọi thứ hoạt động ổn ở mức nền tảng. Dưới đây là một vài chia sẻ từ những gì mình học được trong quá trình xây dựng một web server như vậy bằng Python."
 ---
 
 ## Về HTTP/1.1 và HTTP/2
 
-HTTP/2 là một phương thức đóng gói, truyền và nhận gói tin HTTP trên giao thức TCP để cải thiện hiệu suất của phiên bản HTTP/1.1. HTTP/1.1 sử dụng một connection cho mỗi transaction (bao gồm request + response). Sau này được cải tiến để có thể sử dụng một connection cho nhiều transaction được gọi là HTTP Pipelining , tuy nhiên cải tiến này đa số là không hiệu quả về mặt truyền tin (do thứ tự transaction phải đảm bảo dẫn tới nếu transaction trước tốn thời gian thì transaction sau phải đợi), chỉ có điều chúng sẽ làm giảm số lần phải handshake giữa client và server.
+HTTP/2 là một phương thức đóng gói, truyền và nhận các gói tin HTTP trên nền giao thức TCP nhằm cải thiện hiệu suất so với phiên bản HTTP/1.1. Trong HTTP/1.1, mỗi transaction (gồm request và response) sử dụng một kết nối riêng. Sau này, giao thức được cải tiến để cho phép nhiều transaction sử dụng chung một kết nối, gọi là HTTP Pipelining. Tuy nhiên, cải tiến này nhìn chung không hiệu quả về mặt truyền tải, do các transaction phải tuân theo thứ tự — nếu một transaction trước đó bị chậm, các transaction sau sẽ phải chờ. Dù vậy, HTTP Pipelining cũng giúp giảm số lần handshake giữa client và server.
 
-HTTP/2 ra đời để cải thiện điểm yếu trong truyền tin. Các transaction sẽ được bẻ nhỏ thành các frame, mỗi transaction được gọi là một stream và trên stream sẽ có nhiều frame đi qua. Bây giờ, trên 1 connection chúng ta có thể truyền nhiều frame của nhiều stream. Dữ liệu trong các frame này là binary và được nén lại bằng một biến thể của thuật toán Huffman nên rất nhẹ. Một số nhận xét của mình về HTTP/1.1 và HTTP/2 như sau:
+HTTP/2 ra đời nhằm khắc phục những điểm yếu trong truyền tải dữ liệu của các phiên bản trước. Trong HTTP/2, mỗi transaction được chia nhỏ thành các frame; mỗi transaction được gọi là một stream, và một stream bao gồm nhiều frame. Nhờ đó, trên một kết nối duy nhất, ta có thể truyền đồng thời nhiều frame thuộc nhiều stream khác nhau. Dữ liệu trong các frame này được biểu diễn dưới dạng nhị phân và nén bằng một biến thể của thuật toán Huffman, giúp giảm đáng kể dung lượng truyền tải.
 
-- HTTP/1.1 gửi gói tin dưới định dạng text còn HTTP/2 là định dạng nhị phân
-- HTTP/1.1 pipelining có thể tái sử dụng connection để giảm số lần handshake tuy nhiêu hiệu quả truyền tin không cao do thứ tự transaction phải đảm bảo. Điều này được HTTP/2 khắc phục bằng cách bẻ nhỏ gói tin của từng transaction, bổ sung thêm metadata và nén thông tin, do đó tránh được hạn chế về thứ tự của transaction của HTTP/1.1
-- HTTP/2 có sử dụng thêm metadata nên thông tin trên một gói tin của HTTP/2 lớn hơn HTTP/1.1. Bên cạnh đó, HTTP/2 thực hiện ACK khá nhiều trong quá trình truyền tin để đảm bảo server và client gửi đúng gói tin cho từng transaction
-- Về mặt hiệu suất truyền tin HTTP/2 vượt trội so với HTTP/1.1. Tuy nhiên, với những ứng dụng nặng về xử lí ở server thì HTTP/2 không quá khác biệt so với HTTP/1.1. Do đó, HTTP/2 thường được sử dụng trong những ứng dụng thuần tuý truyền tin như dịch vụ lưu trữ file, website tĩnh,….
+Dưới đây là một số nhận xét của mình về HTTP/1.1 và HTTP/2:
+
+- HTTP/1.1 truyền gói tin ở định dạng văn bản, trong khi HTTP/2 sử dụng định dạng nhị phân.
+- HTTP/1.1 hỗ trợ pipelining để tái sử dụng kết nối, giúp giảm số lần bắt tay (handshake). Tuy nhiên, hiệu quả truyền tải không cao do phải đảm bảo thứ tự xử lý các transaction — nếu một transaction bị chậm, các transaction sau cũng phải chờ. HTTP/2 khắc phục vấn đề này bằng cách chia nhỏ mỗi transaction thành nhiều frame, bổ sung metadata và áp dụng nén dữ liệu, từ đó loại bỏ ràng buộc về thứ tự.
+- HTTP/2 sử dụng thêm metadata nên kích thước mỗi gói tin thường lớn hơn so với HTTP/1.1. Ngoài ra, HTTP/2 còn thực hiện nhiều phản hồi xác nhận (ACK) trong quá trình truyền tải để đảm bảo client và server trao đổi chính xác các gói tin thuộc từng transaction.
+- Về hiệu suất truyền tải, HTTP/2 vượt trội hơn HTTP/1.1. Tuy nhiên, với các ứng dụng nặng về xử lý phía server, sự khác biệt về hiệu năng giữa hai phiên bản không quá đáng kể. Do đó, HTTP/2 thường được ưu tiên trong các ứng dụng tập trung vào truyền tải dữ liệu như dịch vụ lưu trữ tệp, website tĩnh, v.v.
 
 ## Về ASGI
 
-ASGI là viết tắt của *Asynchronous Server Gateway Interface.* Nó là một giao diện để web server có thể giao tiếp với ứng dụng web bất đồng bộ trong Python. Nếu ai từng viết các web backend bằng Python cách đây 6-8 năm (như Flask hay Django) thì chúng tương thích với giao diện khác gọi là WSGI - *Web Server Gateway Interface* và một trong những web server tương thích với giao diện này là HTTP Apache với module uWSGI.
+ASGI là viết tắt của *Asynchronous Server Gateway Interface.* Nó là một giao diện cho phép web server giao tiếp với các ứng dụng web bất đồng bộ trong Python. Nếu ai từng viết các web backend bằng Python cách đây 6–8 năm (như Flask hay Django), thì sẽ quen với một giao diện khác gọi là WSGI – *Web Server Gateway Interface*. Một trong những web server phổ biến tương thích với giao diện này là HTTP Apache thông qua module uWSGI.
 
-Sự khác nhau giữa hai giao diện này là ASGI hỗ trợ xử lí các request bất đồng bộ với mô hình event loop trong khi WSGI hỗ trợ xử lí các request song song với mô hình multithread. Tuy nhiên, sử dụng mô hình multithread để xử lí vấn đề về I/O là không hiệu quả (bài toán c10k) và một trong những ví dụ điển hình là Nginx và HTTP Apache.
+Sự khác biệt giữa hai giao diện này nằm ở mô hình xử lý request: ASGI hỗ trợ xử lý bất đồng bộ thông qua mô hình *event loop*, trong khi WSGI xử lý các request song song bằng mô hình *multithread*.  
 
-Vào thời điểm ASGI chưa xuất hiện, có một số framework đã tự phát triển theo hướng bất đồng bộ, ví dụ như Tornado. Tuy nhiên, việc không phát triển một giao diện tiêu chuẩn làm việc phát triển và sử dụng các framework bất đồng bộ trở nên khó khăn và ASGI ra đời để giải quyết vấn đề đó. Về cơ bản, ASGI sử dụng coroutine trong Python để xử lí từng request và điều phối nó bằng event loop. Các sự kiện nhận và gửi dữ liệu trên socket được xử lí non-blocking. Khi server nhận gói tin đến, nó sẽ emit một event đến cho ứng dụng và ngược lại, khi ứng dụng cần gửi response (có thể là stream response), nó sẽ emit một sự kiện và server sẽ xử lí và gửi đi thông qua socket.
+Tuy nhiên, việc dùng multithread để giải quyết các tác vụ liên quan đến I/O không thực sự hiệu quả — đây chính là vấn đề được nhắc đến trong bài toán C10K. Một ví dụ điển hình cho hướng tiếp cận hiệu quả hơn là việc Nginx sử dụng mô hình bất đồng bộ, so với HTTP Apache vốn sử dụng mô hình đa luồng truyền thống.
 
-Cho bạn nào chưa biết thì event loop là một phương pháp dùng để quản lí và điều phối các đơn vị xử lí dựa trên các sự kiện bất đồng bộ như networking hoặc filesystem.
+Trước khi ASGI xuất hiện, một số framework đã tự phát triển theo hướng bất đồng bộ, chẳng hạn như Tornado. Tuy nhiên, do thiếu một giao diện tiêu chuẩn, việc phát triển và sử dụng các framework bất đồng bộ trở nên khó khăn và thiếu tính tương thích. ASGI ra đời để giải quyết vấn đề đó.  
+
+Về cơ bản, ASGI sử dụng *coroutine* trong Python để xử lý từng request, và điều phối thông qua một *event loop*. Các sự kiện gửi và nhận dữ liệu qua socket được xử lý theo kiểu *non-blocking*.  
+
+Khi server nhận được một gói tin đến, nó sẽ *emit* một sự kiện tới ứng dụng. Ngược lại, khi ứng dụng cần gửi response (bao gồm cả trường hợp *streaming response*), nó sẽ *emit* một sự kiện để server xử lý và truyền đi qua socket.
+
+Cho bạn nào chưa biết thì *event loop* là một cơ chế dùng để quản lý và điều phối các đơn vị xử lý dựa trên các sự kiện bất đồng bộ, chẳng hạn như các tác vụ liên quan đến mạng (networking) hoặc hệ thống tập tin (filesystem).
 
 ## Triển khai web server bằng Python
 
-Trong demo này, mình đã cài đặt cả hai giao thức là HTTP/1.1 và HTTP/2. Web server mình sử dụng nhiều process để đem lại hiệu suất cảo hơn trên các kiến trúc nhiều core CPU.
+Trong demo này, mình đã cài đặt cả hai giao thức: HTTP/1.1 và HTTP/2. Web server được thiết kế sử dụng nhiều *process* để tận dụng hiệu quả hơn tài nguyên trên các hệ thống đa nhân (multi-core CPU), nhằm cải thiện hiệu suất xử lý.
 
-Bây giờ hãy đi vào cài đặt chi tiết. Lưu ý là trong bài viết này, mình chỉ đưa ra những snippet quan trọng để giải thích cho những gì mình viết. Để đi vào chi tiết, các bạn hay đọc thêm trong repo mình gắn link ở đây nhé: [python-webserver-tutorial](https://github.com/magiskboy/python-webserver-tutorial)
+Bây giờ, chúng ta sẽ đi vào phần cài đặt chi tiết. Lưu ý: trong bài viết này, mình chỉ trích dẫn những đoạn mã (*snippet*) quan trọng để giải thích các khía cạnh kỹ thuật chính. Nếu bạn muốn xem đầy đủ mã nguồn, hãy tham khảo tại repo sau: [python-webserver-tutorial](https://github.com/magiskboy/python-webserver-tutorial)
 
-Đầu tiên, chúng ta sẽ tạo ra socket lắng nghe 
+---
+
+### Bước đầu tiên: Tạo socket lắng nghe
 
 ```python
 self.sock = socket.create_server(
@@ -53,13 +63,21 @@ self.sock = socket.create_server(
 os.set_inheritable(self.sock.fileno(), True)
 ```
 
-Hàm `create_server` là một utility function để tạo một socket lắng nghe cho server, [`reuse_port`](https://man7.org/linux/man-pages/man7/socket.7.html) là một flag cho phép nhiều socket cùng bind vào một cồng, để rõ hơn về điều này, chúng ta sẽ đi đến câu lệnh ngay sau nó.
+Hàm `create_server` là một utility function dùng để tạo một socket lắng nghe cho server. Tham số [`reuse_port`](https://man7.org/linux/man-pages/man7/socket.7.html) là một flag cho phép nhiều socket cùng *bind* vào một cổng.  
 
-`os.set_inheritable(self.sock.fileno(), True)` cho phép socket này có thể có các bản sao được kế thừa từ các process khác, các bản sao này được binding tới cùng 1 port (do flag reuse_port). Đây là một điều quan trọng trong mô hình master-worker của web server.
+Để hiểu rõ hơn về cách hoạt động của cơ chế này, hãy cùng xem câu lệnh ngay sau đó.
 
-Process master sẽ tạo socket lắng nghe và tạo các process con. Các process con này sẽ tạo ra các socket kế thừa từ socket của process cha và tất nhiên chúng sẽ lắng nghe chung cổng với process cha. Vậy chuyện gì sẽ xảy ra khi có một gói tin tới cồng đó?. 
+`os.set_inheritable(self.sock.fileno(), True)` cho phép socket này được kế thừa bởi các *process* con. Nhờ cờ `reuse_port`, các bản sao của socket này có thể *bind* vào cùng một cổng.  
 
-Hệ điều hạnh Unix-like như Linux có cơ chế cân bằng tải cho những trường hợp như vậy, các bạn còn nhớ syscall này chứ
+Đây là một cơ chế quan trọng trong mô hình *master-worker* của web server, nơi *process master* tạo socket lắng nghe và các *process worker* kế thừa socket đó để cùng xử lý các kết nối đến.
+
+*Process master* sẽ tạo socket lắng nghe và sau đó khởi tạo các *process con*. Các *process con* này sẽ kế thừa socket từ *process cha*, và tất nhiên, tất cả sẽ cùng lắng nghe trên một cổng duy nhất.
+
+Vậy điều gì sẽ xảy ra khi có một gói tin được gửi đến cổng đó?
+
+Hệ điều hành Unix-like như Linux có cơ chế *cân bằng tải nội bộ* để xử lý tình huống này.  
+
+Các bạn còn nhớ syscall quen thuộc này chứ?
 
 ```c
 while 1 {
@@ -67,20 +85,29 @@ while 1 {
 }
 ```
 
-[accept](https://man7.org/linux/man-pages/man2/accept.2.html) sẽ block cho đến khi có một socket kết nối nếu có request tới server, và socket của process con nào sẽ được chọn? Kernel sẽ tạo ra một giá trị hash cho client IP và client port của socket kết nối và chọn process dựa trên giá trị hash đó. Do đó, các request tới từ cùng một client sẽ được xử lí trên cùng một process (session sticky).
+[accept](https://man7.org/linux/man-pages/man2/accept.2.html) sẽ *block* cho đến khi có một kết nối đến socket — tức là khi có request gửi tới server.
 
-Vậy là xong phần setup server và các worker, tiếp theo chúng ta sẽ đi tới phần xử lí từng socket kết nối khi có một client request, bước này chúng ta sẽ xử lí bất động bộ với event loop thay vì xử lí song song như multithread.
+Vậy socket của *process con* nào sẽ được chọn để xử lý kết nối này?
 
-Module `asyncio` của Python đã chuẩn hoá việc định nghĩa các giao thức mạng và cá nhân mình thấy nó cực kì hiệu quả và clean code. Trong Python, việc định nghĩa giao thức mạng được chia làm 2 phần ứng với 2 class: [BaseTransport và BaseProtocol](https://docs.python.org/3/library/asyncio-protocol.html).
+Kernel sẽ tạo một giá trị *hash* dựa trên IP và port của client, sau đó chọn *process* dựa trên giá trị *hash* đó. Nhờ cơ chế này, các request đến từ cùng một client sẽ thường được xử lý bởi cùng một *process*, tạo ra hiệu ứng *session sticky* một cách tự nhiên.
 
-- BaseTransport sẽ đảm nhận vai trò truyền các gói tin trên mạng, chúng trả lời cho câu hỏi: Làm sao các bytes dữ liệu được truyền đi. Nói tóm lại, BaseTransport sẽ hoạt động ở layer 4 (Transport layer) trong [mô hình OSI](https://ieeexplore.ieee.org/document/1457043). Có những Transport cho TCP, UDP, WriteTransport, ReadTransport,…
-- BaseProtocol sẽ đảm nhận vai trò định nghĩa các quy tắc trong giao tiếp giữa hai bên trong một kết nối. Chúng hoạt động ở layer 7 (Application layer). Một số protocol như HTTP, JSON-RPC, gRPC, IMAP, POP3,…
+Vậy là chúng ta đã hoàn tất phần thiết lập server và các *worker*. Tiếp theo, chúng ta sẽ chuyển sang phần xử lý từng socket kết nối khi có request từ client.
 
-Trong trường hợp này, chúng ta sẽ sử dụng class Transport (mặc định của asyncio cho TCP connection) và viết hai protocol cho HTTP/1.1 và HTTP/2 dựa trên class Protocol của asyncio.
+Ở bước này, thay vì xử lý song song bằng *đa luồng*, chúng ta sẽ xử lý theo kiểu *bất đồng bộ* với *event loop*.
 
-Ngoài ra, các các bạn cũng nên biết một chút về ASGI để các thể viết được web server tương thích với các framework như FastAPI ở đây [https://asgi.readthedocs.io/en/latest/index.html](https://asgi.readthedocs.io/en/latest/index.html).
+Module `asyncio` của Python đã chuẩn hoá cách định nghĩa các giao thức mạng, và cá nhân mình thấy nó cực kỳ hiệu quả cũng như giúp code trở nên rất *clean*.  
 
-Đầu tiên sẽ implement `H1Protocol` cho HTTP/1.1
+Trong `asyncio`, việc định nghĩa giao thức mạng được chia thành hai phần, tương ứng với hai class: [`BaseTransport`](https://docs.python.org/3/library/asyncio-protocol.html#asyncio.BaseTransport) và [`BaseProtocol`](https://docs.python.org/3/library/asyncio-protocol.html#asyncio.BaseProtocol).
+
+- `BaseTransport` đảm nhận vai trò truyền các gói tin trên mạng — nó trả lời cho câu hỏi: *Làm sao các byte dữ liệu được truyền đi?* Nói cách khác, `BaseTransport` hoạt động ở tầng 4 (*Transport layer*) trong [mô hình OSI](https://ieeexplore.ieee.org/document/1457043). Trong `asyncio`, có nhiều loại *transport* như TCP, UDP, `WriteTransport`, `ReadTransport`,...
+
+- `BaseProtocol` chịu trách nhiệm định nghĩa các quy tắc giao tiếp giữa hai bên trong một kết nối — tức là hoạt động ở tầng 7 (*Application layer*). Một số giao thức tiêu biểu ở tầng này bao gồm: HTTP, JSON-RPC, gRPC, IMAP, POP3,...
+
+Trong trường hợp này, chúng ta sẽ sử dụng `Transport` — lớp mặc định của `asyncio` dành cho kết nối TCP — và tự viết hai *protocol* riêng biệt cho HTTP/1.1 và HTTP/2, dựa trên class `Protocol` của `asyncio`.
+
+Ngoài ra, để có thể xây dựng một web server tương thích với các framework hiện đại như FastAPI, các bạn cũng nên tìm hiểu thêm về ASGI. Tài liệu chính thức có thể tham khảo tại đây: [https://asgi.readthedocs.io/en/latest/index.html](https://asgi.readthedocs.io/en/latest/index.html)
+
+Đầu tiên, chúng ta sẽ implement `H1Protocol` để xử lý giao thức HTTP/1.1.
 
 ```python
 class H1Protocol(asyncio.Protocol):
@@ -353,12 +380,12 @@ class Server:
 
 ## Benchmark
 
-Để có thể benchmark, mình đã phải sử dụng 2 tool khác nhau
+Để thực hiện benchmark, mình đã sử dụng hai công cụ khác nhau:
 
-- `wrk` cho HTTP/1.1
-- `h2load` cho HTTP/2 vì wrk không hỗ trợ HTTP/2
+- `wrk` cho HTTP/1.1  
+- `h2load` cho HTTP/2, vì `wrk` không hỗ trợ giao thức này
 
-Đây là một ứng dụng FastAPI cơ bản, nói chung là đủ để mình kiểm tra hiệu suất truyền tin của hai giao thức
+Ứng dụng được dùng để kiểm tra là một app FastAPI cơ bản — nhìn chung là đủ để đánh giá hiệu suất truyền tải giữa hai giao thức.
 
 ```python
 app = FastAPI()
@@ -394,4 +421,4 @@ h2load --threads 8 --clients 8 --duration 10 https://127.0.0.1:5001
 
 ![](https://github.com/magiskboy/python-webserver-tutorial/blob/main/images/benchmark_http_2.png)
 
-Kết quả cho thấy, hiệu suất truyền tin của HTTP/2 cao hơn khoảng 30% so với HTTP/1.1 (tất nhiên là với cài đặt ở mức cơ bản như này).
+Kết quả cho thấy hiệu suất truyền tải của HTTP/2 cao hơn khoảng 30% so với HTTP/1.1 — tất nhiên là trong điều kiện cài đặt cơ bản như trong thử nghiệm này.
