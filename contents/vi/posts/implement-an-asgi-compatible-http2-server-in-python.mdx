@@ -31,27 +31,26 @@ Dưới đây là một số nhận xét của mình về HTTP/1.1 và HTTP/2:
 
 ASGI là viết tắt của *Asynchronous Server Gateway Interface.* Nó là một giao diện cho phép web server giao tiếp với các ứng dụng web bất đồng bộ trong Python. Nếu ai từng viết các web backend bằng Python cách đây 6–8 năm (như Flask hay Django), thì sẽ quen với một giao diện khác gọi là WSGI – *Web Server Gateway Interface*. Một trong những web server phổ biến tương thích với giao diện này là HTTP Apache thông qua module uWSGI.
 
-Sự khác biệt giữa hai giao diện này nằm ở mô hình xử lý request: ASGI hỗ trợ xử lý bất đồng bộ thông qua mô hình *event loop*, trong khi WSGI xử lý các request song song bằng mô hình *multithread*.  
+Sự khác biệt giữa hai giao diện này nằm ở mô hình xử lý request: ASGI hỗ trợ xử lý bất đồng bộ thông qua mô hình event loop, trong khi WSGI xử lý các request song song bằng mô hình đa luồng.  
 
-Tuy nhiên, việc dùng multithread để giải quyết các tác vụ liên quan đến I/O không thực sự hiệu quả — đây chính là vấn đề được nhắc đến trong bài toán C10K. Một ví dụ điển hình cho hướng tiếp cận hiệu quả hơn là việc Nginx sử dụng mô hình bất đồng bộ, so với HTTP Apache vốn sử dụng mô hình đa luồng truyền thống.
+Tuy nhiên, việc dùng đa luồng để giải quyết các tác vụ liên quan đến I/O không thực sự hiệu quả — đây chính là vấn đề được nhắc đến trong bài toán C10K. Một ví dụ điển hình cho hướng tiếp cận hiệu quả hơn là việc Nginx sử dụng mô hình bất đồng bộ, so với HTTP Apache vốn sử dụng mô hình đa luồng truyền thống.
 
 Trước khi ASGI xuất hiện, một số framework đã tự phát triển theo hướng bất đồng bộ, chẳng hạn như Tornado. Tuy nhiên, do thiếu một giao diện tiêu chuẩn, việc phát triển và sử dụng các framework bất đồng bộ trở nên khó khăn và thiếu tính tương thích. ASGI ra đời để giải quyết vấn đề đó.  
 
-Về cơ bản, ASGI sử dụng *coroutine* trong Python để xử lý từng request, và điều phối thông qua một *event loop*. Các sự kiện gửi và nhận dữ liệu qua socket được xử lý theo kiểu *non-blocking*.  
+Về cơ bản, ASGI sử dụng coroutine trong Python để xử lý từng request, và điều phối thông qua một event loop. Các sự kiện gửi và nhận dữ liệu qua socket được xử lý theo kiểu non-blocking.  
 
-Khi server nhận được một gói tin đến, nó sẽ *emit* một sự kiện tới ứng dụng. Ngược lại, khi ứng dụng cần gửi response (bao gồm cả trường hợp *streaming response*), nó sẽ *emit* một sự kiện để server xử lý và truyền đi qua socket.
+Khi server nhận được một gói tin đến, nó sẽ emit một sự kiện tới ứng dụng. Ngược lại, khi ứng dụng cần gửi response (bao gồm cả trường hợp streaming response), nó sẽ emit một sự kiện để server xử lý và truyền đi qua socket.
 
-Cho bạn nào chưa biết thì *event loop* là một cơ chế dùng để quản lý và điều phối các đơn vị xử lý dựa trên các sự kiện bất đồng bộ, chẳng hạn như các tác vụ liên quan đến mạng (networking) hoặc hệ thống tập tin (filesystem).
+Cho bạn nào chưa biết thì event loop là một cơ chế dùng để quản lý và điều phối các đơn vị xử lý dựa trên các sự kiện bất đồng bộ, chẳng hạn như các tác vụ liên quan đến mạng (networking) hoặc hệ thống tập tin (filesystem).
 
 ## Triển khai web server bằng Python
 
-Trong demo này, mình đã cài đặt cả hai giao thức: HTTP/1.1 và HTTP/2. Web server được thiết kế sử dụng nhiều *process* để tận dụng hiệu quả hơn tài nguyên trên các hệ thống đa nhân (multi-core CPU), nhằm cải thiện hiệu suất xử lý.
+Trong demo này, mình đã cài đặt cả hai giao thức: HTTP/1.1 và HTTP/2. Web server được thiết kế sử dụng nhiều process để tận dụng hiệu quả hơn tài nguyên trên các hệ thống đa nhân (multi-core CPU), nhằm cải thiện hiệu suất xử lý.
 
 Bây giờ, chúng ta sẽ đi vào phần cài đặt chi tiết. Lưu ý: trong bài viết này, mình chỉ trích dẫn những đoạn mã (*snippet*) quan trọng để giải thích các khía cạnh kỹ thuật chính. Nếu bạn muốn xem đầy đủ mã nguồn, hãy tham khảo tại repo sau: [python-webserver-tutorial](https://github.com/magiskboy/python-webserver-tutorial)
 
----
 
-### Bước đầu tiên: Tạo socket lắng nghe
+Bước đầu tiên: Tạo socket lắng nghe
 
 ```python
 self.sock = socket.create_server(
@@ -64,19 +63,19 @@ self.sock = socket.create_server(
 os.set_inheritable(self.sock.fileno(), True)
 ```
 
-Hàm __create_server__ là một utility function dùng để tạo một socket lắng nghe cho server. Tham số [reuse_port](https://man7.org/linux/man-pages/man7/socket.7.html) là một flag cho phép nhiều socket cùng *bind* vào một cổng.  
+Hàm __create_server__ là một utility function dùng để tạo một socket lắng nghe cho server. Tham số [reuse_port](https://man7.org/linux/man-pages/man7/socket.7.html) là một flag cho phép nhiều socket cùng bind vào một cổng.  
 
 Để hiểu rõ hơn về cách hoạt động của cơ chế này, hãy cùng xem câu lệnh ngay sau đó.
 
-`os.set_inheritable(self.sock.fileno(), True)` cho phép socket này được kế thừa bởi các *process* con. Nhờ cờ __reuse_port__, các bản sao của socket này có thể *bind* vào cùng một cổng.  
+`os.set_inheritable(self.sock.fileno(), True)` cho phép socket này được kế thừa bởi các process con. Nhờ cờ __reuse_port__, các bản sao của socket này có thể bind vào cùng một cổng.  
 
-Đây là một cơ chế quan trọng trong mô hình *master-worker* của web server, nơi *process master* tạo socket lắng nghe và các *process worker* kế thừa socket đó để cùng xử lý các kết nối đến.
+Đây là một cơ chế quan trọng trong mô hình master-worker của web server, nơi process master tạo socket lắng nghe và các process worker kế thừa socket đó để cùng xử lý các kết nối đến.
 
-*Process master* sẽ tạo socket lắng nghe và sau đó khởi tạo các *process con*. Các *process con* này sẽ kế thừa socket từ *process cha*, và tất nhiên, tất cả sẽ cùng lắng nghe trên một cổng duy nhất.
+Process master sẽ tạo socket lắng nghe và sau đó khởi tạo các process con. Các process con này sẽ kế thừa socket từ process cha, và tất nhiên, tất cả sẽ cùng lắng nghe trên một cổng duy nhất.
 
 Vậy điều gì sẽ xảy ra khi có một gói tin được gửi đến cổng đó?
 
-Hệ điều hành Unix-like như Linux có cơ chế *cân bằng tải nội bộ* để xử lý tình huống này.  
+Hệ điều hành Unix-like như Linux có cơ chế cân bằng tải nội bộ để xử lý tình huống này.  
 
 Các bạn còn nhớ syscall quen thuộc này chứ?
 
@@ -86,25 +85,25 @@ while 1 {
 }
 ```
 
-[accept](https://man7.org/linux/man-pages/man2/accept.2.html) sẽ *block* cho đến khi có một kết nối đến socket — tức là khi có request gửi tới server.
+[accept](https://man7.org/linux/man-pages/man2/accept.2.html) sẽ block cho đến khi có một kết nối đến socket — tức là khi có request gửi tới server.
 
-Vậy socket của *process con* nào sẽ được chọn để xử lý kết nối này?
+Vậy socket của process con nào sẽ được chọn để xử lý kết nối này?
 
-Kernel sẽ tạo một giá trị *hash* dựa trên IP và port của client, sau đó chọn *process* dựa trên giá trị *hash* đó. Nhờ cơ chế này, các request đến từ cùng một client sẽ thường được xử lý bởi cùng một *process*, tạo ra hiệu ứng *session sticky* một cách tự nhiên.
+Kernel sẽ tạo một giá trị hash dựa trên IP và port của client, sau đó chọn process dựa trên giá trị hash đó. Nhờ cơ chế này, các request đến từ cùng một client sẽ thường được xử lý bởi cùng một process, tạo ra hiệu ứng session sticky một cách tự nhiên.
 
-Vậy là chúng ta đã hoàn tất phần thiết lập server và các *worker*. Tiếp theo, chúng ta sẽ chuyển sang phần xử lý từng socket kết nối khi có request từ client.
+Vậy là chúng ta đã hoàn tất phần thiết lập server và các worker. Tiếp theo, chúng ta sẽ chuyển sang phần xử lý từng socket kết nối khi có request từ client.
 
-Ở bước này, thay vì xử lý song song bằng *đa luồng*, chúng ta sẽ xử lý theo kiểu *bất đồng bộ* với *event loop*.
+Ở bước này, thay vì xử lý song song bằng đa luồng, chúng ta sẽ xử lý theo kiểu bất đồng bộ với event loop.
 
-Module asyncio của Python đã chuẩn hoá cách định nghĩa các giao thức mạng, và cá nhân mình thấy nó cực kỳ hiệu quả cũng như giúp code trở nên rất *clean*.  
+Module asyncio của Python đã chuẩn hoá cách định nghĩa các giao thức mạng, và cá nhân mình thấy nó cực kỳ hiệu quả cũng như giúp code trở nên rất clean.  
 
 Trong asyncio, việc định nghĩa giao thức mạng được chia thành hai phần, tương ứng với hai class: [BaseTransport](https://docs.python.org/3/library/asyncio-protocol.html#asyncio.BaseTransport) và [BaseProtocol](https://docs.python.org/3/library/asyncio-protocol.html#asyncio.BaseProtocol).
 
-- BaseTransport đảm nhận vai trò truyền các gói tin trên mạng — nó trả lời cho câu hỏi: *Làm sao các byte dữ liệu được truyền đi?* Nói cách khác, BaseTransport hoạt động ở tầng 4 (*Transport layer*) trong [mô hình OSI](https://ieeexplore.ieee.org/document/1457043). Trong asyncio, có nhiều loại *transport* như TCP, UDP, WriteTransport, ReadTransport,...
+- BaseTransport đảm nhận vai trò truyền các gói tin trên mạng — nó trả lời cho câu hỏi: Làm sao các byte dữ liệu được truyền đi? Nói cách khác, BaseTransport hoạt động ở tầng 4 (Transport layer) trong [mô hình OSI](https://ieeexplore.ieee.org/document/1457043). Trong asyncio, có nhiều loại transport như TCP, UDP, WriteTransport, ReadTransport,...
 
-- BaseProtocol chịu trách nhiệm định nghĩa các quy tắc giao tiếp giữa hai bên trong một kết nối — tức là hoạt động ở tầng 7 (*Application layer*). Một số giao thức tiêu biểu ở tầng này bao gồm: HTTP, JSON-RPC, gRPC, IMAP, POP3,...
+- BaseProtocol chịu trách nhiệm định nghĩa các quy tắc giao tiếp giữa hai bên trong một kết nối — tức là hoạt động ở tầng 7 (Application layer). Một số giao thức tiêu biểu ở tầng này bao gồm: HTTP, JSON-RPC, gRPC, IMAP, POP3,...
 
-Trong trường hợp này, chúng ta sẽ sử dụng Transport — lớp mặc định của asyncio dành cho kết nối TCP — và tự viết hai *protocol* riêng biệt cho HTTP/1.1 và HTTP/2, dựa trên class Protocol của asyncio.
+Trong trường hợp này, chúng ta sẽ sử dụng Transport — lớp mặc định của asyncio dành cho kết nối TCP — và tự viết hai protocol riêng biệt cho HTTP/1.1 và HTTP/2, dựa trên class Protocol của asyncio.
 
 Ngoài ra, để có thể xây dựng một web server tương thích với các framework hiện đại như FastAPI, các bạn cũng nên tìm hiểu thêm về ASGI. Tài liệu chính thức có thể tham khảo tại đây: [https://asgi.readthedocs.io/en/latest/index.html](https://asgi.readthedocs.io/en/latest/index.html)
 
@@ -149,7 +148,7 @@ class H1Protocol(asyncio.Protocol):
         
         # tạo task để xử lí request theo RequestLifeCycle, việc này
         # tương đương với việc tạo thread để xử lí từng request trong
-        # kiến trúc multithread
+        # kiến trúc đa luồng
         task = asyncio.create_task(cycle.run())
         task.add_done_callback(self.on_done)
         self.task = task
