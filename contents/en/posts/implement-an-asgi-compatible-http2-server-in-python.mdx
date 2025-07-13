@@ -1,0 +1,426 @@
+---
+title: "Implement an ASGI compatible HTTP/2 server in Python"
+date: 2025-07-13T14:30:00+07:00
+published: true
+tags:
+- web
+- python
+- networking
+- http2
+- asyncio
+categories:
+- Web development
+- Python
+description: "Last weekend, I had some free time, so I sat down to read documentation about HTTP/1.1, HTTP/2, and ASGI, with the goal of setting up a web server using Python. Basically, everything worked fine at the foundational level. Below are a few insights from what I learned during the process of building such a web server in Python."
+---
+
+## About HTTP/1.1 và HTTP/2
+
+HTTP/2 is a method for packaging, transmitting, and receiving HTTP packets over the TCP protocol to improve performance compared to HTTP/1.1. In HTTP/1.1, each transaction (consisting of a request and response) uses a separate connection. Later, the protocol was improved to allow multiple transactions to share a single connection — this was called HTTP Pipelining. However, this improvement was generally inefficient in terms of transmission, as transactions had to follow a strict order — if one earlier transaction was delayed, subsequent ones had to wait. That said, HTTP Pipelining still helped reduce the number of handshakes between the client and server.
+
+HTTP/2 was introduced to address the weaknesses in data transmission of previous versions. In HTTP/2, each transaction is broken down into frames; each transaction is called a stream, and a stream consists of multiple frames. As a result, on a single connection, multiple frames from different streams can be transmitted concurrently. The data in these frames is represented in binary format and compressed using a variant of the Huffman algorithm, significantly reducing transmission size.
+
+<Image src="/images/http2.webp" title="HTTP/1.1 vs HTTP/2" />
+
+Here are some of my observations about HTTP/1.1 and HTTP/2:
+
+- HTTP/1.1 transmits packets in text format, whereas HTTP/2 uses a binary format.
+- HTTP/1.1 supports pipelining to reuse connections and reduce the number of handshakes. However, its transmission efficiency is limited due to the need to preserve the order of transaction processing — if one transaction is delayed, the subsequent ones must wait. HTTP/2 addresses this by breaking each transaction into multiple frames, adding metadata, and applying data compression, thereby eliminating the ordering constraint.
+- HTTP/2 uses additional metadata, so each packet is generally larger than in HTTP/1.1. Moreover, HTTP/2 performs multiple acknowledgment (ACK) responses during transmission to ensure that the client and server correctly exchange packets belonging to each transaction.
+- In terms of transmission performance, HTTP/2 outperforms HTTP/1.1. However, for applications that are heavy on server-side processing, the performance difference between the two versions is not very significant. Therefore, HTTP/2 is often preferred for data-centric applications such as file storage services, static websites, and so on.
+
+## About ASGI
+
+ASGI stands for *Asynchronous Server Gateway Interface.* It is an interface that allows web servers to communicate with asynchronous web applications in Python. If you've written backend web applications in Python 6–8 years ago (using frameworks like Flask or Django), you might be familiar with another interface called WSGI – *Web Server Gateway Interface*. One of the popular web servers compatible with that interface is Apache HTTP Server via the uWSGI module.
+
+The key difference between these two interfaces lies in the request handling model: ASGI supports asynchronous processing using an event loop model, while WSGI handles requests concurrently using a multithreading model.
+
+However, using multithreading to handle I/O-bound tasks is not truly efficient — this is the core issue highlighted in the C10K problem. A classic example of a more efficient approach is Nginx, which uses an asynchronous model, in contrast to Apache HTTP Server, which relies on the traditional multithreading model.
+
+Before ASGI emerged, some frameworks had already adopted an asynchronous approach, such as Tornado. However, due to the lack of a standard interface, developing and using asynchronous frameworks was challenging and lacked compatibility. ASGI was introduced to solve that problem.
+
+Basically, ASGI uses coroutines in Python to handle each request, coordinated through an event loop. Events for sending and receiving data over sockets are handled in a non-blocking manner.
+
+When the server receives an incoming packet, it emits an event to the application. Conversely, when the application needs to send a response (including streaming responses), it emits an event for the server to handle and transmit through the socket.
+
+For those unfamiliar, an event loop is a mechanism used to manage and coordinate execution units based on asynchronous events, such as tasks related to networking or the filesystem.
+
+## Implementing a Web Server in Python
+
+In this demo, I implemented both protocols: HTTP/1.1 and HTTP/2. The web server is designed to use multiple processes to better utilize resources on multi-core CPU systems, aiming to improve processing performance.
+
+Now, let's dive into the detailed implementation. Note: in this article, I only include important code snippets to explain the key technical aspects. If you want to see the full source code, please refer to the following repo: [python-webserver-tutorial](https://github.com/magiskboy/python-webserver-tutorial)
+
+
+Create a listening socket
+
+```python
+self.sock = socket.create_server(
+    address=(host, port),
+    family=socket.AF_INET,
+    backlog=self.backlog or 4096,
+    reuse_port=True,
+)
+
+os.set_inheritable(self.sock.fileno(), True)
+```
+
+The `create_server` function is a utility function used to create a listening socket for the server. The [reuse_port](https://man7.org/linux/man-pages/man7/socket.7.html) parameter is a flag that allows multiple sockets to bind to the same port.
+
+To better understand how this mechanism works, let’s look at the line that follows.
+
+`os.set_inheritable(self.sock.fileno(), True)` allows the socket to be inherited by child processes. Thanks to the `reuse_port` flag, copies of this socket can bind to the same port.
+
+This is a crucial mechanism in the master-worker model of a web server, where the master process creates the listening socket and the worker processes inherit that socket to handle incoming connections concurrently.
+
+The master process creates the listening socket and then spawns the child processes. These child processes inherit the socket from the parent process, and all of them listen on the same port.
+
+So what happens when a packet is sent to that port?
+
+Unix-like operating systems such as Linux have an internal load-balancing mechanism to handle this situation.
+
+Remember this familiar syscall?
+
+```c
+while 1 {
+    connect_socket = accept(listen_socket)
+}
+```
+
+[accept](https://man7.org/linux/man-pages/man2/accept.2.html) will block until a connection is made to the socket — that is, when a request is sent to the server.
+
+So, which child process's socket will be chosen to handle this connection?
+
+The kernel creates a hash value based on the client's IP and port, then selects a process based on that hash. Thanks to this mechanism, requests from the same client are often handled by the same process, naturally creating a session-sticky effect.
+
+With that, we've completed the setup of the server and workers. Next, we’ll move on to handling each socket connection when a request arrives from the client.
+
+At this step, instead of handling requests in parallel using threads, we'll handle them asynchronously with an event loop.
+
+Python’s asyncio module standardizes how network protocols are defined, and personally, I find it extremely effective and helps keep the code very clean.
+
+In asyncio, defining a network protocol is split into two parts, corresponding to two classes: [BaseTransport](https://docs.python.org/3/library/asyncio-protocol.html#asyncio.BaseTransport) and [BaseProtocol](https://docs.python.org/3/library/asyncio-protocol.html#asyncio.BaseProtocol).
+
+- BaseTransport is responsible for transmitting packets over the network — it answers the question: how are bytes of data transmitted? In other words, `BaseTransport` operates at Layer 4 (Transport layer) of the [OSI model](https://ieeexplore.ieee.org/document/1457043). In asyncio, there are various types of transports such as TCP, UDP, WriteTransport, ReadTransport, etc.
+
+- BaseProtocol is responsible for defining the communication rules between two parties in a connection — that is, it operates at Layer 7 (Application layer). Common protocols at this layer include: HTTP, JSON-RPC, gRPC, IMAP, POP3, etc.
+
+In this case, we’ll use the default `Transport` class in asyncio for TCP connections and implement two separate protocols for HTTP/1.1 and HTTP/2, based on asyncio’s `Protocol` class.
+
+Additionally, to build a web server that is compatible with modern frameworks like FastAPI, you should also learn more about ASGI. The official documentation can be found here: [https://asgi.readthedocs.io/en/latest/index.html](https://asgi.readthedocs.io/en/latest/index.html)
+
+First, we’ll implement `H1Protocol` to handle the HTTP/1.1 protocol.
+
+```python
+class H1Protocol(asyncio.Protocol):
+    def __init__(self, app):
+
+        # app is an async callable following the ASGI specification, used to handle each request
+        self.app = app
+
+        # For HTTP/1.1, I use llhttp, a high-performance HTTP parser from Node.js, to parse requests via `httptools`.
+        # This parser takes an object with methods like on_url, on_body, on_header, and on_header_complete.
+        # These methods are called internally by the parser during the message parsing process.
+        # In this example, for simplicity, I combine it directly with H1Protocol. 
+        self.parser = httptools.HttpRequestParser(self) #type: ignore
+
+        # task is used to handle the request from the moment it is received 
+        # until the `app` sends back a response
+        self.task: asyncio.Task = None
+      
+        # event is used to notify the application when data arrives at the socket,
+        # allowing the application to proceed with reading it
+        self.message_event = asyncio.Event()
+
+    def connection_lost(self, exc: Exception | None) -> None:
+        if self.task and not self.task.done():
+            self.task.cancel('Lost connection')
+
+    def data_received(self, data: bytes) -> None:
+        self.parser.feed_data(data)
+
+    def on_headers_complete(self):
+        self.method = self.parser.get_method()
+        self.http_version = self.parser.get_http_version()
+
+        scope = self.make_scope()
+        cycle = RequestLifeCycle(scope, self.app, self.transport.write, self.message_event)
+        self.cycle = cycle
+        
+        # Create a task to handle the request according to the RequestLifeCycle,
+        # which is equivalent to spawning a thread to handle each request 
+        # in a multithreaded architecture
+        task = asyncio.create_task(cycle.run())
+        task.add_done_callback(self.on_done)
+        self.task = task
+      
+    def on_body(self, body: bytes):
+        # When the socket has data and is ready to be read
+        self.cycle.body = body #type: ignore
+        self.message_event.set()
+
+    # ---------------- Extra ---------------------
+    def on_done(self, _: asyncio.Task):
+        # Keep the connection alive to reuse it for subsequent transactions
+        if not self.parser.should_keep_alive():
+            self.transport.close()
+```
+
+Next, we’ll continue by implementing `H2Protocol` for HTTP/2
+
+```python
+class H2Protocol(asyncio.Protocol):
+
+    # Since multiple HTTP/2 streams (transactions) are handled on the same connection,
+    # we need a table to store information about each stream (RequestContext),
+    # using stream_id as the key
+    streams: t.Dict[int, "RequestContext"]
+    
+    ...
+
+    def connection_made(self, transport: asyncio.BaseTransport) -> None:
+        ...
+    
+        self.conn.initiate_connection()
+        
+        # Any action in the HTTP/2 protocol requires an ACK,
+        # including the successful establishment of a connection,
+        # which is not necessary in HTTP/1.1
+        self.transport.write(self.conn.data_to_send())
+
+        ...
+
+    def data_received(self, data: bytes) -> None:
+        # The frames packaged and sent by the client are received by the server 
+        # and processed here. We feed each chunk of data into the parser from the `h2` library 
+        # and extract readable events.
+        # Each event has a type, such as:
+        # - RequestReceived: all headers are received, equivalent to on_header_complete
+        # - DataReceived: HTTP body data is received, equivalent to on_body
+        # - StreamEnded: a stream (transaction) is complete; note: this is not the same as closing the connection
+        # - ...
+        try:
+            events = self.conn.receive_data(data)
+
+        except h2.exceptions.ProtocolError:
+            self.transport.write(self.conn.data_to_send())
+            self.transport.close()
+        
+        else:
+            self.transport.write(self.conn.data_to_send())
+
+            for event in events:
+                if isinstance(event, h2.events.RequestReceived):
+                    self.request_received(event.headers, t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.DataReceived):
+                    self.receive_data(event.data, t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.StreamEnded):
+                    self.stream_complete(t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.ConnectionTerminated):
+                    self.transport.close()
+
+                elif isinstance(event, h2.events.StreamReset):
+                    self.stream_reset(t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.WindowUpdated):
+                    self.window_updated(event.stream_id, event.delta)
+
+                elif isinstance(event, h2.events.RemoteSettingsChanged):
+                    if h2.settings.SettingCodes.INITIAL_WINDOW_SIZE in event.changed_settings:
+                        self.window_updated(None, 0)
+
+                self.transport.write(self.conn.data_to_send())
+
+    def request_received(self, headers: t.List[hpack.HeaderTuple] | None, stream_id: int):
+        ...
+
+        # Just like with H1Protocol, we will start creating and running the application 
+        # to handle the request here.
+        message_event = asyncio.Event()
+        scope = self.make_scope()
+        cycle = RequestLifeCycle(
+            scope=scope,
+            app=self.app,
+            message_event=message_event,
+        )
+        request_context = RequestContext(stream_id, cycle, message_event, self)
+        self.streams[stream_id] = request_context
+        ctx.set(request_context)
+        task = asyncio.create_task(cycle.run())
+        request_context.task = task
+
+    def receive_data(self, data: bytes | None, stream_id: int):
+        if not data:
+            return
+
+        # When request body data is available, notify the event so the application can process it
+        request_context = self.streams[stream_id]
+        request_context.cycle.body = data
+        request_context.message_event.set() 
+
+    def stream_complete(self, stream_id: int):
+        # clean up stream
+        self.streams.pop(stream_id)
+
+    def stream_reset(self, stream_id: int):
+        request_context = self.streams[stream_id]
+        if request_context.flow_control:
+            request_context.flow_control.cancel()
+            request_context.flow_control = None
+
+    def window_updated(self, stream_id: int | None, delta: int | None):
+        # This is an important part in HTTP/2. HTTP/2 maintains a window 
+        # to inform the application when it is allowed to write response data 
+        # to the socket. 
+        # We use an asyncio.Future to notify the application 
+        # when it can write data to the socket and how many bytes can be written 
+        # (as implemented in the `send_data` function below)
+
+        if stream_id and stream_id in self.streams:
+            request_context = self.streams[stream_id]
+            f = request_context.flow_control
+            f.set_result(delta) #type: ignore
+
+        elif not stream_id:
+            for context in self.streams.values():
+                if context.flow_control:
+                    context.flow_control.set_result(delta)
+                    context.flow_control = None
+
+    async def send_data(self, data: bytes, stream_id: int):
+        while data:
+            while self.conn.local_flow_control_window(stream_id) < 1:
+                try:
+                    # Wait until data can be written to the socket
+                    await self.wait_for_flow_control(stream_id)
+                except asyncio.CancelledError:
+                    return data
+
+            chunk_size = min(
+                self.conn.local_flow_control_window(stream_id),
+                len(data),
+                self.conn.max_outbound_frame_size,
+            )
+
+            try:
+                self.conn.send_data(
+                    stream_id,
+                    data[:chunk_size],
+                    end_stream=(chunk_size == len(data)),
+                )
+            except (h2.exceptions.StreamClosedError, h2.exceptions.ProtocolError):
+                break
+
+            self.transport.write(self.conn.data_to_send())
+            data = data[chunk_size:]
+
+    async def wait_for_flow_control(self, stream_id):
+        f = asyncio.Future()
+        self.streams[stream_id].flow_control = f
+        await f
+```
+
+Everything is set. Now, we’ll combine the two protocols to create a complete web server and run a benchmark to see the difference between the two protocols.
+
+```python
+class Server:
+    def run(self):
+        """Important!!! Only run in the main process"""
+
+        self.sock = self.config.sock
+        host, port = self.config.socket.getsockname() #type: ignore
+
+        self.logger.info(f"Server is starting at {host}:{port}")
+        if self.config.workers is None:
+        
+            # By default, Python’s event loop performs suboptimally,
+            # so I use `libuv` (an event loop used in Node.js)
+            # to achieve better performance.
+            import uvloop
+            uvloop.install()
+            asyncio.run(self.serve(self.config.socket))
+            return
+
+        from .worker import Worker
+        for _ in range(self.config.workers):
+            worker = Worker(self.app_factory, self.config)
+            worker.run()
+            self.workers.append(worker)
+
+        for worker in self.workers:
+            worker.join()
+
+    async def serve(self, sock: socket.socket):
+        self.logger.info(f"Worker {self.pid} is running...")
+
+        loop = asyncio.get_running_loop()
+        _server = await loop.create_server(
+            # Each time a client establishes a connection to the server,
+            # the server creates a protocol instance using the `protocol_factory` function
+            protocol_factory=self.create_protocol,
+            sock=sock,
+            
+            # With HTTP/2, SSL is mandatory. This requirement is becoming increasingly
+            # common among web browsers and web servers.
+            ssl=self.config.get_ssl(),
+        )
+        await _server.serve_forever()
+
+    def create_protocol(
+        self,
+        _: asyncio.AbstractEventLoop | None = None,
+      ) -> asyncio.Protocol:
+
+        if self.config.enable_h2:
+            return H2Protocol(self.app)
+
+        return H1Protocol(self.app)
+```
+
+## Benchmark
+
+To perform the benchmark, I used two different tools:
+
+- wrk for HTTP/1.1  
+- h2load for HTTP/2, since wrk does not support this protocol
+
+The application used for testing is a basic FastAPI app — generally sufficient to evaluate the transmission performance between the two protocols.
+
+```python
+app = FastAPI()
+
+@app.get('/')
+async def index():
+    return {
+        "name": "nkthanh.dev",
+        "age": 18,
+        "address": "Hanoi, Vietnam"
+    }
+```
+
+The benchmark parameters I used are as follows:
+
+```
+- Duration: 10 seconds
+- Number of connections: 8
+- Number of clients: 8
+```
+
+Here is the command you can use to benchmark with the above parameters:
+
+```bash
+wrk -t 8 -c 8 -d 10s https://127.0.0.1:5001
+
+h2load --threads 8 --clients 8 --duration 10 https://127.0.0.1:5001
+```
+
+Here are the benchmark results on my machine: MacBook Pro M2, 16GiB RAM, 8 cores
+
+<Image src="https://raw.githubusercontent.com/magiskboy/python-webserver-tutorial/refs/heads/main/images/benchmark_http_1.1.png" title="HTTP/1.1" />
+
+<Image src="https://raw.githubusercontent.com/magiskboy/python-webserver-tutorial/refs/heads/main/images/benchmark_http_2.png" title="HTTP/2" />
+
+The results show that HTTP/2 delivers about 50% higher transmission performance compared to HTTP/1.1 — of course, this is under the basic configuration used in this test.
