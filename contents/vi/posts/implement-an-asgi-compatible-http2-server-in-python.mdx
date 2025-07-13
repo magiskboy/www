@@ -81,7 +81,7 @@ Các bạn còn nhớ syscall quen thuộc này chứ?
 
 ```c
 while 1 {
-	connect_socket = accept(listen_socket)
+    connect_socket = accept(listen_socket)
 }
 ```
 
@@ -111,9 +111,9 @@ Ngoài ra, để có thể xây dựng một web server tương thích với cá
 
 ```python
 class H1Protocol(asyncio.Protocol):
-	def __init__(self, app):
-	
-	    # app là một async callable theo chuẩn ASGI dùng để xử lí từng request
+    def __init__(self, app):
+
+        # app là một async callable theo chuẩn ASGI dùng để xử lí từng request
         self.app = app
 
         # Với HTTP/1.1 mình sử dụng llhttp, một HTTP parser hiệu suât cao của
@@ -130,7 +130,7 @@ class H1Protocol(asyncio.Protocol):
         # event được sử dụng để notify cho ứng dụng khi có dữ liệu gửi đến socket,
         # từ đó ứng dụng có thể đọc
         self.message_event = asyncio.Event()
-	
+
     def connection_lost(self, exc: Exception | None) -> None:
         if self.task and not self.task.done():
             self.task.cancel('Lost connection')
@@ -154,13 +154,13 @@ class H1Protocol(asyncio.Protocol):
         self.task = task
       
     def on_body(self, body: bytes):
-		# khi socket có dữ liệu và sẵn sàng để đọc
+        # khi socket có dữ liệu và sẵn sàng để đọc
         self.cycle.body = body #type: ignore
         self.message_event.set()
 
     # ---------------- Extra ---------------------
     def on_done(self, _: asyncio.Task):
-		# giữ lại connection để tận dụng cho các transaction về sau
+        # giữ lại connection để tận dụng cho các transaction về sau
         if not self.parser.should_keep_alive():
             self.transport.close()
 ```
@@ -178,8 +178,8 @@ class H2Protocol(asyncio.Protocol):
     ...
 
     def connection_made(self, transport: asyncio.BaseTransport) -> None:
-		...
-		    
+        ...
+    
         self.conn.initiate_connection()
         
         # bất kì một action gì trên giao thức HTTP/2 cũng sẽ cần 1 ACK,
@@ -255,13 +255,13 @@ class H2Protocol(asyncio.Protocol):
         if not data:
             return
 
-		# khi có dữ liệu của request body, notify event để ứng dụng có thể xử lí
+        # khi có dữ liệu của request body, notify event để ứng dụng có thể xử lí
         request_context = self.streams[stream_id]
         request_context.cycle.body = data
         request_context.message_event.set() 
 
     def stream_complete(self, stream_id: int):
-		# clean up stream
+        # clean up stream
         self.streams.pop(stream_id)
 
     def stream_reset(self, stream_id: int):
@@ -292,7 +292,7 @@ class H2Protocol(asyncio.Protocol):
         while data:
             while self.conn.local_flow_control_window(stream_id) < 1:
                 try:
-		            # chờ cho đến. khi có thể ghi được dữ liệu vào socket
+                    # chờ cho đến. khi có thể ghi được dữ liệu vào socket
                     await self.wait_for_flow_control(stream_id)
                 except asyncio.CancelledError:
                     return data
@@ -368,10 +368,10 @@ class Server:
         await _server.serve_forever()
 
     def create_protocol(
-	    self,
-	    _: asyncio.AbstractEventLoop | None = None,
-	  ) -> asyncio.Protocol:
-	  
+        self,
+        _: asyncio.AbstractEventLoop | None = None,
+      ) -> asyncio.Protocol:
+
         if self.config.enable_h2:
             return H2Protocol(self.app)
 
@@ -417,8 +417,8 @@ h2load --threads 8 --clients 8 --duration 10 https://127.0.0.1:5001
 
 Đây là kết quả benchmark trên máy tính của mình: Macbook Pro M2, 16Gi RAM, 8 cores
 
-<Image src="https://github.com/magiskboy/python-webserver-tutorial/blob/main/images/benchmark_http_1.1.png" title="HTTP/1.1" />
+<Image src="https://raw.githubusercontent.com/magiskboy/python-webserver-tutorial/refs/heads/main/images/benchmark_http_1.1.png" title="HTTP/1.1" />
 
-<Image src="https://github.com/magiskboy/python-webserver-tutorial/blob/main/images/benchmark_http_2.png" title="HTTP/2" />
+<Image src="https://raw.githubusercontent.com/magiskboy/python-webserver-tutorial/refs/heads/main/images/benchmark_http_2.png" title="HTTP/2" />
 
 Kết quả cho thấy hiệu suất truyền tải của HTTP/2 cao hơn khoảng 30% so với HTTP/1.1 — tất nhiên là trong điều kiện cài đặt cơ bản như trong thử nghiệm này.
