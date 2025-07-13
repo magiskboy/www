@@ -1,0 +1,397 @@
+---
+title: "Viết HTTP/2 server tương thích ASGI trong Python"
+date: 2025-07-13T14:30:00+07:00
+published: true
+tags:
+- web
+- python
+- networking
+- http2
+- asyncio
+categories:
+- Web development
+- Python
+description: "Cuối tuần vừa rồi mình có rảnh rỗi nên ngồi đọc paper của HTTP/1.1,  HTTP/2 và ASGI để cài đặt một web server trong Python. Về cơ bản là chúng hoạt động ổn ở mức cơ bản. Dưới đây là một số chia sẻ của mình về những gì mình đã học được qua việc viết một web server như thế trong Python."
+---
+
+## Về HTTP/1.1 và HTTP/2
+
+HTTP/2 là một phương thức đóng gói, truyền và nhận gói tin HTTP trên giao thức TCP để cải thiện hiệu suất của phiên bản HTTP/1.1. HTTP/1.1 sử dụng một connection cho mỗi transaction (bao gồm request + response). Sau này được cải tiến để có thể sử dụng một connection cho nhiều transaction được gọi là HTTP Pipelining , tuy nhiên cải tiến này đa số là không hiệu quả về mặt truyền tin (do thứ tự transaction phải đảm bảo dẫn tới nếu transaction trước tốn thời gian thì transaction sau phải đợi), chỉ có điều chúng sẽ làm giảm số lần phải handshake giữa client và server.
+
+HTTP/2 ra đời để cải thiện điểm yếu trong truyền tin. Các transaction sẽ được bẻ nhỏ thành các frame, mỗi transaction được gọi là một stream và trên stream sẽ có nhiều frame đi qua. Bây giờ, trên 1 connection chúng ta có thể truyền nhiều frame của nhiều stream. Dữ liệu trong các frame này là binary và được nén lại bằng một biến thể của thuật toán Huffman nên rất nhẹ. Một số nhận xét của mình về HTTP/1.1 và HTTP/2 như sau:
+
+- HTTP/1.1 gửi gói tin dưới định dạng text còn HTTP/2 là định dạng nhị phân
+- HTTP/1.1 pipelining có thể tái sử dụng connection để giảm số lần handshake tuy nhiêu hiệu quả truyền tin không cao do thứ tự transaction phải đảm bảo. Điều này được HTTP/2 khắc phục bằng cách bẻ nhỏ gói tin của từng transaction, bổ sung thêm metadata và nén thông tin, do đó tránh được hạn chế về thứ tự của transaction của HTTP/1.1
+- HTTP/2 có sử dụng thêm metadata nên thông tin trên một gói tin của HTTP/2 lớn hơn HTTP/1.1. Bên cạnh đó, HTTP/2 thực hiện ACK khá nhiều trong quá trình truyền tin để đảm bảo server và client gửi đúng gói tin cho từng transaction
+- Về mặt hiệu suất truyền tin HTTP/2 vượt trội so với HTTP/1.1. Tuy nhiên, với những ứng dụng nặng về xử lí ở server thì HTTP/2 không quá khác biệt so với HTTP/1.1. Do đó, HTTP/2 thường được sử dụng trong những ứng dụng thuần tuý truyền tin như dịch vụ lưu trữ file, website tĩnh,….
+
+## Về ASGI
+
+ASGI là viết tắt của *Asynchronous Server Gateway Interface.* Nó là một giao diện để web server có thể giao tiếp với ứng dụng web bất đồng bộ trong Python. Nếu ai từng viết các web backend bằng Python cách đây 6-8 năm (như Flask hay Django) thì chúng tương thích với giao diện khác gọi là WSGI - *Web Server Gateway Interface* và một trong những web server tương thích với giao diện này là HTTP Apache với module uWSGI.
+
+Sự khác nhau giữa hai giao diện này là ASGI hỗ trợ xử lí các request bất đồng bộ với mô hình event loop trong khi WSGI hỗ trợ xử lí các request song song với mô hình multithread. Tuy nhiên, sử dụng mô hình multithread để xử lí vấn đề về I/O là không hiệu quả (bài toán c10k) và một trong những ví dụ điển hình là Nginx và HTTP Apache.
+
+Vào thời điểm ASGI chưa xuất hiện, có một số framework đã tự phát triển theo hướng bất đồng bộ, ví dụ như Tornado. Tuy nhiên, việc không phát triển một giao diện tiêu chuẩn làm việc phát triển và sử dụng các framework bất đồng bộ trở nên khó khăn và ASGI ra đời để giải quyết vấn đề đó. Về cơ bản, ASGI sử dụng coroutine trong Python để xử lí từng request và điều phối nó bằng event loop. Các sự kiện nhận và gửi dữ liệu trên socket được xử lí non-blocking. Khi server nhận gói tin đến, nó sẽ emit một event đến cho ứng dụng và ngược lại, khi ứng dụng cần gửi response (có thể là stream response), nó sẽ emit một sự kiện và server sẽ xử lí và gửi đi thông qua socket.
+
+Cho bạn nào chưa biết thì event loop là một phương pháp dùng để quản lí và điều phối các đơn vị xử lí dựa trên các sự kiện bất đồng bộ như networking hoặc filesystem.
+
+## Triển khai web server bằng Python
+
+Trong demo này, mình đã cài đặt cả hai giao thức là HTTP/1.1 và HTTP/2. Web server mình sử dụng nhiều process để đem lại hiệu suất cảo hơn trên các kiến trúc nhiều core CPU.
+
+Bây giờ hãy đi vào cài đặt chi tiết. Lưu ý là trong bài viết này, mình chỉ đưa ra những snippet quan trọng để giải thích cho những gì mình viết. Để đi vào chi tiết, các bạn hay đọc thêm trong repo mình gắn link ở đây nhé: [python-webserver-tutorial](https://github.com/magiskboy/python-webserver-tutorial)
+
+Đầu tiên, chúng ta sẽ tạo ra socket lắng nghe 
+
+```python
+self.sock = socket.create_server(
+    address=(host, port),
+    family=socket.AF_INET,
+    backlog=self.backlog or 4096,
+    reuse_port=True,
+)
+os.set_inheritable(self.sock.fileno(), True)
+```
+
+Hàm `create_server` là một utility function để tạo một socket lắng nghe cho server, [`reuse_port`](https://man7.org/linux/man-pages/man7/socket.7.html) là một flag cho phép nhiều socket cùng bind vào một cồng, để rõ hơn về điều này, chúng ta sẽ đi đến câu lệnh ngay sau nó.
+
+`os.set_inheritable(self.sock.fileno(), True)` cho phép socket này có thể có các bản sao được kế thừa từ các process khác, các bản sao này được binding tới cùng 1 port (do flag reuse_port). Đây là một điều quan trọng trong mô hình master-worker của web server.
+
+Process master sẽ tạo socket lắng nghe và tạo các process con. Các process con này sẽ tạo ra các socket kế thừa từ socket của process cha và tất nhiên chúng sẽ lắng nghe chung cổng với process cha. Vậy chuyện gì sẽ xảy ra khi có một gói tin tới cồng đó?. 
+
+Hệ điều hạnh Unix-like như Linux có cơ chế cân bằng tải cho những trường hợp như vậy, các bạn còn nhớ syscall này chứ
+
+```c
+while 1 {
+	connect_socket = accept(listen_socket)
+}
+```
+
+[accept](https://man7.org/linux/man-pages/man2/accept.2.html) sẽ block cho đến khi có một socket kết nối nếu có request tới server, và socket của process con nào sẽ được chọn? Kernel sẽ tạo ra một giá trị hash cho client IP và client port của socket kết nối và chọn process dựa trên giá trị hash đó. Do đó, các request tới từ cùng một client sẽ được xử lí trên cùng một process (session sticky).
+
+Vậy là xong phần setup server và các worker, tiếp theo chúng ta sẽ đi tới phần xử lí từng socket kết nối khi có một client request, bước này chúng ta sẽ xử lí bất động bộ với event loop thay vì xử lí song song như multithread.
+
+Module `asyncio` của Python đã chuẩn hoá việc định nghĩa các giao thức mạng và cá nhân mình thấy nó cực kì hiệu quả và clean code. Trong Python, việc định nghĩa giao thức mạng được chia làm 2 phần ứng với 2 class: [BaseTransport và BaseProtocol](https://docs.python.org/3/library/asyncio-protocol.html).
+
+- BaseTransport sẽ đảm nhận vai trò truyền các gói tin trên mạng, chúng trả lời cho câu hỏi: Làm sao các bytes dữ liệu được truyền đi. Nói tóm lại, BaseTransport sẽ hoạt động ở layer 4 (Transport layer) trong [mô hình OSI](https://ieeexplore.ieee.org/document/1457043). Có những Transport cho TCP, UDP, WriteTransport, ReadTransport,…
+- BaseProtocol sẽ đảm nhận vai trò định nghĩa các quy tắc trong giao tiếp giữa hai bên trong một kết nối. Chúng hoạt động ở layer 7 (Application layer). Một số protocol như HTTP, JSON-RPC, gRPC, IMAP, POP3,…
+
+Trong trường hợp này, chúng ta sẽ sử dụng class Transport (mặc định của asyncio cho TCP connection) và viết hai protocol cho HTTP/1.1 và HTTP/2 dựa trên class Protocol của asyncio.
+
+Ngoài ra, các các bạn cũng nên biết một chút về ASGI để các thể viết được web server tương thích với các framework như FastAPI ở đây [https://asgi.readthedocs.io/en/latest/index.html](https://asgi.readthedocs.io/en/latest/index.html).
+
+Đầu tiên sẽ implement `H1Protocol` cho HTTP/1.1
+
+```python
+class H1Protocol(asyncio.Protocol):
+	def __init__(self, app):
+	
+	    # app là một async callable theo chuẩn ASGI dùng để xử lí từng request
+      self.app = app
+
+			# Với HTTP/1.1 mình sử dụng llhttp, một HTTP parser hiệu suât cao của
+			# NodeJS để parse request thông qua httptools.
+			# parser này nhận đầu vào là một object với các method như on_url, on_body, on_header, on_header_complete. 
+			# Những method này sẽ được gọi bên trong parser trong quá trình parse 
+			# message.Trong ví dụ này, để đơn giản, mình kết hợp nó với H1Protocol 
+      self.parser = httptools.HttpRequestParser(self) #type: ignore
+      
+      # task được sử dụng để xử lí request từ khi nhận được 
+      # đến khi app gửi lại response
+      self.task: asyncio.Task = None
+      
+      # event được sử dụng để notify cho ứng dụng khi có dữ liệu gửi đến socket,
+      # từ đó ứng dụng có thể đọc
+      self.message_event = asyncio.Event()
+	
+  def connection_lost(self, exc: Exception | None) -> None:
+      if self.task and not self.task.done():
+          self.task.cancel('Lost connection')
+
+  def data_received(self, data: bytes) -> None:
+      self.parser.feed_data(data)
+
+  def on_headers_complete(self):
+      self.method = self.parser.get_method()
+      self.http_version = self.parser.get_http_version()
+
+      scope = self.make_scope()
+      cycle = RequestLifeCycle(scope, self.app, self.transport.write, self.message_event)
+      self.cycle = cycle
+      
+      # tạo task để xử lí request theo RequestLifeCycle, việc này
+      # tương đương với việc tạo thread để xử lí từng request trong
+      # kiến trúc multithread
+      task = asyncio.create_task(cycle.run())
+      task.add_done_callback(self.on_done)
+      self.task = task
+      
+  def on_body(self, body: bytes):
+		  # khi socket có dữ liệu và sẵn sàng để đọc
+      self.cycle.body = body #type: ignore
+      self.message_event.set()
+
+  # ---------------- Extra ---------------------
+  def on_done(self, _: asyncio.Task):
+		  # giữ lại connection để tận dụng cho các transaction về sau
+      if not self.parser.should_keep_alive():
+          self.transport.close()
+```
+
+Tiếp theo, chúng ta sẽ viết tiếp `H2Protocol` cho HTTP/2
+
+```python
+class H2Protocol(asyncio.Protocol):
+
+		# do trên cùng 1 connection xử lí nhiều stream HTTP2 (transaction)
+		# nên chúng ta cần 1 table để lưu thông tin các stream (RequestContext)
+		# với key là stream_id
+    streams: t.Dict[int, "RequestContext"]
+    
+    ...
+
+    def connection_made(self, transport: asyncio.BaseTransport) -> None:
+		    ...
+		    
+        self.conn.initiate_connection()
+        
+        # bất kì một action gì trên giao thức HTTP/2 cũng sẽ cần 1 ACK,
+        # bao gồm các việc tạo kết nối thành công, điều này là
+        # không cần thiết trên HTTP/1.1
+        self.transport.write(self.conn.data_to_send())
+
+        ...
+
+    def data_received(self, data: bytes) -> None:
+		    # các frame được đóng gói và gửi đi bởi client sẽ được nhận 
+		    # bởi server và xử lí ở đây. Chúng ta sẽ feed từng đoạn dữ liệu
+		    # vào parser của thư viện h2 và nhận ra các readable events.
+		    # mỗi event đều có type như:
+		    # - RequestReceived: nhận đầy đủ header, tương đương với on_header_complete
+		    # - DataReceived: nhận dữ liệu về HTTP body, tương đương on_body
+		    # - StreamEnded: kết thúc 1 stream (transaction), lưu ý: không tương đương với close connection
+		    # - ...
+        try:
+            events = self.conn.receive_data(data)
+
+        except h2.exceptions.ProtocolError:
+            self.transport.write(self.conn.data_to_send())
+            self.transport.close()
+        
+        else:
+            self.transport.write(self.conn.data_to_send())
+
+            for event in events:
+                if isinstance(event, h2.events.RequestReceived):
+                    self.request_received(event.headers, t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.DataReceived):
+                    self.receive_data(event.data, t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.StreamEnded):
+                    self.stream_complete(t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.ConnectionTerminated):
+                    self.transport.close()
+
+                elif isinstance(event, h2.events.StreamReset):
+                    self.stream_reset(t.cast(int, event.stream_id))
+
+                elif isinstance(event, h2.events.WindowUpdated):
+                    self.window_updated(event.stream_id, event.delta)
+
+                elif isinstance(event, h2.events.RemoteSettingsChanged):
+                    if h2.settings.SettingCodes.INITIAL_WINDOW_SIZE in event.changed_settings:
+                        self.window_updated(None, 0)
+
+                self.transport.write(self.conn.data_to_send())
+
+    def request_received(self, headers: t.List[hpack.HeaderTuple] | None, stream_id: int):
+        ...
+
+        # Giống với H1Protocol, chúng ta sẽ bắt đầu tạo và chạy ứng dụng để xử
+        # lí request ở đây. 
+        message_event = asyncio.Event()
+        scope = self.make_scope()
+        cycle = RequestLifeCycle(
+            scope=scope,
+            app=self.app,
+            message_event=message_event,
+        )
+        request_context = RequestContext(stream_id, cycle, message_event, self)
+        self.streams[stream_id] = request_context
+        ctx.set(request_context)
+        task = asyncio.create_task(cycle.run())
+        request_context.task = task
+
+    def receive_data(self, data: bytes | None, stream_id: int):
+        if not data:
+            return
+
+				# khi có dữ liệu của request body, notify event để ứng dụng có thể xử lí
+        request_context = self.streams[stream_id]
+        request_context.cycle.body = data
+        request_context.message_event.set() 
+
+    def stream_complete(self, stream_id: int):
+		    # clean up stream
+        self.streams.pop(stream_id)
+
+    def stream_reset(self, stream_id: int):
+        request_context = self.streams[stream_id]
+        if request_context.flow_control:
+            request_context.flow_control.cancel()
+            request_context.flow_control = None
+
+    def window_updated(self, stream_id: int | None, delta: int | None):
+		    # đây là một phần quan trọng, trong HTTP/2. HTTP/2 sẽ duy trì một cửa
+		    # sổ để thông báo cho ứng dụng khi nào có thể ghi dữ liệu response vào
+		    # socket. Chúng ta sẽ sử dụng một asyncio.Future để notify cho ứng dụng
+		    # khi nào được ghi dữ liệu vào socket và được ghi bao nhiêu bytes
+		    # (trong hàm send_data bên dưới)
+		     
+        if stream_id and stream_id in self.streams:
+            request_context = self.streams[stream_id]
+            f = request_context.flow_control
+            f.set_result(delta) #type: ignore
+
+        elif not stream_id:
+            for context in self.streams.values():
+                if context.flow_control:
+                    context.flow_control.set_result(delta)
+                    context.flow_control = None
+
+    async def send_data(self, data: bytes, stream_id: int):
+        while data:
+            while self.conn.local_flow_control_window(stream_id) < 1:
+                try:
+		                # chờ cho đến. khi có thể ghi được dữ liệu vào socket
+                    await self.wait_for_flow_control(stream_id)
+                except asyncio.CancelledError:
+                    return data
+
+            chunk_size = min(
+                self.conn.local_flow_control_window(stream_id),
+                len(data),
+                self.conn.max_outbound_frame_size,
+            )
+
+            try:
+                self.conn.send_data(
+                    stream_id,
+                    data[:chunk_size],
+                    end_stream=(chunk_size == len(data)),
+                )
+            except (h2.exceptions.StreamClosedError, h2.exceptions.ProtocolError):
+                break
+
+            self.transport.write(self.conn.data_to_send())
+            data = data[chunk_size:]
+
+    async def wait_for_flow_control(self, stream_id):
+        f = asyncio.Future()
+        self.streams[stream_id].flow_control = f
+        await f
+```
+
+Mọi thứ đã xong, giờ chúng ta sẽ kết hợp hai protocol này để tạo thành một web server hoàn chỉnh và chạy thử benchmark xem sự khác nhau giữa 2 protocol.
+
+```python
+class Server:
+    def run(self):
+        """Important!!! Only run in the main process"""
+
+        self.sock = self.config.sock
+        host, port = self.config.socket.getsockname() #type: ignore
+
+        self.logger.info(f"Server is starting at {host}:{port}")
+        if self.config.workers is None:
+        
+		        # Mặc định, event loop của Python hoạt động kém hiệu quả,
+		        # do đó mình sử dụng libuv (1 event loop được sử dụng trong NodeJS)
+		        # để có được hiệu suất cao hơn. 
+            import uvloop
+            uvloop.install()
+            asyncio.run(self.serve(self.config.socket))
+            return
+
+        from .worker import Worker
+        for _ in range(self.config.workers):
+            worker = Worker(self.app_factory, self.config)
+            worker.run()
+            self.workers.append(worker)
+
+        for worker in self.workers:
+            worker.join()
+
+    async def serve(self, sock: socket.socket):
+        self.logger.info(f"Worker {self.pid} is running...")
+
+        loop = asyncio.get_running_loop()
+        _server = await loop.create_server(
+            # mỗi khi một client tạo kết nối tới server, server sẽ tạo 1 protocol
+            # bằng hàm protocol_factory
+            protocol_factory=self.create_protocol,
+            sock=sock,
+            
+            # với HTTP/2, chúng ta bắt buộc phải sử dụng SSL, điều này đang dần
+            # trở nên phổ biến ở các trình duyệt web và các webserver.
+            ssl=self.config.get_ssl(),
+        )
+        await _server.serve_forever()
+
+    def create_protocol(
+	    self,
+	    _: asyncio.AbstractEventLoop | None = None,
+	  ) -> asyncio.Protocol:
+	  
+        if self.config.enable_h2:
+            return H2Protocol(self.app)
+
+        return H1Protocol(self.app)
+```
+
+## Benchmark
+
+Để có thể benchmark, mình đã phải sử dụng 2 tool khác nhau
+
+- `wrk` cho HTTP/1.1
+- `h2load` cho HTTP/2 vì wrk không hỗ trợ HTTP/2
+
+Đây là một ứng dụng FastAPI cơ bản, nói chung là đủ để mình kiểm tra hiệu suất truyền tin của hai giao thức
+
+```python
+app = FastAPI()
+
+@app.get('/')
+async def index():
+    return {
+        "name": "nkthanh.dev",
+        "age": 18,
+        "address": "Hanoi, Vietnam"
+    }
+```
+
+Tham số mình benchmark như sau
+
+```
+- Thời gian: 10 seconds
+- Số lượng connection: 8
+- Số lượng client: 8
+```
+
+Đây là command các bạn có thể dùng để benchmark với tham số trên
+
+```bash
+wrk -t 8 -c 8 -d 10s https://127.0.0.1:5001
+
+h2load --threads 8 --clients 8 --duration 10 https://127.0.0.1:5001
+```
+
+Đây là kết quả benchmark trên máy tính của mình: Macbook Pro M2, 16Gi RAM, 8 cores
+
+![](https://github.com/magiskboy/python-webserver-tutorial/blob/main/images/benchmark_http_1.1.png)
+
+![](https://github.com/magiskboy/python-webserver-tutorial/blob/main/images/benchmark_http_2.png)
+
+Kết quả cho thấy, hiệu suất truyền tin của HTTP/2 cao hơn khoảng 30% so với HTTP/1.1 (tất nhiên là với cài đặt ở mức cơ bản như này).
