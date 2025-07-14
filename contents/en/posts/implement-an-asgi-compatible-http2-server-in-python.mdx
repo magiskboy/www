@@ -18,9 +18,25 @@ description: "Last weekend, I had some free time, so I sat down to read document
 
 HTTP/2 is a method for packaging, transmitting, and receiving HTTP packets over the TCP protocol to improve performance compared to HTTP/1.1. In HTTP/1.1, each transaction (consisting of a request and response) uses a separate connection. Later, the protocol was improved to allow multiple transactions to share a single connection — this was called HTTP Pipelining. However, this improvement was generally inefficient in terms of transmission, as transactions had to follow a strict order — if one earlier transaction was delayed, subsequent ones had to wait. That said, HTTP Pipelining still helped reduce the number of handshakes between the client and server.
 
-HTTP/2 was introduced to address the weaknesses in data transmission of previous versions. In HTTP/2, each transaction is broken down into frames; each transaction is called a stream, and a stream consists of multiple frames. As a result, on a single connection, multiple frames from different streams can be transmitted concurrently. The data in these frames is represented in binary format and compressed using a variant of the Huffman algorithm, significantly reducing transmission size.
 
 <Image src="/images/http2.webp" title="HTTP/1.1 vs HTTP/2" />
+
+Some improvements in HTTP/2 that I find significantly more important and effective than HTTP/1.1:
+
+1. Multiplexing via Streams:
+Solves the Head-of-Line Blocking problem by allowing multiple independent request/response pairs to coexist on a single connection.
+In HTTP/1.1, responses must be sent in the same order as the corresponding requests. Even if a later response is ready, it has to wait for the previous one to finish.
+HTTP/2 removes this constraint by breaking transactions into smaller units called frames. Each transaction is referred to as a stream, and each stream consists of multiple frames. This allows multiple frames from different streams to be transmitted concurrently over a single connection.
+
+2. Header Compression (HPACK):
+Significantly reduces overhead caused by repetitive HTTP headers.
+In HTTP/1.1, headers often repeat across requests—especially when loading multiple resources like CSS, JS, and images from the same server—causing unnecessary overhead.
+HPACK not only compresses headers but also mitigates this redundancy by maintaining a dynamic table shared between the client and server.
+For example, when the “Host” header is sent the first time, it is stored in the table on both ends. In subsequent requests, instead of resending the entire “Host” header, the sender can simply refer to its index in the table.
+
+3. Server Push:
+Allows the server to proactively send resources that the client is likely to need, reducing latency and avoiding unnecessary round-trip handshakes.
+This anticipatory behavior helps optimize page loads by delivering assets (like CSS or JS files) before the browser explicitly requests them.
 
 Here are some of my observations about HTTP/1.1 and HTTP/2:
 
